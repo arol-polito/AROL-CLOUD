@@ -1,0 +1,51 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/*PDF VIEWER STYLING - centering*/
+.react-pdf__Page__svg{
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+/*CAROUSEL STYLING - dark theme*/
+.carousel-root{
+  height: 100% !important;
+  /*min-height: 100% !important;*/
+}
+.carousel.carousel-slider{
+  height: 100% !important;
+}
+.carousel-status{
+  color: black!important;
+  text-shadow: none!important;
+}
+.control-arrow::before
+{
+  border-top-width: 15px!important;
+  border-bottom-width: 15px!important;
+}
+.control-prev::before
+{
+  border-right-width: 10px!important;
+  border-right-color: black !important;
+}
+.control-next::before
+{
+  border-left-width: 10px!important;
+  border-left-color: black !important;
+}
+li.dot{
+  background: black!important;
+}

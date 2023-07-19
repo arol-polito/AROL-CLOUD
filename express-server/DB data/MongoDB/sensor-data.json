@@ -1,0 +1,95 @@
+[{
+  "timestamp": {
+    "$date": {
+      "$numberLong": "1626345048021"
+    }
+  },
+  "machineryUID": "JF891",
+  "sensorData": [
+    {
+      "timestamp": {
+        "$numberLong": "1665415347927"
+      },
+      "sensorName": "temperature",
+      "value": 50
+    },
+    {
+      "timestamp": {
+        "$numberLong": "1665415347927"
+      },
+      "sensorName": "input voltage",
+      "value": 220
+    },
+    {
+      "timestamp": {
+        "$numberLong": "1665415347927"
+      },
+      "sensorName": "input current",
+      "value": 10
+    },
+    {
+      "timestamp": {
+        "$numberLong": "1665415347927"
+      },
+      "sensorName": "power consumption",
+      "value": 2200
+    },
+    {
+      "timestamp": {
+        "$numberLong": "1665415347927"
+      },
+      "sensorName": "friction",
+      "value": 260.3
+    }
+  ],
+  "_id": {
+    "$oid": "6344445821a59b3f399311b6"
+  }
+},{
+  "timestamp": {
+    "$date": {
+      "$numberLong": "1626345048021"
+    }
+  },
+  "machineryUID": "JF891",
+  "sensorData": [
+    {
+      "timestamp": {
+        "$numberLong": "1665415349927"
+      },
+      "sensorName": "temperature",
+      "value": 60
+    },
+    {
+      "timestamp": {
+        "$numberLong": "1665415349927"
+      },
+      "sensorName": "input voltage",
+      "value": 220
+    },
+    {
+      "timestamp": {
+        "$numberLong": "1665415349927"
+      },
+      "sensorName": "input current",
+      "value": 20
+    },
+    {
+      "timestamp": {
+        "$numberLong": "1665415349927"
+      },
+      "sensorName": "power consumption",
+      "value": 4400
+    },
+    {
+      "timestamp": {
+        "$numberLong": "1665415349927"
+      },
+      "sensorName": "friction",
+      "value": 200.3
+    }
+  ],
+  "_id": {
+    "$oid": "634495a121a59b3f399311b8"
+  }
+}]

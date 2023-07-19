@@ -1,0 +1,5611 @@
+[{
+  "_id": {
+    "$oid": "62c2f7e656ebca966f9f2b69"
+  },
+  "day": "Mon Jul 04 2022",
+  "variable": "OperationMode",
+  "first_time": {
+    "$numberLong": "1656944612232"
+  },
+  "last_time": {
+    "$numberLong": "1656945515413"
+  },
+  "nsamples": 4,
+  "samples": [
+    {
+      "value": 2,
+      "time": {
+        "$numberLong": "1656944612232"
+      }
+    },
+    {
+      "value": 2,
+      "time": {
+        "$numberLong": "1656944764486"
+      }
+    },
+    {
+      "value": 2,
+      "time": {
+        "$numberLong": "1656945151107"
+      }
+    },
+    {
+      "value": 2,
+      "time": {
+        "$numberLong": "1656945515413"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62c2f7e656ebca966f9f2b6c"
+  },
+  "day": "Mon Jul 04 2022",
+  "variable": "Alarm",
+  "first_time": {
+    "$numberLong": "1656944612232"
+  },
+  "last_time": {
+    "$numberLong": "1656945515413"
+  },
+  "nsamples": 4,
+  "samples": [
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944612232"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944764486"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945151107"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945515413"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62c2f7e656ebca966f9f2b6d"
+  },
+  "day": "Mon Jul 04 2022",
+  "variable": "OperationState",
+  "first_time": {
+    "$numberLong": "1656944612232"
+  },
+  "last_time": {
+    "$numberLong": "1656945614404"
+  },
+  "nsamples": 34,
+  "samples": [
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1656944612232"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1656944622254"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1656944632236"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1656944722484"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1656944732734"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1656944764486"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1656944854486"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1656944864489"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1656944955038"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1656944964713"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1656944984800"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1656944994858"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1656945085227"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1656945095279"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1656945151107"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1656945161034"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1656945251118"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1656945261119"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1656945281288"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1656945291356"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1656945351526"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1656945361532"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1656945381564"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1656945391576"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1656945451679"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1656945461757"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1656945481757"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1656945491798"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1656945515413"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1656945525371"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1656945574339"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1656945584187"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1656945604192"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1656945614404"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62c2f7fa56ebca966f9f2b7c"
+  },
+  "day": "Mon Jul 04 2022",
+  "variable": "MainMotorSpeed",
+  "first_time": {
+    "$numberLong": "1656944631240"
+  },
+  "last_time": {
+    "$numberLong": "1656945653746"
+  },
+  "nsamples": 32,
+  "samples": [
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944631240"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944661414"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944692206"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944721852"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944793969"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944824411"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944854340"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944884147"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944914248"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944944095"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944974315"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945003993"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945034356"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945064228"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945094341"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945124108"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945180508"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945210890"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945241012"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945270541"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945300413"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945331045"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945360417"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945390602"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945420453"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945451415"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945480724"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945544937"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945564004"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945593597"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945623610"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945653746"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62c2f7fa56ebca966f9f2b7e"
+  },
+  "day": "Mon Jul 04 2022",
+  "variable": "MainMotorCurrent",
+  "first_time": {
+    "$numberLong": "1656944631240"
+  },
+  "last_time": {
+    "$numberLong": "1656945653746"
+  },
+  "nsamples": 32,
+  "samples": [
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944631240"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944661414"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944692206"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944721852"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944793969"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944824411"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944854340"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944884147"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944914248"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944944095"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944974315"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945003993"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945034356"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945064228"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945094341"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945124108"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945180508"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945210890"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945241012"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945270541"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945300413"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945331045"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945360417"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945390602"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945420453"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945451415"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945480724"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945544937"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945564004"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945593597"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945623610"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945653746"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62c2f7fa56ebca966f9f2b80"
+  },
+  "day": "Mon Jul 04 2022",
+  "variable": "HeadMotorSpeed",
+  "first_time": {
+    "$numberLong": "1656944631240"
+  },
+  "last_time": {
+    "$numberLong": "1656945653746"
+  },
+  "nsamples": 32,
+  "samples": [
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944631240"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944661414"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944692206"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944721852"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944793969"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944824411"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944854340"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944884147"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944914248"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944944095"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944974315"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945003993"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945034356"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945064228"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945094341"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945124108"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945180508"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945210890"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945241012"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945270541"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945300413"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945331045"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945360417"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945390602"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945420453"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945451415"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945480724"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945544937"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945564004"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945593597"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945623610"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945653746"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62c2f7fa56ebca966f9f2b82"
+  },
+  "day": "Mon Jul 04 2022",
+  "variable": "HeadMotorCurrent",
+  "first_time": {
+    "$numberLong": "1656944631240"
+  },
+  "last_time": {
+    "$numberLong": "1656945653746"
+  },
+  "nsamples": 32,
+  "samples": [
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944631240"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944661414"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944692206"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944721852"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944793969"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944824411"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944854340"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944884147"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944914248"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944944095"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944974315"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945003993"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945034356"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945064228"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945094341"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945124108"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945180508"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945210890"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945241012"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945270541"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945300413"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945331045"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945360417"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945390602"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945420453"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945451415"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945480724"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945544937"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945564004"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945593597"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945623610"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945653746"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62c2f81856ebca966f9f2bb1"
+  },
+  "day": "Mon Jul 04 2022",
+  "variable": "ProdSpeed",
+  "first_time": {
+    "$numberLong": "1656944652248"
+  },
+  "last_time": {
+    "$numberLong": "1656945614472"
+  },
+  "nsamples": 15,
+  "samples": [
+    {
+      "value": 34213.8,
+      "time": {
+        "$numberLong": "1656944652248"
+      }
+    },
+    {
+      "value": 34738.82,
+      "time": {
+        "$numberLong": "1656944712493"
+      }
+    },
+    {
+      "value": 38461.67,
+      "time": {
+        "$numberLong": "1656944814442"
+      }
+    },
+    {
+      "value": 34578.5,
+      "time": {
+        "$numberLong": "1656944874487"
+      }
+    },
+    {
+      "value": 35879.34,
+      "time": {
+        "$numberLong": "1656944934602"
+      }
+    },
+    {
+      "value": 34690.26,
+      "time": {
+        "$numberLong": "1656944994862"
+      }
+    },
+    {
+      "value": 34922.24,
+      "time": {
+        "$numberLong": "1656945055053"
+      }
+    },
+    {
+      "value": 34793.49,
+      "time": {
+        "$numberLong": "1656945115344"
+      }
+    },
+    {
+      "value": 34158.17,
+      "time": {
+        "$numberLong": "1656945201073"
+      }
+    },
+    {
+      "value": 33316.5,
+      "time": {
+        "$numberLong": "1656945261122"
+      }
+    },
+    {
+      "value": 34682.84,
+      "time": {
+        "$numberLong": "1656945321614"
+      }
+    },
+    {
+      "value": 34112.59,
+      "time": {
+        "$numberLong": "1656945381567"
+      }
+    },
+    {
+      "value": 34993.97,
+      "time": {
+        "$numberLong": "1656945441744"
+      }
+    },
+    {
+      "value": 35929,
+      "time": {
+        "$numberLong": "1656945554102"
+      }
+    },
+    {
+      "value": 33859.75,
+      "time": {
+        "$numberLong": "1656945614472"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62c2f81856ebca966f9f2bb3"
+  },
+  "day": "Mon Jul 04 2022",
+  "variable": "PowerVoltage",
+  "first_time": {
+    "$numberLong": "1656944652248"
+  },
+  "last_time": {
+    "$numberLong": "1656945614472"
+  },
+  "nsamples": 15,
+  "samples": [
+    {
+      "value": 380.36,
+      "time": {
+        "$numberLong": "1656944652248"
+      }
+    },
+    {
+      "value": 380.43,
+      "time": {
+        "$numberLong": "1656944712493"
+      }
+    },
+    {
+      "value": 380.77,
+      "time": {
+        "$numberLong": "1656944814442"
+      }
+    },
+    {
+      "value": 380.81,
+      "time": {
+        "$numberLong": "1656944874487"
+      }
+    },
+    {
+      "value": 380.72,
+      "time": {
+        "$numberLong": "1656944934602"
+      }
+    },
+    {
+      "value": 380.85,
+      "time": {
+        "$numberLong": "1656944994862"
+      }
+    },
+    {
+      "value": 380.82,
+      "time": {
+        "$numberLong": "1656945055053"
+      }
+    },
+    {
+      "value": 380.76,
+      "time": {
+        "$numberLong": "1656945115344"
+      }
+    },
+    {
+      "value": 381.28,
+      "time": {
+        "$numberLong": "1656945201073"
+      }
+    },
+    {
+      "value": 381.2,
+      "time": {
+        "$numberLong": "1656945261122"
+      }
+    },
+    {
+      "value": 381.04,
+      "time": {
+        "$numberLong": "1656945321614"
+      }
+    },
+    {
+      "value": 380.98,
+      "time": {
+        "$numberLong": "1656945381567"
+      }
+    },
+    {
+      "value": 380.97,
+      "time": {
+        "$numberLong": "1656945441744"
+      }
+    },
+    {
+      "value": 383.33,
+      "time": {
+        "$numberLong": "1656945554102"
+      }
+    },
+    {
+      "value": 383.48,
+      "time": {
+        "$numberLong": "1656945614472"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62c2f81856ebca966f9f2bb5"
+  },
+  "day": "Mon Jul 04 2022",
+  "variable": "PowerCurrent",
+  "first_time": {
+    "$numberLong": "1656944652248"
+  },
+  "last_time": {
+    "$numberLong": "1656945614472"
+  },
+  "nsamples": 15,
+  "samples": [
+    {
+      "value": 9.11,
+      "time": {
+        "$numberLong": "1656944652248"
+      }
+    },
+    {
+      "value": 9.23,
+      "time": {
+        "$numberLong": "1656944712493"
+      }
+    },
+    {
+      "value": 10.17,
+      "time": {
+        "$numberLong": "1656944814442"
+      }
+    },
+    {
+      "value": 9.2,
+      "time": {
+        "$numberLong": "1656944874487"
+      }
+    },
+    {
+      "value": 9.53,
+      "time": {
+        "$numberLong": "1656944934602"
+      }
+    },
+    {
+      "value": 9.23,
+      "time": {
+        "$numberLong": "1656944994862"
+      }
+    },
+    {
+      "value": 9.29,
+      "time": {
+        "$numberLong": "1656945055053"
+      }
+    },
+    {
+      "value": 9.27,
+      "time": {
+        "$numberLong": "1656945115344"
+      }
+    },
+    {
+      "value": 9.11,
+      "time": {
+        "$numberLong": "1656945201073"
+      }
+    },
+    {
+      "value": 8.89,
+      "time": {
+        "$numberLong": "1656945261122"
+      }
+    },
+    {
+      "value": 9.23,
+      "time": {
+        "$numberLong": "1656945321614"
+      }
+    },
+    {
+      "value": 9.08,
+      "time": {
+        "$numberLong": "1656945381567"
+      }
+    },
+    {
+      "value": 9.3,
+      "time": {
+        "$numberLong": "1656945441744"
+      }
+    },
+    {
+      "value": 9.54,
+      "time": {
+        "$numberLong": "1656945554102"
+      }
+    },
+    {
+      "value": 9.02,
+      "time": {
+        "$numberLong": "1656945614472"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62c2f81856ebca966f9f2bb7"
+  },
+  "day": "Mon Jul 04 2022",
+  "variable": "AirConsumption",
+  "first_time": {
+    "$numberLong": "1656944652248"
+  },
+  "last_time": {
+    "$numberLong": "1656945614472"
+  },
+  "nsamples": 15,
+  "samples": [
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944652248"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944712493"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944814442"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944874487"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944934602"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944994862"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945055053"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945115344"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945201073"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945261122"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945321614"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945381567"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945441744"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945554102"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945614472"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62c2f81856ebca966f9f2bb9"
+  },
+  "day": "Mon Jul 04 2022",
+  "variable": "LubeLevel",
+  "first_time": {
+    "$numberLong": "1656944652248"
+  },
+  "last_time": {
+    "$numberLong": "1656945614472"
+  },
+  "nsamples": 15,
+  "samples": [
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944652248"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944712493"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944814442"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944874487"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944934602"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944994862"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945055053"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945115344"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945201073"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945261122"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945321614"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945381567"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945441744"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945554102"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945614472"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62c2f81856ebca966f9f2bbb"
+  },
+  "day": "Mon Jul 04 2022",
+  "variable": "test1",
+  "first_time": {
+    "$numberLong": "1656944652260"
+  },
+  "last_time": {
+    "$numberLong": "1656945614751"
+  },
+  "nsamples": 15,
+  "samples": [
+    {
+      "value": 380.37,
+      "time": {
+        "$numberLong": "1656944652260"
+      }
+    },
+    {
+      "value": 380.43,
+      "time": {
+        "$numberLong": "1656944712517"
+      }
+    },
+    {
+      "value": 380.8,
+      "time": {
+        "$numberLong": "1656944814453"
+      }
+    },
+    {
+      "value": 380.84,
+      "time": {
+        "$numberLong": "1656944874508"
+      }
+    },
+    {
+      "value": 380.74,
+      "time": {
+        "$numberLong": "1656944934615"
+      }
+    },
+    {
+      "value": 380.88,
+      "time": {
+        "$numberLong": "1656944994878"
+      }
+    },
+    {
+      "value": 380.84,
+      "time": {
+        "$numberLong": "1656945055069"
+      }
+    },
+    {
+      "value": 380.78,
+      "time": {
+        "$numberLong": "1656945115370"
+      }
+    },
+    {
+      "value": 381.28,
+      "time": {
+        "$numberLong": "1656945201101"
+      }
+    },
+    {
+      "value": 381.2,
+      "time": {
+        "$numberLong": "1656945261156"
+      }
+    },
+    {
+      "value": 381.03,
+      "time": {
+        "$numberLong": "1656945321685"
+      }
+    },
+    {
+      "value": 380.97,
+      "time": {
+        "$numberLong": "1656945381599"
+      }
+    },
+    {
+      "value": 380.97,
+      "time": {
+        "$numberLong": "1656945441787"
+      }
+    },
+    {
+      "value": 383.32,
+      "time": {
+        "$numberLong": "1656945554113"
+      }
+    },
+    {
+      "value": 383.48,
+      "time": {
+        "$numberLong": "1656945614751"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62c2f81856ebca966f9f2bbd"
+  },
+  "day": "Mon Jul 04 2022",
+  "variable": "test2",
+  "first_time": {
+    "$numberLong": "1656944642226"
+  },
+  "last_time": {
+    "$numberLong": "1656945604158"
+  },
+  "nsamples": 15,
+  "samples": [
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944642226"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944702325"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944804440"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944864487"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944924519"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944984529"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945044576"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945104610"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945191040"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945251098"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945311224"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945371264"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945431303"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945555375"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945604158"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62c2f81856ebca966f9f2bbf"
+  },
+  "day": "Mon Jul 04 2022",
+  "variable": "test3",
+  "first_time": {
+    "$numberLong": "1656944647226"
+  },
+  "last_time": {
+    "$numberLong": "1656945609183"
+  },
+  "nsamples": 15,
+  "samples": [
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944647226"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944707277"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944809430"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944869436"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944929475"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656944989676"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945049680"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945109742"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945196048"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945256109"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945316258"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945376310"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945436555"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945549085"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1656945609183"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62c2f9aa56ebca966f9f3519"
+  },
+  "day": "Mon Jul 04 2022",
+  "variable": "TotalProduct",
+  "first_time": {
+    "$numberLong": "1656945004481"
+  },
+  "last_time": {
+    "$numberLong": "1656945391260"
+  },
+  "nsamples": 2,
+  "samples": [
+    {
+      "value": 479713,
+      "time": {
+        "$numberLong": "1656945004481"
+      }
+    },
+    {
+      "value": 483385,
+      "time": {
+        "$numberLong": "1656945391260"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62c43e49207b665883a7e9c9"
+  },
+  "day": "Tue Jul 05 2022",
+  "variable": "Alarm",
+  "first_time": {
+    "$numberLong": "1657028162795"
+  },
+  "last_time": {
+    "$numberLong": "1657028232075"
+  },
+  "nsamples": 2,
+  "samples": [
+    {
+      "value": 2,
+      "time": {
+        "$numberLong": "1657028162795"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028232075"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62c43e49207b665883a7e9ca"
+  },
+  "day": "Tue Jul 05 2022",
+  "variable": "OperationMode",
+  "first_time": {
+    "$numberLong": "1657028162795"
+  },
+  "last_time": {
+    "$numberLong": "1657028162795"
+  },
+  "nsamples": 1,
+  "samples": [
+    {
+      "value": 2,
+      "time": {
+        "$numberLong": "1657028162795"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62c43e49207b665883a7e9cb"
+  },
+  "day": "Tue Jul 05 2022",
+  "variable": "OperationState",
+  "first_time": {
+    "$numberLong": "1657028162795"
+  },
+  "last_time": {
+    "$numberLong": "1657028442258"
+  },
+  "nsamples": 4,
+  "samples": [
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028162795"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1657028342099"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1657028432252"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1657028442258"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62c43e62207b665883a7e9d2"
+  },
+  "day": "Tue Jul 05 2022",
+  "variable": "MainMotorSpeed",
+  "first_time": {
+    "$numberLong": "1657028191363"
+  },
+  "last_time": {
+    "$numberLong": "1657028491718"
+  },
+  "nsamples": 11,
+  "samples": [
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028191363"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028221385"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028251408"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028281780"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028311932"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028341950"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028371147"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028401420"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028431568"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028461619"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028491718"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62c43e62207b665883a7e9d4"
+  },
+  "day": "Tue Jul 05 2022",
+  "variable": "MainMotorCurrent",
+  "first_time": {
+    "$numberLong": "1657028191363"
+  },
+  "last_time": {
+    "$numberLong": "1657028491718"
+  },
+  "nsamples": 11,
+  "samples": [
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028191363"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028221385"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028251408"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028281780"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028311932"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028341950"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028371147"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028401420"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028431568"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028461619"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028491718"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62c43e62207b665883a7e9d6"
+  },
+  "day": "Tue Jul 05 2022",
+  "variable": "HeadMotorSpeed",
+  "first_time": {
+    "$numberLong": "1657028191363"
+  },
+  "last_time": {
+    "$numberLong": "1657028491718"
+  },
+  "nsamples": 11,
+  "samples": [
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028191363"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028221385"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028251408"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028281780"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028311932"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028341950"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028371147"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028401420"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028431568"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028461619"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028491718"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62c43e62207b665883a7e9d8"
+  },
+  "day": "Tue Jul 05 2022",
+  "variable": "HeadMotorCurrent",
+  "first_time": {
+    "$numberLong": "1657028191363"
+  },
+  "last_time": {
+    "$numberLong": "1657028491718"
+  },
+  "nsamples": 11,
+  "samples": [
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028191363"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028221385"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028251408"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028281780"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028311932"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028341950"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028371147"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028401420"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028431568"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028461619"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028491718"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62c43e80207b665883a7e9e0"
+  },
+  "day": "Tue Jul 05 2022",
+  "variable": "ProdSpeed",
+  "first_time": {
+    "$numberLong": "1657028222085"
+  },
+  "last_time": {
+    "$numberLong": "1657028452301"
+  },
+  "nsamples": 5,
+  "samples": [
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028222085"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028282100"
+      }
+    },
+    {
+      "value": 773.56,
+      "time": {
+        "$numberLong": "1657028342104"
+      }
+    },
+    {
+      "value": 8969.39,
+      "time": {
+        "$numberLong": "1657028392111"
+      }
+    },
+    {
+      "value": 14758.35,
+      "time": {
+        "$numberLong": "1657028452301"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62c43e80207b665883a7e9e2"
+  },
+  "day": "Tue Jul 05 2022",
+  "variable": "PowerVoltage",
+  "first_time": {
+    "$numberLong": "1657028222085"
+  },
+  "last_time": {
+    "$numberLong": "1657028452301"
+  },
+  "nsamples": 5,
+  "samples": [
+    {
+      "value": 396.58,
+      "time": {
+        "$numberLong": "1657028222085"
+      }
+    },
+    {
+      "value": 395.76,
+      "time": {
+        "$numberLong": "1657028282100"
+      }
+    },
+    {
+      "value": 395.45,
+      "time": {
+        "$numberLong": "1657028342104"
+      }
+    },
+    {
+      "value": 394.97,
+      "time": {
+        "$numberLong": "1657028392111"
+      }
+    },
+    {
+      "value": 394.52,
+      "time": {
+        "$numberLong": "1657028452301"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62c43e80207b665883a7e9e4"
+  },
+  "day": "Tue Jul 05 2022",
+  "variable": "PowerCurrent",
+  "first_time": {
+    "$numberLong": "1657028222085"
+  },
+  "last_time": {
+    "$numberLong": "1657028452301"
+  },
+  "nsamples": 5,
+  "samples": [
+    {
+      "value": 0.6,
+      "time": {
+        "$numberLong": "1657028222085"
+      }
+    },
+    {
+      "value": 0.6,
+      "time": {
+        "$numberLong": "1657028282100"
+      }
+    },
+    {
+      "value": 0.79,
+      "time": {
+        "$numberLong": "1657028342104"
+      }
+    },
+    {
+      "value": 2.83,
+      "time": {
+        "$numberLong": "1657028392111"
+      }
+    },
+    {
+      "value": 4.28,
+      "time": {
+        "$numberLong": "1657028452301"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62c43e80207b665883a7e9e6"
+  },
+  "day": "Tue Jul 05 2022",
+  "variable": "AirConsumption",
+  "first_time": {
+    "$numberLong": "1657028222085"
+  },
+  "last_time": {
+    "$numberLong": "1657028452301"
+  },
+  "nsamples": 5,
+  "samples": [
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028222085"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028282100"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028342104"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028392111"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028452301"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62c43e80207b665883a7e9e8"
+  },
+  "day": "Tue Jul 05 2022",
+  "variable": "LubeLevel",
+  "first_time": {
+    "$numberLong": "1657028222085"
+  },
+  "last_time": {
+    "$numberLong": "1657028452301"
+  },
+  "nsamples": 5,
+  "samples": [
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028222085"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028282100"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028342104"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028392111"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028452301"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62c43e80207b665883a7e9ea"
+  },
+  "day": "Tue Jul 05 2022",
+  "variable": "test1",
+  "first_time": {
+    "$numberLong": "1657028222103"
+  },
+  "last_time": {
+    "$numberLong": "1657028452321"
+  },
+  "nsamples": 5,
+  "samples": [
+    {
+      "value": 396.59,
+      "time": {
+        "$numberLong": "1657028222103"
+      }
+    },
+    {
+      "value": 395.83,
+      "time": {
+        "$numberLong": "1657028272094"
+      }
+    },
+    {
+      "value": 395.57,
+      "time": {
+        "$numberLong": "1657028332097"
+      }
+    },
+    {
+      "value": 394.98,
+      "time": {
+        "$numberLong": "1657028392126"
+      }
+    },
+    {
+      "value": 394.51,
+      "time": {
+        "$numberLong": "1657028452321"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62c43e80207b665883a7e9ec"
+  },
+  "day": "Tue Jul 05 2022",
+  "variable": "test2",
+  "first_time": {
+    "$numberLong": "1657028202105"
+  },
+  "last_time": {
+    "$numberLong": "1657028442143"
+  },
+  "nsamples": 5,
+  "samples": [
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028202105"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028282088"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028342091"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028402092"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028442143"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62c43e80207b665883a7e9ee"
+  },
+  "day": "Tue Jul 05 2022",
+  "variable": "test3",
+  "first_time": {
+    "$numberLong": "1657028208855"
+  },
+  "last_time": {
+    "$numberLong": "1657028448913"
+  },
+  "nsamples": 5,
+  "samples": [
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028208855"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028268854"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028328858"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028388890"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657028448913"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62c43f70207b665883a7ed52"
+  },
+  "day": "Tue Jul 05 2022",
+  "variable": "TotalProduct",
+  "first_time": {
+    "$numberLong": "1657028462093"
+  },
+  "last_time": {
+    "$numberLong": "1657028462093"
+  },
+  "nsamples": 1,
+  "samples": [
+    {
+      "value": 600953,
+      "time": {
+        "$numberLong": "1657028462093"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62c43f70207b665883a7ed54"
+  },
+  "day": "Tue Jul 05 2022",
+  "variable": "PowerOnTime",
+  "first_time": {
+    "$numberLong": "1657028462093"
+  },
+  "last_time": {
+    "$numberLong": "1657028462093"
+  },
+  "nsamples": 1,
+  "samples": [
+    {
+      "value": "0d:22h:55m:39s",
+      "time": {
+        "$numberLong": "1657028462093"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62c43f70207b665883a7ed56"
+  },
+  "day": "Tue Jul 05 2022",
+  "variable": "RunningTime",
+  "first_time": {
+    "$numberLong": "1657028462093"
+  },
+  "last_time": {
+    "$numberLong": "1657028462093"
+  },
+  "nsamples": 1,
+  "samples": [
+    {
+      "value": "0d:17h:27m:55s",
+      "time": {
+        "$numberLong": "1657028462093"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62d03e6a795ead5c74dce101"
+  },
+  "day": "Thu Jul 14 2022",
+  "variable": "OperationState",
+  "first_time": {
+    "$numberLong": "1657814628774"
+  },
+  "last_time": {
+    "$numberLong": "1657816010162"
+  },
+  "nsamples": 36,
+  "samples": [
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814628774"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1657814738130"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1657814888208"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1657814898222"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1657814918274"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1657814928307"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1657815018480"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1657815028504"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1657815118669"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1657815128676"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1657815148758"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1657815158757"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1657815248883"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1657815258914"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1657815278920"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1657815289008"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1657815379142"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1657815389142"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1657815409364"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1657815419310"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1657815509408"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1657815519408"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1657815609636"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1657815619686"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1657815639676"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1657815649681"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1657815739832"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1657815749858"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1657815769859"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1657815779864"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1657815870034"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1657815880055"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1657815970137"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1657815980157"
+      }
+    },
+    {
+      "value": 5,
+      "time": {
+        "$numberLong": "1657816000163"
+      }
+    },
+    {
+      "value": 6,
+      "time": {
+        "$numberLong": "1657816010162"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62d03e6a795ead5c74dce102"
+  },
+  "day": "Thu Jul 14 2022",
+  "variable": "Alarm",
+  "first_time": {
+    "$numberLong": "1657814628774"
+  },
+  "last_time": {
+    "$numberLong": "1657814658104"
+  },
+  "nsamples": 2,
+  "samples": [
+    {
+      "value": 2,
+      "time": {
+        "$numberLong": "1657814628774"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814658104"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62d03e6a795ead5c74dce103"
+  },
+  "day": "Thu Jul 14 2022",
+  "variable": "OperationMode",
+  "first_time": {
+    "$numberLong": "1657814628774"
+  },
+  "last_time": {
+    "$numberLong": "1657814628774"
+  },
+  "nsamples": 1,
+  "samples": [
+    {
+      "value": 2,
+      "time": {
+        "$numberLong": "1657814628774"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62d03e84795ead5c74dce10b"
+  },
+  "day": "Thu Jul 14 2022",
+  "variable": "MainMotorSpeed",
+  "first_time": {
+    "$numberLong": "1657814657404"
+  },
+  "last_time": {
+    "$numberLong": "1657816008154"
+  },
+  "nsamples": 46,
+  "samples": [
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814657404"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814687425"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814717465"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814747506"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814777407"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814807938"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814837807"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814867249"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814897173"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814928090"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814957356"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814987935"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815017348"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815048052"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815078152"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815107953"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815137970"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815167679"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815197300"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815228080"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815257321"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815288181"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815317407"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815348131"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815377442"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815408243"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815438064"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815467950"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815498125"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815527756"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815557956"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815587577"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815617607"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815648273"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815678253"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815707952"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815738151"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815767636"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815797554"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815828142"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815857821"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815887552"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815918318"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815947748"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815977574"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657816008154"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62d03e84795ead5c74dce10d"
+  },
+  "day": "Thu Jul 14 2022",
+  "variable": "MainMotorCurrent",
+  "first_time": {
+    "$numberLong": "1657814657404"
+  },
+  "last_time": {
+    "$numberLong": "1657816008154"
+  },
+  "nsamples": 46,
+  "samples": [
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814657404"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814687425"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814717465"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814747506"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814777407"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814807938"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814837807"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814867249"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814897173"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814928090"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814957356"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814987935"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815017348"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815048052"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815078152"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815107953"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815137970"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815167679"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815197300"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815228080"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815257321"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815288181"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815317407"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815348131"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815377442"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815408243"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815438064"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815467950"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815498125"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815527756"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815557956"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815587577"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815617607"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815648273"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815678253"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815707952"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815738151"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815767636"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815797554"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815828142"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815857821"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815887552"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815918318"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815947748"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815977574"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657816008154"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62d03e84795ead5c74dce10f"
+  },
+  "day": "Thu Jul 14 2022",
+  "variable": "HeadMotorSpeed",
+  "first_time": {
+    "$numberLong": "1657814657404"
+  },
+  "last_time": {
+    "$numberLong": "1657816008154"
+  },
+  "nsamples": 46,
+  "samples": [
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814657404"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814687425"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814717465"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814747506"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814777407"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814807938"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814837807"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814867249"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814897173"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814928090"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814957356"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814987935"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815017348"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815048052"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815078152"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815107953"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815137970"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815167679"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815197300"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815228080"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815257321"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815288181"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815317407"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815348131"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815377442"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815408243"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815438064"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815467950"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815498125"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815527756"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815557956"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815587577"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815617607"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815648273"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815678253"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815707952"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815738151"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815767636"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815797554"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815828142"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815857821"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815887552"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815918318"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815947748"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815977574"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657816008154"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62d03e84795ead5c74dce111"
+  },
+  "day": "Thu Jul 14 2022",
+  "variable": "HeadMotorCurrent",
+  "first_time": {
+    "$numberLong": "1657814657404"
+  },
+  "last_time": {
+    "$numberLong": "1657816008154"
+  },
+  "nsamples": 46,
+  "samples": [
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814657404"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814687425"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814717465"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814747506"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814777407"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814807938"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814837807"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814867249"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814897173"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814928090"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814957356"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814987935"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815017348"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815048052"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815078152"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815107953"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815137970"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815167679"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815197300"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815228080"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815257321"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815288181"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815317407"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815348131"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815377442"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815408243"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815438064"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815467950"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815498125"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815527756"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815557956"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815587577"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815617607"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815648273"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815678253"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815707952"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815738151"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815767636"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815797554"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815828142"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815857821"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815887552"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815918318"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815947748"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815977574"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657816008154"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62d03ea2795ead5c74dce119"
+  },
+  "day": "Thu Jul 14 2022",
+  "variable": "ProdSpeed",
+  "first_time": {
+    "$numberLong": "1657814678106"
+  },
+  "last_time": {
+    "$numberLong": "1657816000165"
+  },
+  "nsamples": 23,
+  "samples": [
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814678106"
+      }
+    },
+    {
+      "value": 3203,
+      "time": {
+        "$numberLong": "1657814738132"
+      }
+    },
+    {
+      "value": 14958.01,
+      "time": {
+        "$numberLong": "1657814798153"
+      }
+    },
+    {
+      "value": 20437.18,
+      "time": {
+        "$numberLong": "1657814858195"
+      }
+    },
+    {
+      "value": 22976.03,
+      "time": {
+        "$numberLong": "1657814918276"
+      }
+    },
+    {
+      "value": 25559.79,
+      "time": {
+        "$numberLong": "1657814978422"
+      }
+    },
+    {
+      "value": 26314.51,
+      "time": {
+        "$numberLong": "1657815038538"
+      }
+    },
+    {
+      "value": 27835.02,
+      "time": {
+        "$numberLong": "1657815098571"
+      }
+    },
+    {
+      "value": 28149.03,
+      "time": {
+        "$numberLong": "1657815158759"
+      }
+    },
+    {
+      "value": 29081.47,
+      "time": {
+        "$numberLong": "1657815218825"
+      }
+    },
+    {
+      "value": 29397.13,
+      "time": {
+        "$numberLong": "1657815278922"
+      }
+    },
+    {
+      "value": 30154.82,
+      "time": {
+        "$numberLong": "1657815339095"
+      }
+    },
+    {
+      "value": 30253.82,
+      "time": {
+        "$numberLong": "1657815399194"
+      }
+    },
+    {
+      "value": 30819.93,
+      "time": {
+        "$numberLong": "1657815459399"
+      }
+    },
+    {
+      "value": 30776.54,
+      "time": {
+        "$numberLong": "1657815519410"
+      }
+    },
+    {
+      "value": 31250.56,
+      "time": {
+        "$numberLong": "1657815579612"
+      }
+    },
+    {
+      "value": 31278.17,
+      "time": {
+        "$numberLong": "1657815639677"
+      }
+    },
+    {
+      "value": 31679.38,
+      "time": {
+        "$numberLong": "1657815699837"
+      }
+    },
+    {
+      "value": 31710.77,
+      "time": {
+        "$numberLong": "1657815759859"
+      }
+    },
+    {
+      "value": 32020.29,
+      "time": {
+        "$numberLong": "1657815820017"
+      }
+    },
+    {
+      "value": 31949.45,
+      "time": {
+        "$numberLong": "1657815880057"
+      }
+    },
+    {
+      "value": 32245.75,
+      "time": {
+        "$numberLong": "1657815940104"
+      }
+    },
+    {
+      "value": 32212.17,
+      "time": {
+        "$numberLong": "1657816000165"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62d03ea2795ead5c74dce11b"
+  },
+  "day": "Thu Jul 14 2022",
+  "variable": "PowerVoltage",
+  "first_time": {
+    "$numberLong": "1657814678106"
+  },
+  "last_time": {
+    "$numberLong": "1657816000165"
+  },
+  "nsamples": 23,
+  "samples": [
+    {
+      "value": 396.67,
+      "time": {
+        "$numberLong": "1657814678106"
+      }
+    },
+    {
+      "value": 395.77,
+      "time": {
+        "$numberLong": "1657814738132"
+      }
+    },
+    {
+      "value": 396.11,
+      "time": {
+        "$numberLong": "1657814798153"
+      }
+    },
+    {
+      "value": 396.67,
+      "time": {
+        "$numberLong": "1657814858195"
+      }
+    },
+    {
+      "value": 397.06,
+      "time": {
+        "$numberLong": "1657814918276"
+      }
+    },
+    {
+      "value": 396.78,
+      "time": {
+        "$numberLong": "1657814978422"
+      }
+    },
+    {
+      "value": 396.23,
+      "time": {
+        "$numberLong": "1657815038538"
+      }
+    },
+    {
+      "value": 395.76,
+      "time": {
+        "$numberLong": "1657815098571"
+      }
+    },
+    {
+      "value": 395.61,
+      "time": {
+        "$numberLong": "1657815158759"
+      }
+    },
+    {
+      "value": 395.57,
+      "time": {
+        "$numberLong": "1657815218825"
+      }
+    },
+    {
+      "value": 395.47,
+      "time": {
+        "$numberLong": "1657815278922"
+      }
+    },
+    {
+      "value": 395.3,
+      "time": {
+        "$numberLong": "1657815339095"
+      }
+    },
+    {
+      "value": 395.08,
+      "time": {
+        "$numberLong": "1657815399194"
+      }
+    },
+    {
+      "value": 394.85,
+      "time": {
+        "$numberLong": "1657815459399"
+      }
+    },
+    {
+      "value": 394.57,
+      "time": {
+        "$numberLong": "1657815519410"
+      }
+    },
+    {
+      "value": 394.03,
+      "time": {
+        "$numberLong": "1657815579612"
+      }
+    },
+    {
+      "value": 393.44,
+      "time": {
+        "$numberLong": "1657815639677"
+      }
+    },
+    {
+      "value": 392.97,
+      "time": {
+        "$numberLong": "1657815699837"
+      }
+    },
+    {
+      "value": 392.56,
+      "time": {
+        "$numberLong": "1657815759859"
+      }
+    },
+    {
+      "value": 392.14,
+      "time": {
+        "$numberLong": "1657815820017"
+      }
+    },
+    {
+      "value": 391.63,
+      "time": {
+        "$numberLong": "1657815880057"
+      }
+    },
+    {
+      "value": 391.17,
+      "time": {
+        "$numberLong": "1657815940104"
+      }
+    },
+    {
+      "value": 390.72,
+      "time": {
+        "$numberLong": "1657816000165"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62d03ea2795ead5c74dce11d"
+  },
+  "day": "Thu Jul 14 2022",
+  "variable": "PowerCurrent",
+  "first_time": {
+    "$numberLong": "1657814678106"
+  },
+  "last_time": {
+    "$numberLong": "1657816000165"
+  },
+  "nsamples": 23,
+  "samples": [
+    {
+      "value": 0.6,
+      "time": {
+        "$numberLong": "1657814678106"
+      }
+    },
+    {
+      "value": 1.4,
+      "time": {
+        "$numberLong": "1657814738132"
+      }
+    },
+    {
+      "value": 4.33,
+      "time": {
+        "$numberLong": "1657814798153"
+      }
+    },
+    {
+      "value": 5.7,
+      "time": {
+        "$numberLong": "1657814858195"
+      }
+    },
+    {
+      "value": 6.32,
+      "time": {
+        "$numberLong": "1657814918276"
+      }
+    },
+    {
+      "value": 6.96,
+      "time": {
+        "$numberLong": "1657814978422"
+      }
+    },
+    {
+      "value": 7.15,
+      "time": {
+        "$numberLong": "1657815038538"
+      }
+    },
+    {
+      "value": 7.53,
+      "time": {
+        "$numberLong": "1657815098571"
+      }
+    },
+    {
+      "value": 7.6,
+      "time": {
+        "$numberLong": "1657815158759"
+      }
+    },
+    {
+      "value": 7.82,
+      "time": {
+        "$numberLong": "1657815218825"
+      }
+    },
+    {
+      "value": 7.91,
+      "time": {
+        "$numberLong": "1657815278922"
+      }
+    },
+    {
+      "value": 8.09,
+      "time": {
+        "$numberLong": "1657815339095"
+      }
+    },
+    {
+      "value": 8.12,
+      "time": {
+        "$numberLong": "1657815399194"
+      }
+    },
+    {
+      "value": 8.25,
+      "time": {
+        "$numberLong": "1657815459399"
+      }
+    },
+    {
+      "value": 8.23,
+      "time": {
+        "$numberLong": "1657815519410"
+      }
+    },
+    {
+      "value": 8.35,
+      "time": {
+        "$numberLong": "1657815579612"
+      }
+    },
+    {
+      "value": 8.36,
+      "time": {
+        "$numberLong": "1657815639677"
+      }
+    },
+    {
+      "value": 8.48,
+      "time": {
+        "$numberLong": "1657815699837"
+      }
+    },
+    {
+      "value": 8.5,
+      "time": {
+        "$numberLong": "1657815759859"
+      }
+    },
+    {
+      "value": 8.56,
+      "time": {
+        "$numberLong": "1657815820017"
+      }
+    },
+    {
+      "value": 8.53,
+      "time": {
+        "$numberLong": "1657815880057"
+      }
+    },
+    {
+      "value": 8.59,
+      "time": {
+        "$numberLong": "1657815940104"
+      }
+    },
+    {
+      "value": 8.57,
+      "time": {
+        "$numberLong": "1657816000165"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62d03ea2795ead5c74dce11f"
+  },
+  "day": "Thu Jul 14 2022",
+  "variable": "AirConsumption",
+  "first_time": {
+    "$numberLong": "1657814678106"
+  },
+  "last_time": {
+    "$numberLong": "1657816000165"
+  },
+  "nsamples": 23,
+  "samples": [
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814678106"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814738132"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814798153"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814858195"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814918276"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814978422"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815038538"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815098571"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815158759"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815218825"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815278922"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815339095"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815399194"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815459399"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815519410"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815579612"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815639677"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815699837"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815759859"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815820017"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815880057"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815940104"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657816000165"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62d03ea2795ead5c74dce121"
+  },
+  "day": "Thu Jul 14 2022",
+  "variable": "LubeLevel",
+  "first_time": {
+    "$numberLong": "1657814678106"
+  },
+  "last_time": {
+    "$numberLong": "1657816000165"
+  },
+  "nsamples": 23,
+  "samples": [
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814678106"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814738132"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814798153"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814858195"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814918276"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814978422"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815038538"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815098571"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815158759"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815218825"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815278922"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815339095"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815399194"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815459399"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815519410"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815579612"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815639677"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815699837"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815759859"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815820017"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815880057"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815940104"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657816000165"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62d03ea2795ead5c74dce123"
+  },
+  "day": "Thu Jul 14 2022",
+  "variable": "test1",
+  "first_time": {
+    "$numberLong": "1657814678118"
+  },
+  "last_time": {
+    "$numberLong": "1657816000181"
+  },
+  "nsamples": 23,
+  "samples": [
+    {
+      "value": 396.66,
+      "time": {
+        "$numberLong": "1657814678118"
+      }
+    },
+    {
+      "value": 395.77,
+      "time": {
+        "$numberLong": "1657814738146"
+      }
+    },
+    {
+      "value": 396.11,
+      "time": {
+        "$numberLong": "1657814798176"
+      }
+    },
+    {
+      "value": 396.66,
+      "time": {
+        "$numberLong": "1657814858207"
+      }
+    },
+    {
+      "value": 397.05,
+      "time": {
+        "$numberLong": "1657814918308"
+      }
+    },
+    {
+      "value": 396.78,
+      "time": {
+        "$numberLong": "1657814978434"
+      }
+    },
+    {
+      "value": 396.23,
+      "time": {
+        "$numberLong": "1657815038550"
+      }
+    },
+    {
+      "value": 395.76,
+      "time": {
+        "$numberLong": "1657815098592"
+      }
+    },
+    {
+      "value": 395.61,
+      "time": {
+        "$numberLong": "1657815158783"
+      }
+    },
+    {
+      "value": 395.57,
+      "time": {
+        "$numberLong": "1657815218851"
+      }
+    },
+    {
+      "value": 395.47,
+      "time": {
+        "$numberLong": "1657815278940"
+      }
+    },
+    {
+      "value": 395.3,
+      "time": {
+        "$numberLong": "1657815339117"
+      }
+    },
+    {
+      "value": 395.08,
+      "time": {
+        "$numberLong": "1657815399207"
+      }
+    },
+    {
+      "value": 394.85,
+      "time": {
+        "$numberLong": "1657815459417"
+      }
+    },
+    {
+      "value": 394.57,
+      "time": {
+        "$numberLong": "1657815519429"
+      }
+    },
+    {
+      "value": 394.03,
+      "time": {
+        "$numberLong": "1657815579626"
+      }
+    },
+    {
+      "value": 393.44,
+      "time": {
+        "$numberLong": "1657815639697"
+      }
+    },
+    {
+      "value": 392.97,
+      "time": {
+        "$numberLong": "1657815699857"
+      }
+    },
+    {
+      "value": 392.56,
+      "time": {
+        "$numberLong": "1657815759878"
+      }
+    },
+    {
+      "value": 392.14,
+      "time": {
+        "$numberLong": "1657815820033"
+      }
+    },
+    {
+      "value": 391.63,
+      "time": {
+        "$numberLong": "1657815880075"
+      }
+    },
+    {
+      "value": 391.17,
+      "time": {
+        "$numberLong": "1657815940119"
+      }
+    },
+    {
+      "value": 390.72,
+      "time": {
+        "$numberLong": "1657816000181"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62d03ea2795ead5c74dce125"
+  },
+  "day": "Thu Jul 14 2022",
+  "variable": "test2",
+  "first_time": {
+    "$numberLong": "1657814688126"
+  },
+  "last_time": {
+    "$numberLong": "1657815989523"
+  },
+  "nsamples": 23,
+  "samples": [
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814688126"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814748133"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814788153"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814848189"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814908244"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814968412"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815028492"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815088558"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815148662"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815208800"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815268841"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815328927"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815388953"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815449029"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815509029"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815569066"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815629184"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815689198"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815749214"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815809231"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815869280"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815929458"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815989523"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62d03ea2795ead5c74dce127"
+  },
+  "day": "Thu Jul 14 2022",
+  "variable": "test3",
+  "first_time": {
+    "$numberLong": "1657814673105"
+  },
+  "last_time": {
+    "$numberLong": "1657815994413"
+  },
+  "nsamples": 23,
+  "samples": [
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814673105"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814733115"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814793179"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814853233"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814913300"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657814973299"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815033407"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815093436"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815153806"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815213774"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815274050"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815334061"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815394178"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815454288"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815514294"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815574310"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815634322"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815694327"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815754328"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815814369"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815874370"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815934462"
+      }
+    },
+    {
+      "value": 0,
+      "time": {
+        "$numberLong": "1657815994413"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62d03f92795ead5c74dce5aa"
+  },
+  "day": "Thu Jul 14 2022",
+  "variable": "TotalProduct",
+  "first_time": {
+    "$numberLong": "1657814868198"
+  },
+  "last_time": {
+    "$numberLong": "1657815768401"
+  },
+  "nsamples": 4,
+  "samples": [
+    {
+      "value": 750263,
+      "time": {
+        "$numberLong": "1657814868198"
+      }
+    },
+    {
+      "value": 753127,
+      "time": {
+        "$numberLong": "1657815168288"
+      }
+    },
+    {
+      "value": 755989,
+      "time": {
+        "$numberLong": "1657815468333"
+      }
+    },
+    {
+      "value": 758852,
+      "time": {
+        "$numberLong": "1657815768401"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62d03f92795ead5c74dce5ac"
+  },
+  "day": "Thu Jul 14 2022",
+  "variable": "PowerOnTime",
+  "first_time": {
+    "$numberLong": "1657814868198"
+  },
+  "last_time": {
+    "$numberLong": "1657815768401"
+  },
+  "nsamples": 4,
+  "samples": [
+    {
+      "value": "1d:4h:42m:36s",
+      "time": {
+        "$numberLong": "1657814868198"
+      }
+    },
+    {
+      "value": "1d:4h:47m:36s",
+      "time": {
+        "$numberLong": "1657815168288"
+      }
+    },
+    {
+      "value": "1d:4h:52m:36s",
+      "time": {
+        "$numberLong": "1657815468333"
+      }
+    },
+    {
+      "value": "1d:4h:57m:36s",
+      "time": {
+        "$numberLong": "1657815768401"
+      }
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "62d03f92795ead5c74dce5ae"
+  },
+  "day": "Thu Jul 14 2022",
+  "variable": "RunningTime",
+  "first_time": {
+    "$numberLong": "1657814868198"
+  },
+  "last_time": {
+    "$numberLong": "1657815768401"
+  },
+  "nsamples": 4,
+  "samples": [
+    {
+      "value": "0d:21h:47m:59s",
+      "time": {
+        "$numberLong": "1657814868198"
+      }
+    },
+    {
+      "value": "0d:21h:52m:59s",
+      "time": {
+        "$numberLong": "1657815168288"
+      }
+    },
+    {
+      "value": "0d:21h:57m:59s",
+      "time": {
+        "$numberLong": "1657815468333"
+      }
+    },
+    {
+      "value": "0d:22h:2m:59s",
+      "time": {
+        "$numberLong": "1657815768401"
+      }
+    }
+  ]
+}]
