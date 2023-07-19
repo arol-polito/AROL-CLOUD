@@ -20,9 +20,12 @@ MONGODB_HOST=localhost
 ```
 
 ### Important note
-To run project locally, PostgreSQL and MongoDB need to be installed in the system. DB configuration scripts for both DBMS-es can be found under ```Docker/pg``` and ```Docker/mongo/data``` dirs.
+
+To run project locally, PostgreSQL and MongoDB need to be installed in the system. DB configuration scripts for both
+DBMS-es can be found under ```Docker/pg``` and ```Docker/mongo/data``` dirs.
 
 ### Run server
+
 Step 1: ```cd ./express-server```
 
 Step 2: ```npm install --force```
@@ -30,13 +33,14 @@ Step 2: ```npm install --force```
 Step 3: ```npm run start:dev```
 
 ### Run client
+
 Step 1: ```cd ./react-client```
 
 Step 2: ```npm install --force```
 
 Step 3: ```npm run start```
 
-##  How to run project with Docker
+## How to run project with Docker
 
 Step 1: ```Make sure you have Docker installed locally on your system```
 
@@ -55,23 +59,30 @@ Step 5: ```Open http://localhost:3000 on you favourite browser```
 ### Available users and credentials
 
 #### User 1
+
 ```username: mariodeda@hotmail.com```
 ```password: 123```
 ```roles: Administrator```
 
 #### User 2
+
 ```username: mariodeda2@hotmail.com```
+```password: 123```
 ```password: Worker```
 
 #### User 3
+
 ```username: test2@hotmail.com```
+```password: 123```
 ```password: Worker```
 
 #### User 4
+
 ```username: worker@hotmail.com```
+```password: 123```
 ```password: Worker, Manager```
 
-## API Documentation 
+## API Documentation
 
 Base URLs:
 
@@ -106,11 +117,11 @@ Perform initial authentication to obtain JWT auth token
 
 <h3 id="post__public_login-parameters">Parameters</h3>
 
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[LoginCredentials](#schemalogincredentials)|true|none|
-|» email|body|string|true|none|
-|» password|body|string|true|none|
+| Name       | In   | Type                                        | Required | Description |
+|------------|------|---------------------------------------------|----------|-------------|
+| body       | body | [LoginCredentials](#schemalogincredentials) | true     | none        |
+| » email    | body | string                                      | true     | none        |
+| » password | body | string                                      | true     | none        |
 
 > Example responses
 
@@ -145,10 +156,10 @@ Perform initial authentication to obtain JWT auth token
 
 <h3 id="post__public_login-responses">Responses</h3>
 
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful operation|[LoginResponse](#schemaloginresponse)|
-|403|[Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)|Bad credentials or account disabled|None|
+| Status | Meaning                                                        | Description                         | Schema                                |
+|--------|----------------------------------------------------------------|-------------------------------------|---------------------------------------|
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)        | Successful operation                | [LoginResponse](#schemaloginresponse) |
+| 403    | [Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3) | Bad credentials or account disabled | None                                  |
 
 <aside class="success">
 This operation does not require authentication
@@ -164,16 +175,16 @@ Perform logout and delete any refresh tokens associated to this session
 
 <h3 id="post__public_logout-parameters">Parameters</h3>
 
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|id|query|integer|false|none|
-|token|query|string|false|none|
+| Name  | In    | Type    | Required | Description |
+|-------|-------|---------|----------|-------------|
+| id    | query | integer | false    | none        |
+| token | query | string  | false    | none        |
 
 <h3 id="post__public_logout-responses">Responses</h3>
 
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Logout successful|None|
+| Status | Meaning                                                 | Description       | Schema |
+|--------|---------------------------------------------------------|-------------------|--------|
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1) | Logout successful | None   |
 
 <aside class="success">
 This operation does not require authentication
@@ -189,10 +200,10 @@ Refresh JWT token by providing a valid refresh token
 
 <h3 id="get__public_refreshtoken-parameters">Parameters</h3>
 
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|id|query|integer|false|none|
-|token|query|string|false|none|
+| Name  | In    | Type    | Required | Description |
+|-------|-------|---------|----------|-------------|
+| id    | query | integer | false    | none        |
+| token | query | string  | false    | none        |
 
 > Example responses
 
@@ -227,12 +238,12 @@ Refresh JWT token by providing a valid refresh token
 
 <h3 id="get__public_refreshtoken-responses">Responses</h3>
 
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Token refresh successful|[LoginResponse](#schemaloginresponse)|
-|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Invalid refresh token|None|
-|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Invalid refresh token|None|
-|403|[Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)|Account disabled|None|
+| Status | Meaning                                                          | Description              | Schema                                |
+|--------|------------------------------------------------------------------|--------------------------|---------------------------------------|
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)          | Token refresh successful | [LoginResponse](#schemaloginresponse) |
+| 400    | [Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1) | Invalid refresh token    | None                                  |
+| 401    | [Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)  | Invalid refresh token    | None                                  |
+| 403    | [Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)   | Account disabled         | None                                  |
 
 <aside class="success">
 This operation does not require authentication
@@ -248,9 +259,9 @@ Check server health
 
 <h3 id="get__public_status-responses">Responses</h3>
 
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Server is on and accepting requests|None|
+| Status | Meaning                                                 | Description                         | Schema |
+|--------|---------------------------------------------------------|-------------------------------------|--------|
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1) | Server is on and accepting requests | None   |
 
 <aside class="success">
 This operation does not require authentication
@@ -281,11 +292,11 @@ Get the current authenticated user company information
 
 <h3 id="get__company-responses">Responses</h3>
 
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Company details|[CompanyResponse](#schemacompanyresponse)|
-|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Authentication failed|None|
-|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|No company found for the authenticated user|None|
+| Status | Meaning                                                         | Description                                 | Schema                                    |
+|--------|-----------------------------------------------------------------|---------------------------------------------|-------------------------------------------|
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)         | Company details                             | [CompanyResponse](#schemacompanyresponse) |
+| 401    | [Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1) | Authentication failed                       | None                                      |
+| 404    | [Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)  | No company found for the authenticated user | None                                      |
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -330,11 +341,11 @@ Get all the authenticated user company machineries
 
 <h3 id="get__machinery_company-responses">Responses</h3>
 
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Company machineries groupped by their corresponding location cluster. Each cluster contains the actual array of machineries that belong to that cluster.|[CompanyMachineriesResponse](#schemacompanymachineriesresponse)|
-|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Invalid company ID detected|None|
-|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Authentication failed|None|
+| Status | Meaning                                                          | Description                                                                                                                                              | Schema                                                          |
+|--------|------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------|
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)          | Company machineries groupped by their corresponding location cluster. Each cluster contains the actual array of machineries that belong to that cluster. | [CompanyMachineriesResponse](#schemacompanymachineriesresponse) |
+| 400    | [Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1) | Invalid company ID detected                                                                                                                              | None                                                            |
+| 401    | [Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)  | Authentication failed                                                                                                                                    | None                                                            |
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -351,9 +362,9 @@ Get the authenticated user company machinery by its UID
 
 <h3 id="get__machinery_company_{machineryuid}-parameters">Parameters</h3>
 
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|machineryUID|path|string|true|The UID of the desired machinery|
+| Name         | In   | Type   | Required | Description                      |
+|--------------|------|--------|----------|----------------------------------|
+| machineryUID | path | string | true     | The UID of the desired machinery |
 
 > Example responses
 
@@ -377,13 +388,13 @@ Get the authenticated user company machinery by its UID
 
 <h3 id="get__machinery_company_{machineryuid}-responses">Responses</h3>
 
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Machinery information|[MachineryResponse](#schemamachineryresponse)|
-|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Invalid company ID detected|None|
-|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Authentication failed|None|
-|403|[Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)|Insufficient permissions|None|
-|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Machinery with this UID and that belongs the authenticated user company not found|None|
+| Status | Meaning                                                          | Description                                                                       | Schema                                        |
+|--------|------------------------------------------------------------------|-----------------------------------------------------------------------------------|-----------------------------------------------|
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)          | Machinery information                                                             | [MachineryResponse](#schemamachineryresponse) |
+| 400    | [Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1) | Invalid company ID detected                                                       | None                                          |
+| 401    | [Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)  | Authentication failed                                                             | None                                          |
+| 403    | [Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)   | Insufficient permissions                                                          | None                                          |
+| 404    | [Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)   | Machinery with this UID and that belongs the authenticated user company not found | None                                          |
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -400,9 +411,9 @@ Get the authenticated user company machinery sensors by its UID
 
 <h3 id="get__machinery_sensors-parameters">Parameters</h3>
 
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|machineryUID|query|string|true|The UID of the desired machinery|
+| Name         | In    | Type   | Required | Description                      |
+|--------------|-------|--------|----------|----------------------------------|
+| machineryUID | query | string | true     | The UID of the desired machinery |
 
 > Example responses
 
@@ -433,12 +444,12 @@ Get the authenticated user company machinery sensors by its UID
 
 <h3 id="get__machinery_sensors-responses">Responses</h3>
 
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Machinery sensors information|[MachinerySensorsResponse](#schemamachinerysensorsresponse)|
-|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Invalid company ID detected|None|
-|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Authentication failed|None|
-|403|[Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)|Insufficient permissions|None|
+| Status | Meaning                                                          | Description                   | Schema                                                      |
+|--------|------------------------------------------------------------------|-------------------------------|-------------------------------------------------------------|
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)          | Machinery sensors information | [MachinerySensorsResponse](#schemamachinerysensorsresponse) |
+| 400    | [Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1) | Invalid company ID detected   | None                                                        |
+| 401    | [Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)  | Authentication failed         | None                                                        |
+| 403    | [Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)   | Insufficient permissions      | None                                                        |
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -451,7 +462,8 @@ bearerAuth
 
 *Machinery sensors data by its UID*
 
-Get the authenticated user company machinery sensors data by its UID. The returned data will be filtered using the parameters sent using the request body.
+Get the authenticated user company machinery sensors data by its UID. The returned data will be filtered using the
+parameters sent using the request body.
 
 > Body parameter
 
@@ -492,28 +504,28 @@ Get the authenticated user company machinery sensors data by its UID. The return
 
 <h3 id="post__machinery_sensors_data-parameters">Parameters</h3>
 
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|machineryUID|query|string|true|The UID of the desired machinery|
-|body|body|[MachineryDataRequest](#schemamachinerydatarequest)|true|none|
-|» sensorFilters|body|object|false|none|
-|»» requestType|body|string|false|none|
-|»» cacheDataRequestMaxTime|body|number|false|none|
-|»» newDataRequestMinTime|body|number|false|none|
-|»» widgetCategory|body|string|false|none|
-|»» dataRange|body|object|false|none|
-|»»» amount|body|number|false|none|
-|»»» unit|body|string|false|none|
-|»» sensors|body|object|false|none|
-|»»» sensorName|body|[object]|false|none|
-|»»»» headNumber|body|number|false|none|
-|»»»» mechNumber|body|number|false|none|
-|»»»» sensorNames|body|[object]|false|none|
-|»»»»» name|body|string|false|none|
-|»»»»» color|body|string|false|none|
-|»» aggregations|body|[object]|false|none|
-|»»» name|body|string|false|none|
-|»»» color|body|string|false|none|
+| Name                       | In    | Type                                                | Required | Description                      |
+|----------------------------|-------|-----------------------------------------------------|----------|----------------------------------|
+| machineryUID               | query | string                                              | true     | The UID of the desired machinery |
+| body                       | body  | [MachineryDataRequest](#schemamachinerydatarequest) | true     | none                             |
+| » sensorFilters            | body  | object                                              | false    | none                             |
+| »» requestType             | body  | string                                              | false    | none                             |
+| »» cacheDataRequestMaxTime | body  | number                                              | false    | none                             |
+| »» newDataRequestMinTime   | body  | number                                              | false    | none                             |
+| »» widgetCategory          | body  | string                                              | false    | none                             |
+| »» dataRange               | body  | object                                              | false    | none                             |
+| »»» amount                 | body  | number                                              | false    | none                             |
+| »»» unit                   | body  | string                                              | false    | none                             |
+| »» sensors                 | body  | object                                              | false    | none                             |
+| »»» sensorName             | body  | [object]                                            | false    | none                             |
+| »»»» headNumber            | body  | number                                              | false    | none                             |
+| »»»» mechNumber            | body  | number                                              | false    | none                             |
+| »»»» sensorNames           | body  | [object]                                            | false    | none                             |
+| »»»»» name                 | body  | string                                              | false    | none                             |
+| »»»»» color                | body  | string                                              | false    | none                             |
+| »» aggregations            | body  | [object]                                            | false    | none                             |
+| »»» name                   | body  | string                                              | false    | none                             |
+| »»» color                  | body  | string                                              | false    | none                             |
 
 > Example responses
 
@@ -605,12 +617,12 @@ Get the authenticated user company machinery sensors data by its UID. The return
 
 <h3 id="post__machinery_sensors_data-responses">Responses</h3>
 
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Machinery sensors data|[MachineryDataResponse](#schemamachinerydataresponse)|
-|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Invalid company ID detected|None|
-|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Authentication failed|None|
-|403|[Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)|Insufficient permissions|None|
+| Status | Meaning                                                          | Description                 | Schema                                                |
+|--------|------------------------------------------------------------------|-----------------------------|-------------------------------------------------------|
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)          | Machinery sensors data      | [MachineryDataResponse](#schemamachinerydataresponse) |
+| 400    | [Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1) | Invalid company ID detected | None                                                  |
+| 401    | [Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)  | Authentication failed       | None                                                  |
+| 403    | [Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)   | Insufficient permissions    | None                                                  |
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -653,12 +665,12 @@ Get all company users (Admin only)
 
 <h3 id="get__users_company-responses">Responses</h3>
 
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Company users|[CompanyUsers](#schemacompanyusers)|
-|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Invalid company ID|None|
-|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Authentication failed|None|
-|403|[Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)|Insufficient permissions|None|
+| Status | Meaning                                                          | Description              | Schema                              |
+|--------|------------------------------------------------------------------|--------------------------|-------------------------------------|
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)          | Company users            | [CompanyUsers](#schemacompanyusers) |
+| 400    | [Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1) | Invalid company ID       | None                                |
+| 401    | [Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)  | Authentication failed    | None                                |
+| 403    | [Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)   | Insufficient permissions | None                                |
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -700,23 +712,23 @@ Create a new user account (Admin or Manager roles only)
 
 <h3 id="post__users_create-parameters">Parameters</h3>
 
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[CreateAccountRequest](#schemacreateaccountrequest)|false|Account data|
-|» email|body|string|false|none|
-|» password|body|string|false|none|
-|» name|body|string|false|none|
-|» surname|body|string|false|none|
-|» roles|body|[string]|false|none|
-|» companyID|body|number¦null|false|none|
-|» permissions|body|object|false|none|
-|»» machineryUID|body|object|false|none|
-|»»» dashboardsWrite|body|boolean|false|none|
-|»»» dashboardsModify|body|boolean|false|none|
-|»»» dashboardsRead|body|boolean|false|none|
-|»»» documentsWrite|body|boolean|false|none|
-|»»» documentsModify|body|boolean|false|none|
-|»»» documentsRead|body|boolean|false|none|
+| Name                 | In   | Type                                                | Required | Description  |
+|----------------------|------|-----------------------------------------------------|----------|--------------|
+| body                 | body | [CreateAccountRequest](#schemacreateaccountrequest) | false    | Account data |
+| » email              | body | string                                              | false    | none         |
+| » password           | body | string                                              | false    | none         |
+| » name               | body | string                                              | false    | none         |
+| » surname            | body | string                                              | false    | none         |
+| » roles              | body | [string]                                            | false    | none         |
+| » companyID          | body | number¦null                                         | false    | none         |
+| » permissions        | body | object                                              | false    | none         |
+| »» machineryUID      | body | object                                              | false    | none         |
+| »»» dashboardsWrite  | body | boolean                                             | false    | none         |
+| »»» dashboardsModify | body | boolean                                             | false    | none         |
+| »»» dashboardsRead   | body | boolean                                             | false    | none         |
+| »»» documentsWrite   | body | boolean                                             | false    | none         |
+| »»» documentsModify  | body | boolean                                             | false    | none         |
+| »»» documentsRead    | body | boolean                                             | false    | none         |
 
 > Example responses
 
@@ -747,11 +759,11 @@ Create a new user account (Admin or Manager roles only)
 
 <h3 id="post__users_create-responses">Responses</h3>
 
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Created account|[CreateAccountRequest](#schemacreateaccountrequest)|
-|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Authentication failed|None|
-|403|[Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)|Insufficient permissions|None|
+| Status | Meaning                                                         | Description              | Schema                                              |
+|--------|-----------------------------------------------------------------|--------------------------|-----------------------------------------------------|
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)         | Created account          | [CreateAccountRequest](#schemacreateaccountrequest) |
+| 401    | [Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1) | Authentication failed    | None                                                |
+| 403    | [Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)  | Insufficient permissions | None                                                |
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -781,23 +793,23 @@ Update user accounts details
 
 <h3 id="post__users_details_update-parameters">Parameters</h3>
 
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[UpdateAccountRequest](#schemaupdateaccountrequest)|false|New account details|
-|» id|body|number|false|none|
-|» email|body|string|false|none|
-|» name|body|string|false|none|
-|» surname|body|string|false|none|
-|» roles|body|string|false|none|
-|» active|body|boolean|false|none|
+| Name      | In   | Type                                                | Required | Description         |
+|-----------|------|-----------------------------------------------------|----------|---------------------|
+| body      | body | [UpdateAccountRequest](#schemaupdateaccountrequest) | false    | New account details |
+| » id      | body | number                                              | false    | none                |
+| » email   | body | string                                              | false    | none                |
+| » name    | body | string                                              | false    | none                |
+| » surname | body | string                                              | false    | none                |
+| » roles   | body | string                                              | false    | none                |
+| » active  | body | boolean                                             | false    | none                |
 
 <h3 id="post__users_details_update-responses">Responses</h3>
 
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Account details updated|None|
-|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Authentication failed|None|
-|403|[Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)|Insufficient permissions|None|
+| Status | Meaning                                                         | Description              | Schema |
+|--------|-----------------------------------------------------------------|--------------------------|--------|
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)         | Account details updated  | None   |
+| 401    | [Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1) | Authentication failed    | None   |
+| 403    | [Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)  | Insufficient permissions | None   |
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -823,19 +835,19 @@ Reset account password and invalidate any refresh tokens associated to the given
 
 <h3 id="post__users_password_reset-parameters">Parameters</h3>
 
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[PasswordResetRequest](#schemapasswordresetrequest)|false|Password reset data|
-|» id|body|number|false|none|
-|» password|body|string|false|none|
+| Name       | In   | Type                                                | Required | Description         |
+|------------|------|-----------------------------------------------------|----------|---------------------|
+| body       | body | [PasswordResetRequest](#schemapasswordresetrequest) | false    | Password reset data |
+| » id       | body | number                                              | false    | none                |
+| » password | body | string                                              | false    | none                |
 
 <h3 id="post__users_password_reset-responses">Responses</h3>
 
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Password succesfully reset|None|
-|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Authentication failed|None|
-|403|[Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)|Insufficient permissions|None|
+| Status | Meaning                                                         | Description                | Schema |
+|--------|-----------------------------------------------------------------|----------------------------|--------|
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)         | Password succesfully reset | None   |
+| 401    | [Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1) | Authentication failed      | None   |
+| 403    | [Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)  | Insufficient permissions   | None   |
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -848,7 +860,8 @@ bearerAuth
 
 *User permissions*
 
-Get user permissions wrt to the given machinery UID. If machinery UID is not provided, the list of all users permissions will be returned. The response body will be an array of permission objects.
+Get user permissions wrt to the given machinery UID. If machinery UID is not provided, the list of all users permissions
+will be returned. The response body will be an array of permission objects.
 
 > Example responses
 
@@ -869,11 +882,11 @@ Get user permissions wrt to the given machinery UID. If machinery UID is not pro
 
 <h3 id="get__users_permissions-responses">Responses</h3>
 
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|User permissions wrt given machinery UID|[UserPermissionsResponse](#schemauserpermissionsresponse)|
-|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Authentication failed|None|
-|403|[Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)|Insufficient permissions|None|
+| Status | Meaning                                                         | Description                              | Schema                                                    |
+|--------|-----------------------------------------------------------------|------------------------------------------|-----------------------------------------------------------|
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)         | User permissions wrt given machinery UID | [UserPermissionsResponse](#schemauserpermissionsresponse) |
+| 401    | [Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1) | Authentication failed                    | None                                                      |
+| 403    | [Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)  | Insufficient permissions                 | None                                                      |
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -905,25 +918,25 @@ Update user permissions
 
 <h3 id="post__users_permissions_update-parameters">Parameters</h3>
 
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[UserPermissionsRequest](#schemauserpermissionsrequest)|false|New user permissions|
-|» userID|body|number|false|none|
-|» machineryUID|body|string|false|none|
-|» dashboardsWrite|body|boolean|false|none|
-|» dashboardsModify|body|boolean|false|none|
-|» dashboardsRead|body|boolean|false|none|
-|» documentsWrite|body|boolean|false|none|
-|» documentsModify|body|boolean|false|none|
-|» documentsRead|body|boolean|false|none|
+| Name               | In   | Type                                                    | Required | Description          |
+|--------------------|------|---------------------------------------------------------|----------|----------------------|
+| body               | body | [UserPermissionsRequest](#schemauserpermissionsrequest) | false    | New user permissions |
+| » userID           | body | number                                                  | false    | none                 |
+| » machineryUID     | body | string                                                  | false    | none                 |
+| » dashboardsWrite  | body | boolean                                                 | false    | none                 |
+| » dashboardsModify | body | boolean                                                 | false    | none                 |
+| » dashboardsRead   | body | boolean                                                 | false    | none                 |
+| » documentsWrite   | body | boolean                                                 | false    | none                 |
+| » documentsModify  | body | boolean                                                 | false    | none                 |
+| » documentsRead    | body | boolean                                                 | false    | none                 |
 
 <h3 id="post__users_permissions_update-responses">Responses</h3>
 
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Permissions updated successfully|None|
-|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Authentication failed|None|
-|403|[Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)|Insufficient permissions|None|
+| Status | Meaning                                                         | Description                      | Schema |
+|--------|-----------------------------------------------------------------|----------------------------------|--------|
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)         | Permissions updated successfully | None   |
+| 401    | [Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1) | Authentication failed            | None   |
+| 403    | [Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)  | Insufficient permissions         | None   |
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -952,19 +965,19 @@ Save dashboard configuration for the given machinery
 
 <h3 id="post__dashboard_save-parameters">Parameters</h3>
 
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[SaveDashboardRequest](#schemasavedashboardrequest)|false|none|
-|» dashboard|body|object|false|none|
+| Name        | In   | Type                                                | Required | Description |
+|-------------|------|-----------------------------------------------------|----------|-------------|
+| body        | body | [SaveDashboardRequest](#schemasavedashboardrequest) | false    | none        |
+| » dashboard | body | object                                              | false    | none        |
 
 <h3 id="post__dashboard_save-responses">Responses</h3>
 
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Dashboard config saved successfully|None|
-|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Authentication failed|None|
-|403|[Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)|Insufficient permissions|None|
-|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Dashboard could not be saved|None|
+| Status | Meaning                                                         | Description                         | Schema |
+|--------|-----------------------------------------------------------------|-------------------------------------|--------|
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)         | Dashboard config saved successfully | None   |
+| 401    | [Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1) | Authentication failed               | None   |
+| 403    | [Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)  | Insufficient permissions            | None   |
+| 404    | [Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)  | Dashboard could not be saved        | None   |
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -977,7 +990,8 @@ bearerAuth
 
 *Save dashboard configuration as a new dashboard*
 
-Save dashboard configuration as a new dashboard for the given machinery. This will ensure that the dashboard name is unique for the given machinery.
+Save dashboard configuration as a new dashboard for the given machinery. This will ensure that the dashboard name is
+unique for the given machinery.
 
 > Body parameter
 
@@ -989,19 +1003,19 @@ Save dashboard configuration as a new dashboard for the given machinery. This wi
 
 <h3 id="post__dashboard_saveas-parameters">Parameters</h3>
 
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[SaveDashboardRequest](#schemasavedashboardrequest)|false|none|
-|» dashboard|body|object|false|none|
+| Name        | In   | Type                                                | Required | Description |
+|-------------|------|-----------------------------------------------------|----------|-------------|
+| body        | body | [SaveDashboardRequest](#schemasavedashboardrequest) | false    | none        |
+| » dashboard | body | object                                              | false    | none        |
 
 <h3 id="post__dashboard_saveas-responses">Responses</h3>
 
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Dashboard config saved successfully|None|
-|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Authentication failed|None|
-|403|[Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)|Insufficient permissions|None|
-|409|[Conflict](https://tools.ietf.org/html/rfc7231#section-6.5.8)|Dashboard could not be saved since another dashboard with this name already exists for this machinery|None|
+| Status | Meaning                                                         | Description                                                                                           | Schema |
+|--------|-----------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|--------|
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)         | Dashboard config saved successfully                                                                   | None   |
+| 401    | [Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1) | Authentication failed                                                                                 | None   |
+| 403    | [Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)  | Insufficient permissions                                                                              | None   |
+| 409    | [Conflict](https://tools.ietf.org/html/rfc7231#section-6.5.8)   | Dashboard could not be saved since another dashboard with this name already exists for this machinery | None   |
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -1018,19 +1032,19 @@ Delete dashboard configuration for the given machinery
 
 <h3 id="delete__dashboard_delete-parameters">Parameters</h3>
 
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|machineryUID|query|string|true|The UID of the desired machinery|
-|dashboardName|query|string|true|The name of the dashboard to delete|
+| Name          | In    | Type   | Required | Description                         |
+|---------------|-------|--------|----------|-------------------------------------|
+| machineryUID  | query | string | true     | The UID of the desired machinery    |
+| dashboardName | query | string | true     | The name of the dashboard to delete |
 
 <h3 id="delete__dashboard_delete-responses">Responses</h3>
 
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Dashboard deleted successfully|None|
-|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Authentication failed|None|
-|403|[Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)|Insufficient permissions|None|
-|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|A dashboard with the given name and for the given machinery UID could not be found|None|
+| Status | Meaning                                                         | Description                                                                        | Schema |
+|--------|-----------------------------------------------------------------|------------------------------------------------------------------------------------|--------|
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)         | Dashboard deleted successfully                                                     | None   |
+| 401    | [Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1) | Authentication failed                                                              | None   |
+| 403    | [Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)  | Insufficient permissions                                                           | None   |
+| 404    | [Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)  | A dashboard with the given name and for the given machinery UID could not be found | None   |
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -1047,10 +1061,10 @@ Load dashboard configuration for the given machinery
 
 <h3 id="get__dashboard_load-parameters">Parameters</h3>
 
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|machineryUID|query|string|true|The UID of the desired machinery|
-|dashboardName|query|string|true|The name of the dashboard to load|
+| Name          | In    | Type   | Required | Description                       |
+|---------------|-------|--------|----------|-----------------------------------|
+| machineryUID  | query | string | true     | The UID of the desired machinery  |
+| dashboardName | query | string | true     | The name of the dashboard to load |
 
 > Example responses
 
@@ -1109,12 +1123,12 @@ Load dashboard configuration for the given machinery
 
 <h3 id="get__dashboard_load-responses">Responses</h3>
 
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Dashboard configuration|[Dashboard](#schemadashboard)|
-|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Authentication failed|None|
-|403|[Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)|Insufficient permissions|None|
-|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|A dashboard with the given name and for the given machinery UID could not be found|None|
+| Status | Meaning                                                         | Description                                                                        | Schema                        |
+|--------|-----------------------------------------------------------------|------------------------------------------------------------------------------------|-------------------------------|
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)         | Dashboard configuration                                                            | [Dashboard](#schemadashboard) |
+| 401    | [Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1) | Authentication failed                                                              | None                          |
+| 403    | [Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)  | Insufficient permissions                                                           | None                          |
+| 404    | [Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)  | A dashboard with the given name and for the given machinery UID could not be found | None                          |
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -1131,9 +1145,9 @@ Load the default dashboard configuration for the given machinery
 
 <h3 id="get__dashboard_load_default-parameters">Parameters</h3>
 
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|machineryUID|query|string|true|The UID of the desired machinery|
+| Name         | In    | Type   | Required | Description                      |
+|--------------|-------|--------|----------|----------------------------------|
+| machineryUID | query | string | true     | The UID of the desired machinery |
 
 > Example responses
 
@@ -1192,12 +1206,12 @@ Load the default dashboard configuration for the given machinery
 
 <h3 id="get__dashboard_load_default-responses">Responses</h3>
 
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Dashboard configuration|[Dashboard](#schemadashboard)|
-|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Authentication failed|None|
-|403|[Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)|Insufficient permissions|None|
-|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|A dashboard with the given name and for the given machinery UID could not be found|None|
+| Status | Meaning                                                         | Description                                                                        | Schema                        |
+|--------|-----------------------------------------------------------------|------------------------------------------------------------------------------------|-------------------------------|
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)         | Dashboard configuration                                                            | [Dashboard](#schemadashboard) |
+| 401    | [Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1) | Authentication failed                                                              | None                          |
+| 403    | [Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)  | Insufficient permissions                                                           | None                          |
+| 404    | [Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)  | A dashboard with the given name and for the given machinery UID could not be found | None                          |
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -1214,9 +1228,9 @@ Get list of saved dashboards for the given machinery
 
 <h3 id="get__dashboard_saved-parameters">Parameters</h3>
 
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|machineryUID|query|string|true|The UID of the desired machinery|
+| Name         | In    | Type   | Required | Description                      |
+|--------------|-------|--------|----------|----------------------------------|
+| machineryUID | query | string | true     | The UID of the desired machinery |
 
 > Example responses
 
@@ -1239,11 +1253,11 @@ Get list of saved dashboards for the given machinery
 
 <h3 id="get__dashboard_saved-responses">Responses</h3>
 
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Saved dashboards|[SavedDashboards](#schemasaveddashboards)|
-|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Authentication failed|None|
-|403|[Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)|Insufficient permissions|None|
+| Status | Meaning                                                         | Description              | Schema                                    |
+|--------|-----------------------------------------------------------------|--------------------------|-------------------------------------------|
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)         | Saved dashboards         | [SavedDashboards](#schemasaveddashboards) |
+| 401    | [Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1) | Authentication failed    | None                                      |
+| 403    | [Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)  | Insufficient permissions | None                                      |
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -1256,13 +1270,14 @@ bearerAuth
 
 *Get list of dashboard templates*
 
-Get list of dashboard templates for the given machinery. Templates are dashboard configurations for machineries of the same model but with no sensors selected for monitoring.
+Get list of dashboard templates for the given machinery. Templates are dashboard configurations for machineries of the
+same model but with no sensors selected for monitoring.
 
 <h3 id="get__dashboard_templates-parameters">Parameters</h3>
 
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|machineryUID|query|string|true|The UID of the desired machinery|
+| Name         | In    | Type   | Required | Description                      |
+|--------------|-------|--------|----------|----------------------------------|
+| machineryUID | query | string | true     | The UID of the desired machinery |
 
 > Example responses
 
@@ -1285,11 +1300,11 @@ Get list of dashboard templates for the given machinery. Templates are dashboard
 
 <h3 id="get__dashboard_templates-responses">Responses</h3>
 
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Dashboards templates|[SavedDashboardTemplates](#schemasaveddashboardtemplates)|
-|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Authentication failed|None|
-|403|[Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)|Insufficient permissions|None|
+| Status | Meaning                                                         | Description              | Schema                                                    |
+|--------|-----------------------------------------------------------------|--------------------------|-----------------------------------------------------------|
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)         | Dashboards templates     | [SavedDashboardTemplates](#schemasaveddashboardtemplates) |
+| 401    | [Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1) | Authentication failed    | None                                                      |
+| 403    | [Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)  | Insufficient permissions | None                                                      |
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -1310,9 +1325,9 @@ Get the authenticated user company machinery documents by its UID.
 
 <h3 id="get__documents-parameters">Parameters</h3>
 
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|machineryUID|query|string|true|The UID of the desired machinery|
+| Name         | In    | Type   | Required | Description                      |
+|--------------|-------|--------|----------|----------------------------------|
+| machineryUID | query | string | true     | The UID of the desired machinery |
 
 > Example responses
 
@@ -1346,12 +1361,12 @@ Get the authenticated user company machinery documents by its UID.
 
 <h3 id="get__documents-responses">Responses</h3>
 
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Machinery documents|[MachineryDocuments](#schemamachinerydocuments)|
-|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Authentication failed|None|
-|403|[Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)|Insufficient permissions|None|
-|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Machinery with this UID and that belongs the authenticated user company not found|None|
+| Status | Meaning                                                         | Description                                                                       | Schema                                          |
+|--------|-----------------------------------------------------------------|-----------------------------------------------------------------------------------|-------------------------------------------------|
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)         | Machinery documents                                                               | [MachineryDocuments](#schemamachinerydocuments) |
+| 401    | [Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1) | Authentication failed                                                             | None                                            |
+| 403    | [Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)  | Insufficient permissions                                                          | None                                            |
+| 404    | [Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)  | Machinery with this UID and that belongs the authenticated user company not found | None                                            |
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -1381,23 +1396,23 @@ Delete one or multiple documents and/or folders for the given machinery UID
 
 <h3 id="delete__documents-parameters">Parameters</h3>
 
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|machineryUID|query|string|true|The UID of the desired machinery|
-|body|body|[MachineryDeleteFilesRequest](#schemamachinerydeletefilesrequest)|true|none|
-|» documentsList|body|[object]|false|none|
-|»» id|body|string|false|none|
-|»» documentUID|body|string|false|none|
+| Name            | In    | Type                                                              | Required | Description                      |
+|-----------------|-------|-------------------------------------------------------------------|----------|----------------------------------|
+| machineryUID    | query | string                                                            | true     | The UID of the desired machinery |
+| body            | body  | [MachineryDeleteFilesRequest](#schemamachinerydeletefilesrequest) | true     | none                             |
+| » documentsList | body  | [object]                                                          | false    | none                             |
+| »» id           | body  | string                                                            | false    | none                             |
+| »» documentUID  | body  | string                                                            | false    | none                             |
 
 <h3 id="delete__documents-responses">Responses</h3>
 
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Machinery folder created successfully|None|
-|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad document path|None|
-|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Authentication failed|None|
-|403|[Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)|Insufficient permissions|None|
-|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Machinery with this UID and that belongs the authenticated user company not found|None|
+| Status | Meaning                                                          | Description                                                                       | Schema |
+|--------|------------------------------------------------------------------|-----------------------------------------------------------------------------------|--------|
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)          | Machinery folder created successfully                                             | None   |
+| 400    | [Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1) | Bad document path                                                                 | None   |
+| 401    | [Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)  | Authentication failed                                                             | None   |
+| 403    | [Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)   | Insufficient permissions                                                          | None   |
+| 404    | [Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)   | Machinery with this UID and that belongs the authenticated user company not found | None   |
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -1414,19 +1429,19 @@ Get the authenticated user company machinery documents by its UID.
 
 <h3 id="get__documents_document-parameters">Parameters</h3>
 
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|machineryUID|query|string|true|The UID of the desired machinery|
-|documentUID|query|string|true|The UID of the desired machinery document|
+| Name         | In    | Type   | Required | Description                               |
+|--------------|-------|--------|----------|-------------------------------------------|
+| machineryUID | query | string | true     | The UID of the desired machinery          |
+| documentUID  | query | string | true     | The UID of the desired machinery document |
 
 <h3 id="get__documents_document-responses">Responses</h3>
 
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Machinery document|None|
-|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Authentication failed|None|
-|403|[Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)|Insufficient permissions|None|
-|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Machinery with this UID and that belongs the authenticated user company not found|None|
+| Status | Meaning                                                         | Description                                                                       | Schema |
+|--------|-----------------------------------------------------------------|-----------------------------------------------------------------------------------|--------|
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)         | Machinery document                                                                | None   |
+| 401    | [Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1) | Authentication failed                                                             | None   |
+| 403    | [Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)  | Insufficient permissions                                                          | None   |
+| 404    | [Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)  | Machinery with this UID and that belongs the authenticated user company not found | None   |
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -1454,24 +1469,24 @@ Rename a machinery document.
 
 <h3 id="post__documents_rename-parameters">Parameters</h3>
 
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|machineryUID|query|string|true|The UID of the desired machinery|
-|body|body|[MachineryDocumentRenameRequest](#schemamachinerydocumentrenamerequest)|true|none|
-|» oldFileID|body|string|false|none|
-|» documentUID|body|string|false|none|
-|» newFileName|body|string|false|none|
-|» type|body|string|false|none|
+| Name          | In    | Type                                                                    | Required | Description                      |
+|---------------|-------|-------------------------------------------------------------------------|----------|----------------------------------|
+| machineryUID  | query | string                                                                  | true     | The UID of the desired machinery |
+| body          | body  | [MachineryDocumentRenameRequest](#schemamachinerydocumentrenamerequest) | true     | none                             |
+| » oldFileID   | body  | string                                                                  | false    | none                             |
+| » documentUID | body  | string                                                                  | false    | none                             |
+| » newFileName | body  | string                                                                  | false    | none                             |
+| » type        | body  | string                                                                  | false    | none                             |
 
 <h3 id="post__documents_rename-responses">Responses</h3>
 
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Machinery document renamed successfully|None|
-|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad document path|None|
-|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Authentication failed|None|
-|403|[Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)|Insufficient permissions|None|
-|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Machinery with this UID and that belongs the authenticated user company not found|None|
+| Status | Meaning                                                          | Description                                                                       | Schema |
+|--------|------------------------------------------------------------------|-----------------------------------------------------------------------------------|--------|
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)          | Machinery document renamed successfully                                           | None   |
+| 400    | [Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1) | Bad document path                                                                 | None   |
+| 401    | [Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)  | Authentication failed                                                             | None   |
+| 403    | [Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)   | Insufficient permissions                                                          | None   |
+| 404    | [Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)   | Machinery with this UID and that belongs the authenticated user company not found | None   |
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -1496,21 +1511,21 @@ Create folder for the given machinery UID
 
 <h3 id="put__documents_folder-parameters">Parameters</h3>
 
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|machineryUID|query|string|true|The UID of the desired machinery|
-|body|body|[MachineryCreateFolderRequest](#schemamachinerycreatefolderrequest)|true|none|
-|» folderPath|body|string|false|none|
+| Name         | In    | Type                                                                | Required | Description                      |
+|--------------|-------|---------------------------------------------------------------------|----------|----------------------------------|
+| machineryUID | query | string                                                              | true     | The UID of the desired machinery |
+| body         | body  | [MachineryCreateFolderRequest](#schemamachinerycreatefolderrequest) | true     | none                             |
+| » folderPath | body  | string                                                              | false    | none                             |
 
 <h3 id="put__documents_folder-responses">Responses</h3>
 
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Machinery folder created successfully|None|
-|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad document path|None|
-|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Authentication failed|None|
-|403|[Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)|Insufficient permissions|None|
-|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Machinery with this UID and that belongs the authenticated user company not found|None|
+| Status | Meaning                                                          | Description                                                                       | Schema |
+|--------|------------------------------------------------------------------|-----------------------------------------------------------------------------------|--------|
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)          | Machinery folder created successfully                                             | None   |
+| 400    | [Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1) | Bad document path                                                                 | None   |
+| 401    | [Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)  | Authentication failed                                                             | None   |
+| 403    | [Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)   | Insufficient permissions                                                          | None   |
+| 404    | [Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)   | Machinery with this UID and that belongs the authenticated user company not found | None   |
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -1535,21 +1550,21 @@ Upload one or multiple documents for the given machinery UID
 
 <h3 id="put__documents_files-parameters">Parameters</h3>
 
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|machineryUID|query|string|true|The UID of the desired machinery|
-|body|body|[MachineryUploadFilesRequest](#schemamachineryuploadfilesrequest)|true|none|
-|» parentFolderPath|body|string|false|none|
+| Name               | In    | Type                                                              | Required | Description                      |
+|--------------------|-------|-------------------------------------------------------------------|----------|----------------------------------|
+| machineryUID       | query | string                                                            | true     | The UID of the desired machinery |
+| body               | body  | [MachineryUploadFilesRequest](#schemamachineryuploadfilesrequest) | true     | none                             |
+| » parentFolderPath | body  | string                                                            | false    | none                             |
 
 <h3 id="put__documents_files-responses">Responses</h3>
 
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Machinery folder created successfully|None|
-|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad document path|None|
-|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Authentication failed|None|
-|403|[Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)|Insufficient permissions|None|
-|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Machinery with this UID and that belongs the authenticated user company not found|None|
+| Status | Meaning                                                          | Description                                                                       | Schema |
+|--------|------------------------------------------------------------------|-----------------------------------------------------------------------------------|--------|
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)          | Machinery folder created successfully                                             | None   |
+| 400    | [Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1) | Bad document path                                                                 | None   |
+| 401    | [Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)  | Authentication failed                                                             | None   |
+| 403    | [Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)   | Insufficient permissions                                                          | None   |
+| 404    | [Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)   | Machinery with this UID and that belongs the authenticated user company not found | None   |
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -1575,10 +1590,10 @@ bearerAuth
 
 ### Properties
 
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|email|string|true|none|none|
-|password|string|true|none|none|
+| Name     | Type   | Required | Restrictions | Description |
+|----------|--------|----------|--------------|-------------|
+| email    | string | true     | none         | none        |
+| password | string | true     | none         | none        |
 
 <h2 id="tocS_LoginResponse">LoginResponse</h2>
 <!-- backwards compatibility -->
@@ -1617,26 +1632,26 @@ bearerAuth
 
 ### Properties
 
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|id|number|false|none|none|
-|companyID|string|false|none|none|
-|name|string|false|none|none|
-|surname|string|false|none|none|
-|email|string|false|none|none|
-|roles|[string]|false|none|none|
-|authToken|string|false|none|none|
-|authTokenExpiration|number|false|none|none|
-|refreshToken|string|false|none|none|
-|refreshTokenExpiry|number|false|none|none|
-|permissions|object|false|none|none|
-|» machineryUID|object|false|none|none|
-|»» dashboardsWrite|boolean|false|none|none|
-|»» dashboardsModify|boolean|false|none|none|
-|»» dashboardsRead|boolean|false|none|none|
-|»» documentsWrite|boolean|false|none|none|
-|»» documentsModify|boolean|false|none|none|
-|»» documentsRead|boolean|false|none|none|
+| Name                | Type     | Required | Restrictions | Description |
+|---------------------|----------|----------|--------------|-------------|
+| id                  | number   | false    | none         | none        |
+| companyID           | string   | false    | none         | none        |
+| name                | string   | false    | none         | none        |
+| surname             | string   | false    | none         | none        |
+| email               | string   | false    | none         | none        |
+| roles               | [string] | false    | none         | none        |
+| authToken           | string   | false    | none         | none        |
+| authTokenExpiration | number   | false    | none         | none        |
+| refreshToken        | string   | false    | none         | none        |
+| refreshTokenExpiry  | number   | false    | none         | none        |
+| permissions         | object   | false    | none         | none        |
+| » machineryUID      | object   | false    | none         | none        |
+| »» dashboardsWrite  | boolean  | false    | none         | none        |
+| »» dashboardsModify | boolean  | false    | none         | none        |
+| »» dashboardsRead   | boolean  | false    | none         | none        |
+| »» documentsWrite   | boolean  | false    | none         | none        |
+| »» documentsModify  | boolean  | false    | none         | none        |
+| »» documentsRead    | boolean  | false    | none         | none        |
 
 <h2 id="tocS_CompanyResponse">CompanyResponse</h2>
 <!-- backwards compatibility -->
@@ -1655,10 +1670,10 @@ bearerAuth
 
 ### Properties
 
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|id|number|false|none|none|
-|name|string|false|none|none|
+| Name | Type   | Required | Restrictions | Description |
+|------|--------|----------|--------------|-------------|
+| id   | number | false    | none         | none        |
+| name | string | false    | none         | none        |
 
 <h2 id="tocS_CompanyMachineriesResponse">CompanyMachineriesResponse</h2>
 <!-- backwards compatibility -->
@@ -1690,19 +1705,19 @@ bearerAuth
 
 ### Properties
 
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|locationCluster|[object]|false|none|none|
-|» uid|string|false|none|none|
-|» companyID|number|false|none|none|
-|» modelID|string|false|none|none|
-|» modelName|string|false|none|none|
-|» modelType|string|false|none|none|
-|» geoLocation|object|false|none|none|
-|»» x|number|false|none|none|
-|»» y|number|false|none|none|
-|» locationCluster|string|false|none|none|
-|» numHeads|number|false|none|none|
+| Name              | Type     | Required | Restrictions | Description |
+|-------------------|----------|----------|--------------|-------------|
+| locationCluster   | [object] | false    | none         | none        |
+| » uid             | string   | false    | none         | none        |
+| » companyID       | number   | false    | none         | none        |
+| » modelID         | string   | false    | none         | none        |
+| » modelName       | string   | false    | none         | none        |
+| » modelType       | string   | false    | none         | none        |
+| » geoLocation     | object   | false    | none         | none        |
+| »» x              | number   | false    | none         | none        |
+| »» y              | number   | false    | none         | none        |
+| » locationCluster | string   | false    | none         | none        |
+| » numHeads        | number   | false    | none         | none        |
 
 <h2 id="tocS_MachineryResponse">MachineryResponse</h2>
 <!-- backwards compatibility -->
@@ -1730,18 +1745,18 @@ bearerAuth
 
 ### Properties
 
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|uid|string|false|none|none|
-|companyID|number|false|none|none|
-|modelID|string|false|none|none|
-|modelName|string|false|none|none|
-|modelType|string|false|none|none|
-|geoLocation|object|false|none|none|
-|» x|number|false|none|none|
-|» y|number|false|none|none|
-|locationCluster|string|false|none|none|
-|numHeads|number|false|none|none|
+| Name            | Type   | Required | Restrictions | Description |
+|-----------------|--------|----------|--------------|-------------|
+| uid             | string | false    | none         | none        |
+| companyID       | number | false    | none         | none        |
+| modelID         | string | false    | none         | none        |
+| modelName       | string | false    | none         | none        |
+| modelType       | string | false    | none         | none        |
+| geoLocation     | object | false    | none         | none        |
+| » x             | number | false    | none         | none        |
+| » y             | number | false    | none         | none        |
+| locationCluster | string | false    | none         | none        |
+| numHeads        | number | false    | none         | none        |
 
 <h2 id="tocS_MachinerySensorsResponse">MachinerySensorsResponse</h2>
 <!-- backwards compatibility -->
@@ -1776,23 +1791,23 @@ bearerAuth
 
 ### Properties
 
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|machineryUID|string|false|none|none|
-|name|string|false|none|none|
-|description|string|false|none|none|
-|unit|string|false|none|none|
-|thresholdLow|number|false|none|none|
-|thresholdHigh|number|false|none|none|
-|internalName|string|false|none|none|
-|category|string|false|none|none|
-|type|string|false|none|none|
-|isHeadMounted|boolean|false|none|none|
-|bucketingType|string|false|none|none|
-|imgFilename|number|false|none|none|
-|imgPointerLocation|object|false|none|none|
-|» x|number|false|none|none|
-|» y|number|false|none|none|
+| Name               | Type    | Required | Restrictions | Description |
+|--------------------|---------|----------|--------------|-------------|
+| machineryUID       | string  | false    | none         | none        |
+| name               | string  | false    | none         | none        |
+| description        | string  | false    | none         | none        |
+| unit               | string  | false    | none         | none        |
+| thresholdLow       | number  | false    | none         | none        |
+| thresholdHigh      | number  | false    | none         | none        |
+| internalName       | string  | false    | none         | none        |
+| category           | string  | false    | none         | none        |
+| type               | string  | false    | none         | none        |
+| isHeadMounted      | boolean | false    | none         | none        |
+| bucketingType      | string  | false    | none         | none        |
+| imgFilename        | number  | false    | none         | none        |
+| imgPointerLocation | object  | false    | none         | none        |
+| » x                | number  | false    | none         | none        |
+| » y                | number  | false    | none         | none        |
 
 <h2 id="tocS_MachineryDataRequest">MachineryDataRequest</h2>
 <!-- backwards compatibility -->
@@ -1839,26 +1854,26 @@ bearerAuth
 
 ### Properties
 
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|sensorFilters|object|false|none|none|
-|» requestType|string|false|none|none|
-|» cacheDataRequestMaxTime|number|false|none|none|
-|» newDataRequestMinTime|number|false|none|none|
-|» widgetCategory|string|false|none|none|
-|» dataRange|object|false|none|none|
-|»» amount|number|false|none|none|
-|»» unit|string|false|none|none|
-|» sensors|object|false|none|none|
-|»» sensorName|[object]|false|none|none|
-|»»» headNumber|number|false|none|none|
-|»»» mechNumber|number|false|none|none|
-|»»» sensorNames|[object]|false|none|none|
-|»»»» name|string|false|none|none|
-|»»»» color|string|false|none|none|
-|» aggregations|[object]|false|none|none|
-|»» name|string|false|none|none|
-|»» color|string|false|none|none|
+| Name                      | Type     | Required | Restrictions | Description |
+|---------------------------|----------|----------|--------------|-------------|
+| sensorFilters             | object   | false    | none         | none        |
+| » requestType             | string   | false    | none         | none        |
+| » cacheDataRequestMaxTime | number   | false    | none         | none        |
+| » newDataRequestMinTime   | number   | false    | none         | none        |
+| » widgetCategory          | string   | false    | none         | none        |
+| » dataRange               | object   | false    | none         | none        |
+| »» amount                 | number   | false    | none         | none        |
+| »» unit                   | string   | false    | none         | none        |
+| » sensors                 | object   | false    | none         | none        |
+| »» sensorName             | [object] | false    | none         | none        |
+| »»» headNumber            | number   | false    | none         | none        |
+| »»» mechNumber            | number   | false    | none         | none        |
+| »»» sensorNames           | [object] | false    | none         | none        |
+| »»»» name                 | string   | false    | none         | none        |
+| »»»» color                | string   | false    | none         | none        |
+| » aggregations            | [object] | false    | none         | none        |
+| »» name                   | string   | false    | none         | none        |
+| »» color                  | string   | false    | none         | none        |
 
 <h2 id="tocS_MachineryDataResponse">MachineryDataResponse</h2>
 <!-- backwards compatibility -->
@@ -1954,15 +1969,15 @@ bearerAuth
 
 ### Properties
 
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|requestType|string|false|none|none|
-|minDisplayTime|number|false|none|none|
-|cachedSensorData|[SensorData](#schemasensordata)|false|none|none|
-|displaySensorData|[SensorData](#schemasensordata)|false|none|none|
-|newSensorData|[SensorData](#schemasensordata)|false|none|none|
-|numSensorData|number|false|none|none|
-|endOfData|boolean|false|none|none|
+| Name              | Type                            | Required | Restrictions | Description |
+|-------------------|---------------------------------|----------|--------------|-------------|
+| requestType       | string                          | false    | none         | none        |
+| minDisplayTime    | number                          | false    | none         | none        |
+| cachedSensorData  | [SensorData](#schemasensordata) | false    | none         | none        |
+| displaySensorData | [SensorData](#schemasensordata) | false    | none         | none        |
+| newSensorData     | [SensorData](#schemasensordata) | false    | none         | none        |
+| numSensorData     | number                          | false    | none         | none        |
+| endOfData         | boolean                         | false    | none         | none        |
 
 <h2 id="tocS_SensorData">SensorData</h2>
 <!-- backwards compatibility -->
@@ -2002,26 +2017,26 @@ bearerAuth
 
 ### Properties
 
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|active|boolean|false|none|none|
-|machineryOff|boolean|false|none|none|
-|machineryOffFrom|number|false|none|none|
-|machineryOffTo|number|false|none|none|
-|time|number|false|none|none|
-|minTime|number|false|none|none|
-|maxTime|number|false|none|none|
-|formattedTime|string|false|none|none|
-|activeData|object|false|none|none|
-|» sensorInternalName|number¦null|false|none|none|
-|fillerData|object|false|none|none|
-|» sensorInternalName|number¦null|false|none|none|
-|allData|object|false|none|none|
-|» sensorInternalName|number¦null|false|none|none|
-|aggregationData|object|false|none|none|
-|» aggregationName|object|false|none|none|
-|»» value|number|false|none|none|
-|»» note|string|false|none|none|
+| Name                 | Type        | Required | Restrictions | Description |
+|----------------------|-------------|----------|--------------|-------------|
+| active               | boolean     | false    | none         | none        |
+| machineryOff         | boolean     | false    | none         | none        |
+| machineryOffFrom     | number      | false    | none         | none        |
+| machineryOffTo       | number      | false    | none         | none        |
+| time                 | number      | false    | none         | none        |
+| minTime              | number      | false    | none         | none        |
+| maxTime              | number      | false    | none         | none        |
+| formattedTime        | string      | false    | none         | none        |
+| activeData           | object      | false    | none         | none        |
+| » sensorInternalName | number¦null | false    | none         | none        |
+| fillerData           | object      | false    | none         | none        |
+| » sensorInternalName | number¦null | false    | none         | none        |
+| allData              | object      | false    | none         | none        |
+| » sensorInternalName | number¦null | false    | none         | none        |
+| aggregationData      | object      | false    | none         | none        |
+| » aggregationName    | object      | false    | none         | none        |
+| »» value             | number      | false    | none         | none        |
+| »» note              | string      | false    | none         | none        |
 
 <h2 id="tocS_MachineryDocuments">MachineryDocuments</h2>
 <!-- backwards compatibility -->
@@ -2059,23 +2074,23 @@ bearerAuth
 
 ### Properties
 
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|rootFolderId|string|false|none|none|
-|childrenIds|[string]|false|none|none|
-|fileMap|object|false|none|none|
-|» fileID|object|false|none|none|
-|»» id|string|false|none|none|
-|»» name|string|false|none|none|
-|»» documentUID|string|false|none|none|
-|»» isDir|boolean|false|none|none|
-|»» isDocument|boolean|false|none|none|
-|»» isModifiable|boolean|false|none|none|
-|»» childrenIds|[string]|false|none|none|
-|»» childrenCount|number|false|none|none|
-|»» parentId|string|false|none|none|
-|»» modDate|string(date-time)|false|none|none|
-|»» size|number|false|none|File size in bytes|
+| Name             | Type              | Required | Restrictions | Description        |
+|------------------|-------------------|----------|--------------|--------------------|
+| rootFolderId     | string            | false    | none         | none               |
+| childrenIds      | [string]          | false    | none         | none               |
+| fileMap          | object            | false    | none         | none               |
+| » fileID         | object            | false    | none         | none               |
+| »» id            | string            | false    | none         | none               |
+| »» name          | string            | false    | none         | none               |
+| »» documentUID   | string            | false    | none         | none               |
+| »» isDir         | boolean           | false    | none         | none               |
+| »» isDocument    | boolean           | false    | none         | none               |
+| »» isModifiable  | boolean           | false    | none         | none               |
+| »» childrenIds   | [string]          | false    | none         | none               |
+| »» childrenCount | number            | false    | none         | none               |
+| »» parentId      | string            | false    | none         | none               |
+| »» modDate       | string(date-time) | false    | none         | none               |
+| »» size          | number            | false    | none         | File size in bytes |
 
 <h2 id="tocS_MachineryDocumentRenameRequest">MachineryDocumentRenameRequest</h2>
 <!-- backwards compatibility -->
@@ -2096,12 +2111,12 @@ bearerAuth
 
 ### Properties
 
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|oldFileID|string|false|none|none|
-|documentUID|string|false|none|none|
-|newFileName|string|false|none|none|
-|type|string|false|none|none|
+| Name        | Type   | Required | Restrictions | Description |
+|-------------|--------|----------|--------------|-------------|
+| oldFileID   | string | false    | none         | none        |
+| documentUID | string | false    | none         | none        |
+| newFileName | string | false    | none         | none        |
+| type        | string | false    | none         | none        |
 
 <h2 id="tocS_MachineryCreateFolderRequest">MachineryCreateFolderRequest</h2>
 <!-- backwards compatibility -->
@@ -2119,9 +2134,9 @@ bearerAuth
 
 ### Properties
 
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|folderPath|string|false|none|none|
+| Name       | Type   | Required | Restrictions | Description |
+|------------|--------|----------|--------------|-------------|
+| folderPath | string | false    | none         | none        |
 
 <h2 id="tocS_MachineryUploadFilesRequest">MachineryUploadFilesRequest</h2>
 <!-- backwards compatibility -->
@@ -2139,9 +2154,9 @@ bearerAuth
 
 ### Properties
 
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|parentFolderPath|string|false|none|none|
+| Name             | Type   | Required | Restrictions | Description |
+|------------------|--------|----------|--------------|-------------|
+| parentFolderPath | string | false    | none         | none        |
 
 <h2 id="tocS_MachineryDeleteFilesRequest">MachineryDeleteFilesRequest</h2>
 <!-- backwards compatibility -->
@@ -2164,11 +2179,11 @@ bearerAuth
 
 ### Properties
 
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|documentsList|[object]|false|none|none|
-|» id|string|false|none|none|
-|» documentUID|string|false|none|none|
+| Name          | Type     | Required | Restrictions | Description |
+|---------------|----------|----------|--------------|-------------|
+| documentsList | [object] | false    | none         | none        |
+| » id          | string   | false    | none         | none        |
+| » documentUID | string   | false    | none         | none        |
 
 <h2 id="tocS_SaveDashboardRequest">SaveDashboardRequest</h2>
 <!-- backwards compatibility -->
@@ -2186,9 +2201,9 @@ bearerAuth
 
 ### Properties
 
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|dashboard|object|false|none|none|
+| Name      | Type   | Required | Restrictions | Description |
+|-----------|--------|----------|--------------|-------------|
+| dashboard | object | false    | none         | none        |
 
 <h2 id="tocS_Dashboard">Dashboard</h2>
 <!-- backwards compatibility -->
@@ -2251,39 +2266,39 @@ bearerAuth
 
 ### Properties
 
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|name|string|false|none|none|
-|machineryUID|string|false|none|none|
-|timestamp|number|false|none|none|
-|userID|number|false|none|none|
-|isDefault|boolean|false|none|none|
-|numUnsavedChanges|number|false|none|none|
-|lastSave|number|false|none|none|
-|isNew|boolean|false|none|none|
-|numCols|number|false|none|none|
-|numRows|number|false|none|none|
-|gridCompaction|string¦null|false|none|none|
-|grid|object|false|none|none|
-|» widgets|[object]|false|none|none|
-|»» id|string|false|none|none|
-|»» name|string|false|none|none|
-|»» type|string|false|none|none|
-|»» maxSensors|number|false|none|none|
-|»» sensorsMonitoring|object|false|none|none|
-|»»» dataRange|object|false|none|none|
-|»»»» amount|number|false|none|none|
-|»»»» unit|string|false|none|none|
-|»»» sensors|[object]|false|none|none|
-|»»»» headNumber|number|false|none|none|
-|»»»» mechNumber|number|false|none|none|
-|»»»» sensorNames|[object]|false|none|none|
-|»»»»» name|string|false|none|none|
-|»»»»» color|string|false|none|none|
-|»»» aggregations|[object]|false|none|none|
-|»»»» name|string|false|none|none|
-|»»»» color|string|false|none|none|
-|» layout|array|false|none|none|
+| Name                 | Type        | Required | Restrictions | Description |
+|----------------------|-------------|----------|--------------|-------------|
+| name                 | string      | false    | none         | none        |
+| machineryUID         | string      | false    | none         | none        |
+| timestamp            | number      | false    | none         | none        |
+| userID               | number      | false    | none         | none        |
+| isDefault            | boolean     | false    | none         | none        |
+| numUnsavedChanges    | number      | false    | none         | none        |
+| lastSave             | number      | false    | none         | none        |
+| isNew                | boolean     | false    | none         | none        |
+| numCols              | number      | false    | none         | none        |
+| numRows              | number      | false    | none         | none        |
+| gridCompaction       | string¦null | false    | none         | none        |
+| grid                 | object      | false    | none         | none        |
+| » widgets            | [object]    | false    | none         | none        |
+| »» id                | string      | false    | none         | none        |
+| »» name              | string      | false    | none         | none        |
+| »» type              | string      | false    | none         | none        |
+| »» maxSensors        | number      | false    | none         | none        |
+| »» sensorsMonitoring | object      | false    | none         | none        |
+| »»» dataRange        | object      | false    | none         | none        |
+| »»»» amount          | number      | false    | none         | none        |
+| »»»» unit            | string      | false    | none         | none        |
+| »»» sensors          | [object]    | false    | none         | none        |
+| »»»» headNumber      | number      | false    | none         | none        |
+| »»»» mechNumber      | number      | false    | none         | none        |
+| »»»» sensorNames     | [object]    | false    | none         | none        |
+| »»»»» name           | string      | false    | none         | none        |
+| »»»»» color          | string      | false    | none         | none        |
+| »»» aggregations     | [object]    | false    | none         | none        |
+| »»»» name            | string      | false    | none         | none        |
+| »»»» color           | string      | false    | none         | none        |
+| » layout             | array       | false    | none         | none        |
 
 <h2 id="tocS_SavedDashboards">SavedDashboards</h2>
 <!-- backwards compatibility -->
@@ -2310,15 +2325,15 @@ bearerAuth
 
 ### Properties
 
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|savedDashboards|[object]|false|none|none|
-|» name|string|false|none|none|
-|» isDefault|boolean|false|none|none|
-|» machineryUID|string|false|none|none|
-|» timestamp|number|false|none|none|
-|» numSensorsMonitored|number|false|none|none|
-|» numWidgets|number|false|none|none|
+| Name                  | Type     | Required | Restrictions | Description |
+|-----------------------|----------|----------|--------------|-------------|
+| savedDashboards       | [object] | false    | none         | none        |
+| » name                | string   | false    | none         | none        |
+| » isDefault           | boolean  | false    | none         | none        |
+| » machineryUID        | string   | false    | none         | none        |
+| » timestamp           | number   | false    | none         | none        |
+| » numSensorsMonitored | number   | false    | none         | none        |
+| » numWidgets          | number   | false    | none         | none        |
 
 <h2 id="tocS_SavedDashboardTemplates">SavedDashboardTemplates</h2>
 <!-- backwards compatibility -->
@@ -2345,15 +2360,15 @@ bearerAuth
 
 ### Properties
 
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|templateDashboards|[object]|false|none|none|
-|» name|string|false|none|none|
-|» isDefault|boolean|false|none|none|
-|» machineryUID|string|false|none|none|
-|» timestamp|number|false|none|none|
-|» numSensorsMonitored|number|false|none|none|
-|» numWidgets|number|false|none|none|
+| Name                  | Type     | Required | Restrictions | Description |
+|-----------------------|----------|----------|--------------|-------------|
+| templateDashboards    | [object] | false    | none         | none        |
+| » name                | string   | false    | none         | none        |
+| » isDefault           | boolean  | false    | none         | none        |
+| » machineryUID        | string   | false    | none         | none        |
+| » timestamp           | number   | false    | none         | none        |
+| » numSensorsMonitored | number   | false    | none         | none        |
+| » numWidgets          | number   | false    | none         | none        |
 
 <h2 id="tocS_User">User</h2>
 <!-- backwards compatibility -->
@@ -2381,17 +2396,17 @@ bearerAuth
 
 ### Properties
 
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|id|number|false|none|none|
-|email|string|false|none|none|
-|name|string|false|none|none|
-|surname|string|false|none|none|
-|roles|[string]|false|none|none|
-|active|boolean|false|none|none|
-|companyID|number¦null|false|none|none|
-|createdAt|number|false|none|none|
-|createdBy|string|false|none|none|
+| Name      | Type        | Required | Restrictions | Description |
+|-----------|-------------|----------|--------------|-------------|
+| id        | number      | false    | none         | none        |
+| email     | string      | false    | none         | none        |
+| name      | string      | false    | none         | none        |
+| surname   | string      | false    | none         | none        |
+| roles     | [string]    | false    | none         | none        |
+| active    | boolean     | false    | none         | none        |
+| companyID | number¦null | false    | none         | none        |
+| createdAt | number      | false    | none         | none        |
+| createdBy | string      | false    | none         | none        |
 
 <h2 id="tocS_CompanyUsers">CompanyUsers</h2>
 <!-- backwards compatibility -->
@@ -2421,9 +2436,9 @@ bearerAuth
 
 ### Properties
 
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anonymous*|[[User](#schemauser)]|false|none|none|
+| Name        | Type                  | Required | Restrictions | Description |
+|-------------|-----------------------|----------|--------------|-------------|
+| *anonymous* | [[User](#schemauser)] | false    | none         | none        |
 
 <h2 id="tocS_UpdateAccountRequest">UpdateAccountRequest</h2>
 <!-- backwards compatibility -->
@@ -2446,14 +2461,14 @@ bearerAuth
 
 ### Properties
 
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|id|number|false|none|none|
-|email|string|false|none|none|
-|name|string|false|none|none|
-|surname|string|false|none|none|
-|roles|string|false|none|none|
-|active|boolean|false|none|none|
+| Name    | Type    | Required | Restrictions | Description |
+|---------|---------|----------|--------------|-------------|
+| id      | number  | false    | none         | none        |
+| email   | string  | false    | none         | none        |
+| name    | string  | false    | none         | none        |
+| surname | string  | false    | none         | none        |
+| roles   | string  | false    | none         | none        |
+| active  | boolean | false    | none         | none        |
 
 <h2 id="tocS_PasswordResetRequest">PasswordResetRequest</h2>
 <!-- backwards compatibility -->
@@ -2472,10 +2487,10 @@ bearerAuth
 
 ### Properties
 
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|id|number|false|none|none|
-|password|string|false|none|none|
+| Name     | Type   | Required | Restrictions | Description |
+|----------|--------|----------|--------------|-------------|
+| id       | number | false    | none         | none        |
+| password | string | false    | none         | none        |
 
 <h2 id="tocS_CreateAccountRequest">CreateAccountRequest</h2>
 <!-- backwards compatibility -->
@@ -2510,22 +2525,22 @@ bearerAuth
 
 ### Properties
 
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|email|string|false|none|none|
-|password|string|false|none|none|
-|name|string|false|none|none|
-|surname|string|false|none|none|
-|roles|[string]|false|none|none|
-|companyID|number¦null|false|none|none|
-|permissions|object|false|none|none|
-|» machineryUID|object|false|none|none|
-|»» dashboardsWrite|boolean|false|none|none|
-|»» dashboardsModify|boolean|false|none|none|
-|»» dashboardsRead|boolean|false|none|none|
-|»» documentsWrite|boolean|false|none|none|
-|»» documentsModify|boolean|false|none|none|
-|»» documentsRead|boolean|false|none|none|
+| Name                | Type        | Required | Restrictions | Description |
+|---------------------|-------------|----------|--------------|-------------|
+| email               | string      | false    | none         | none        |
+| password            | string      | false    | none         | none        |
+| name                | string      | false    | none         | none        |
+| surname             | string      | false    | none         | none        |
+| roles               | [string]    | false    | none         | none        |
+| companyID           | number¦null | false    | none         | none        |
+| permissions         | object      | false    | none         | none        |
+| » machineryUID      | object      | false    | none         | none        |
+| »» dashboardsWrite  | boolean     | false    | none         | none        |
+| »» dashboardsModify | boolean     | false    | none         | none        |
+| »» dashboardsRead   | boolean     | false    | none         | none        |
+| »» documentsWrite   | boolean     | false    | none         | none        |
+| »» documentsModify  | boolean     | false    | none         | none        |
+| »» documentsRead    | boolean     | false    | none         | none        |
 
 <h2 id="tocS_UserPermissionsRequest">UserPermissionsRequest</h2>
 <!-- backwards compatibility -->
@@ -2550,16 +2565,16 @@ bearerAuth
 
 ### Properties
 
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|userID|number|false|none|none|
-|machineryUID|string|false|none|none|
-|dashboardsWrite|boolean|false|none|none|
-|dashboardsModify|boolean|false|none|none|
-|dashboardsRead|boolean|false|none|none|
-|documentsWrite|boolean|false|none|none|
-|documentsModify|boolean|false|none|none|
-|documentsRead|boolean|false|none|none|
+| Name             | Type    | Required | Restrictions | Description |
+|------------------|---------|----------|--------------|-------------|
+| userID           | number  | false    | none         | none        |
+| machineryUID     | string  | false    | none         | none        |
+| dashboardsWrite  | boolean | false    | none         | none        |
+| dashboardsModify | boolean | false    | none         | none        |
+| dashboardsRead   | boolean | false    | none         | none        |
+| documentsWrite   | boolean | false    | none         | none        |
+| documentsModify  | boolean | false    | none         | none        |
+| documentsRead    | boolean | false    | none         | none        |
 
 <h2 id="tocS_UserPermissionsResponse">UserPermissionsResponse</h2>
 <!-- backwards compatibility -->
@@ -2584,16 +2599,16 @@ bearerAuth
 
 ### Properties
 
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|userID|number|false|none|none|
-|machineryUID|string|false|none|none|
-|dashboardsWrite|boolean|false|none|none|
-|dashboardsModify|boolean|false|none|none|
-|dashboardsRead|boolean|false|none|none|
-|documentsWrite|boolean|false|none|none|
-|documentsModify|boolean|false|none|none|
-|documentsRead|boolean|false|none|none|
+| Name             | Type    | Required | Restrictions | Description |
+|------------------|---------|----------|--------------|-------------|
+| userID           | number  | false    | none         | none        |
+| machineryUID     | string  | false    | none         | none        |
+| dashboardsWrite  | boolean | false    | none         | none        |
+| dashboardsModify | boolean | false    | none         | none        |
+| dashboardsRead   | boolean | false    | none         | none        |
+| documentsWrite   | boolean | false    | none         | none        |
+| documentsModify  | boolean | false    | none         | none        |
+| documentsRead    | boolean | false    | none         | none        |
 
 <h2 id="tocS_AllUserPemissionsResponse">AllUserPemissionsResponse</h2>
 <!-- backwards compatibility -->
@@ -2620,7 +2635,7 @@ bearerAuth
 
 ### Properties
 
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anonymous*|[[UserPermissionsResponse](#schemauserpermissionsresponse)]|false|none|none|
+| Name        | Type                                                        | Required | Restrictions | Description |
+|-------------|-------------------------------------------------------------|----------|--------------|-------------|
+| *anonymous* | [[UserPermissionsResponse](#schemauserpermissionsresponse)] | false    | none         | none        |
 
