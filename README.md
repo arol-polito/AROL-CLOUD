@@ -2,12 +2,25 @@
 
 ## How to run project locally
 
-### Run client
-Step 1: ```cd ./react-client```
+### Set up env file:
 
-Step 2: ```npm install --force```
+Step 1: ```cd ./express-server``` and create a file name ".env"
 
-Step 3: ```npm run start```
+Step 2: Paste the following content in it
+
+```
+JWT_SECRET_KEY=6c9c23d766e7cf2280dfdb8fca8f97841ddcd80eee01eb0cbaff85037848962f
+JWT_EXPIRATION=900000
+REFRESH_TOKEN_SECRET_KEY=47e648a61b5c7c8b3d12bb9c46dbc64f35fd2d3fb22bfc5debc9d7cf6036ff1b
+REFRESH_TOKEN_EXPIRATION=2592000000
+POSTGRES_HOST=localhost
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+MONGODB_HOST=localhost
+```
+
+### Important note
+To run project locally, PostgreSQL and MongoDB need to be installed in the system. DB configuration scripts for both DBMS-es can be found under ```Docker/pg``` and ```Docker/mongo/data``` dirs.
 
 ### Run server
 Step 1: ```cd ./express-server```
@@ -15,6 +28,13 @@ Step 1: ```cd ./express-server```
 Step 2: ```npm install --force```
 
 Step 3: ```npm run start:dev```
+
+### Run client
+Step 1: ```cd ./react-client```
+
+Step 2: ```npm install --force```
+
+Step 3: ```npm run start```
 
 ##  How to run project with Docker
 
