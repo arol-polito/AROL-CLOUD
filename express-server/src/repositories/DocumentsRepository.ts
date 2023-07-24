@@ -255,10 +255,17 @@ async function uploadMachineryDocuments(userID: number, machineryUID: string, pa
 
                 await insertFileOrFolderInDatabase(document)
 
-                if (!(await fs.stat('./../../documents'))) {
-                    await fs.mkdir('./../../documents')
+                try {
+                    await fs.access('./../../documents');
+                } catch (e) {
+                    await fs.mkdir('./../../documents');
                 }
-                await fs.writeFile("./../../documents/" + file.filename, multerFile)
+
+                try {
+                    await fs.writeFile("./../../documents/" + file.filename, multerFile)
+                } catch (e) {
+                    await deleteFileFromDatabase(machineryUID, file.filename, parentFolderPath);
+                }
 
                 uploadedFiles.push(document)
             }
@@ -266,8 +273,8 @@ async function uploadMachineryDocuments(userID: number, machineryUID: string, pa
         }
 
     } catch (e) {
-        console.log(e)
-        return null
+        console.log(e);
+        return null;
     }
 
     return uploadedFiles

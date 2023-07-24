@@ -1,0 +1,416 @@
+[{
+  "_id": {
+    "$oid": "63459fee6ddb9cac0ccb6faa"
+  },
+  "machineryUID": "JF891",
+  "dashboardName": "Dashboard test 1",
+  "dashboard": {
+    "layout": [
+      {
+        "w": 2,
+        "h": 1,
+        "x": 3,
+        "y": 0,
+        "i": "0",
+        "moved": false,
+        "static": false
+      },
+      {
+        "w": 3,
+        "h": 1,
+        "x": 5,
+        "y": 0,
+        "i": "2",
+        "moved": false,
+        "static": false
+      },
+      {
+        "w": 3,
+        "h": 1,
+        "x": 0,
+        "y": 0,
+        "i": "3",
+        "moved": false,
+        "static": false,
+        "isDraggable": true
+      }
+    ],
+    "gridItems": [
+      {
+        "id": "0",
+        "name": "Live data",
+        "type": "current-value",
+        "maxSensors": 1,
+        "sensorsMonitoring": [
+          {
+            "machineryModel": "EQUA",
+            "name": "Power Consumption",
+            "description": "Lorem ipsum",
+            "unit": "Watts",
+            "thresholdLow": null,
+            "thresholdHigh": null
+          }
+        ],
+        "sensorsData": {}
+      },
+      {
+        "id": "2",
+        "name": "Bar chart",
+        "type": "bar-chart",
+        "maxSensors": 3,
+        "sensorsMonitoring": [
+          {
+            "machineryModel": "EQUA",
+            "name": "Friction",
+            "description": "Lorem ipsum",
+            "unit": "Newton",
+            "thresholdLow": null,
+            "thresholdHigh": null
+          }
+        ],
+        "sensorsData": {}
+      },
+      {
+        "id": "3",
+        "name": "Line chart",
+        "type": "line-chart",
+        "maxSensors": 3,
+        "sensorsMonitoring": [
+          {
+            "machineryModel": "EQUA",
+            "name": "Power Consumption",
+            "description": "Lorem ipsum",
+            "unit": "Watts",
+            "thresholdLow": null,
+            "thresholdHigh": null
+          },
+          {
+            "machineryModel": "EQUA",
+            "name": "Input Voltage",
+            "description": "Lorem ipsum",
+            "unit": "Volt",
+            "thresholdLow": null,
+            "thresholdHigh": null
+          }
+        ],
+        "sensorsData": {}
+      }
+    ]
+  },
+  "userID": "5",
+  "timestamp": {
+    "$numberLong": "1665507623970"
+  }
+},
+{
+  "_id": {
+    "$oid": "6345e02e7ef064efd5f31e2b"
+  },
+  "machineryUID": "JF891",
+  "dashboardName": "Dashboard test 2",
+  "dashboard": {
+    "gridItems": [
+      {
+        "id": "0",
+        "name": "Test 1 sahkjsdf asf k",
+        "type": "current-value",
+        "maxSensors": 1,
+        "sensorsMonitoring": [
+          {
+            "machineryModel": "EQUA",
+            "name": "Friction",
+            "description": "Lorem ipsum",
+            "unit": "Newton",
+            "thresholdLow": null,
+            "thresholdHigh": null
+          }
+        ],
+        "sensorsData": {}
+      },
+      {
+        "id": "1",
+        "name": "Test 2",
+        "type": "line-chart",
+        "maxSensors": 3,
+        "sensorsMonitoring": [
+          {
+            "machineryModel": "EQUA",
+            "name": "Power Consumption",
+            "description": "Lorem ipsum",
+            "unit": "Watts",
+            "thresholdLow": null,
+            "thresholdHigh": null
+          }
+        ],
+        "sensorsData": {}
+      }
+    ],
+    "layout": [
+      {
+        "w": 2,
+        "h": 1,
+        "x": 0,
+        "y": 0,
+        "i": "0",
+        "moved": false,
+        "static": false
+      },
+      {
+        "w": 3,
+        "h": 1,
+        "x": 5,
+        "y": 0,
+        "i": "1",
+        "moved": false,
+        "static": false
+      }
+    ]
+  },
+  "userID": "5",
+  "timestamp": {
+    "$numberLong": "1665583179308"
+  }
+},
+{
+  "_id": {
+    "$oid": "6345efcf6e209b6b12518ac5"
+  },
+  "machineryUID": "JF891",
+  "dashboardName": "Dashboard test 3",
+  "dashboard": {
+    "gridItems": [
+      {
+        "id": "0",
+        "name": "Test 1 sahkjsdf asf k",
+        "type": "current-value",
+        "maxSensors": 1,
+        "sensorsMonitoring": [
+          {
+            "machineryModel": "EQUA",
+            "name": "Friction",
+            "description": "Lorem ipsum",
+            "unit": "Newton",
+            "thresholdLow": null,
+            "thresholdHigh": null
+          }
+        ],
+        "sensorsData": {}
+      },
+      {
+        "id": "1",
+        "name": "Test 2",
+        "type": "line-chart",
+        "maxSensors": 3,
+        "sensorsMonitoring": [
+          {
+            "machineryModel": "EQUA",
+            "name": "Power Consumption",
+            "description": "Lorem ipsum",
+            "unit": "Watts",
+            "thresholdLow": null,
+            "thresholdHigh": null
+          }
+        ],
+        "sensorsData": {}
+      },
+      {
+        "id": "2",
+        "name": "Area chart",
+        "type": "area-chart",
+        "maxSensors": 3,
+        "sensorsMonitoring": [
+          {
+            "machineryModel": "EQUA",
+            "name": "Input Current",
+            "description": "Lorem ipsum",
+            "unit": "Ampere",
+            "thresholdLow": null,
+            "thresholdHigh": null
+          },
+          {
+            "machineryModel": "EQUA",
+            "name": "Input Voltage",
+            "description": "Lorem ipsum",
+            "unit": "Volt",
+            "thresholdLow": null,
+            "thresholdHigh": null
+          },
+          {
+            "machineryModel": "EQUA",
+            "name": "Temperature",
+            "description": "Lorem ipsum",
+            "unit": "Celsius",
+            "thresholdLow": null,
+            "thresholdHigh": null
+          }
+        ],
+        "sensorsData": {}
+      }
+    ],
+    "layout": [
+      {
+        "w": 2,
+        "h": 2,
+        "x": 0,
+        "y": 0,
+        "i": "0",
+        "moved": false,
+        "static": false
+      },
+      {
+        "w": 3,
+        "h": 1,
+        "x": 2,
+        "y": 0,
+        "i": "1",
+        "moved": false,
+        "static": false
+      },
+      {
+        "w": 3,
+        "h": 1,
+        "x": 5,
+        "y": 0,
+        "i": "2",
+        "moved": false,
+        "static": false,
+        "isDraggable": true
+      }
+    ]
+  },
+  "userID": "5",
+  "timestamp": {
+    "$numberLong": "1665584537384"
+  }
+},
+{
+  "_id": {
+    "$oid": "6346c42f61a35caad4a68128"
+  },
+  "machineryUID": "JF891",
+  "dashboardName": "Dashboard test 4",
+  "dashboard": {
+    "gridItems": [
+      {
+        "id": "-Infinity",
+        "name": "Bar chart",
+        "type": "bar-chart",
+        "maxSensors": 3,
+        "sensorsMonitoring": [
+          {
+            "machineryModel": "EQUA",
+            "name": "Input Voltage",
+            "description": "Lorem ipsum",
+            "unit": "Volt",
+            "thresholdLow": null,
+            "thresholdHigh": null
+          },
+          {
+            "machineryModel": "EQUA",
+            "name": "Temperature",
+            "description": "Lorem ipsum",
+            "unit": "Celsius",
+            "thresholdLow": null,
+            "thresholdHigh": null
+          },
+          {
+            "machineryModel": "EQUA",
+            "name": "Input Current",
+            "description": "Lorem ipsum",
+            "unit": "Ampere",
+            "thresholdLow": null,
+            "thresholdHigh": null
+          }
+        ],
+        "sensorsData": {}
+      }
+    ],
+    "layout": [
+      {
+        "w": 3,
+        "h": 2,
+        "x": 2,
+        "y": 0,
+        "i": "-Infinity",
+        "moved": false,
+        "static": false,
+        "isDraggable": true
+      }
+    ]
+  },
+  "userID": "5",
+  "timestamp": {
+    "$numberLong": "1665582164064"
+  }
+},
+{
+  "_id": {
+    "$oid": "6346caa461a35caad4a68129"
+  },
+  "machineryUID": "XB098",
+  "dashboardName": "Dashboard EM 1",
+  "dashboard": {
+    "gridItems": [
+      {
+        "id": "0",
+        "name": "Area chart",
+        "type": "area-chart",
+        "maxSensors": 3,
+        "sensorsMonitoring": [],
+        "sensorsData": {}
+      },
+      {
+        "id": "1",
+        "name": "Current value test",
+        "type": "current-value",
+        "maxSensors": 1,
+        "sensorsMonitoring": [],
+        "sensorsData": {}
+      },
+      {
+        "id": "2",
+        "name": "Line chart",
+        "type": "line-chart",
+        "maxSensors": 3,
+        "sensorsMonitoring": [],
+        "sensorsData": {}
+      }
+    ],
+    "layout": [
+      {
+        "w": 3,
+        "h": 1,
+        "x": 0,
+        "y": 0,
+        "i": "0",
+        "moved": false,
+        "static": false,
+        "isDraggable": true
+      },
+      {
+        "w": 2,
+        "h": 1,
+        "x": 3,
+        "y": 0,
+        "i": "1",
+        "moved": false,
+        "static": false,
+        "isDraggable": true
+      },
+      {
+        "w": 3,
+        "h": 1,
+        "x": 5,
+        "y": 0,
+        "i": "2",
+        "moved": false,
+        "static": false,
+        "isDraggable": true
+      }
+    ]
+  },
+  "userID": "5",
+  "timestamp": {
+    "$numberLong": "1665583923907"
+  }
+}]

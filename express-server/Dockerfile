@@ -7,9 +7,11 @@ ENV JWT_EXPIRATION=900000
 ENV REFRESH_TOKEN_SECRET_KEY=47e648a61b5c7c8b3d12bb9c46dbc64f35fd2d3fb22bfc5debc9d7cf6036ff1b
 ENV REFRESH_TOKEN_EXPIRATION=2592000000
 ENV POSTGRES_HOST=localhost
+ENV POSTGRES_PORT=5432
 ENV POSTGRES_USER=postgres
 ENV POSTGRES_PASSWORD=postgres
 ENV MONGODB_HOST=localhost
+ENV MONGODB_PORT=27017
 
 COPY ./package.json /server
 COPY ./package-lock.json /server
@@ -20,6 +22,4 @@ COPY ./nodemon.json /server
 COPY ./tsconfig.json /server
 COPY ./src /server/src
 
-RUN npm run build
-
-CMD npm run start
+CMD npm run start:production

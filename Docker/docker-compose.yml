@@ -1,53 +1,51 @@
 version: '3.8'
 name: arol-cloud
 services:
-    postgres:
-        image: postgres:latest
-        restart: always
-        environment:
-            - DATABASE_HOST=127.0.0.1
-            - POSTGRES_USER=postgres
-            - POSTGRES_PASSWORD=postgres
-            - POSTGRES_DB=arol
-        logging:
-          options:
-            max-size: 10m
-            max-file: "3"
-        ports:
-            - "5432:5432"
-        volumes: 
-            - ./pg/create_fill_tables.sql:/docker-entrypoint-initdb.d/create_fill_tables.sql
-    mongodb:
-        image: mongo:latest
-        volumes:
-            - ./mongo:/docker-entrypoint-initdb.d
-            - ./mongo/data:/tmp/data
-        ports:
-            - "27017:27017"
-    express-server:
-        build:
-            dockerfile: Dockerfile
-            context: "./../express-server"
-        depends_on:
-            - postgres
-            - mongodb
-        environment:
-            - JWT_SECRET_KEY=iAI1ccwtVFOovBuuYl6EVwAMi7++g679+SOj9HBK1ZBcQoJcVK07SBdaG1jV1vRxcY2P012R+qBOFmYBQX90Kw==
-            - POSTGRES_HOST=host.docker.internal
-            - POSTGRES_USER=postgres
-            - POSTGRES_PASSWORD=postgres
-            - MONGODB_HOST=host.docker.internal
-        ports:
-            - "8080:8080"
-    react-client:
-        stdin_open: true
-        environment:
-            - CHOKIDAR_USEPOLLING=true
-            - REACT_APP_SERVER_ADDRESS=http://localhost:8080/
-        build:
-            dockerfile: Dockerfile
-            context: ./../react-client
-        depends_on:
-            - express-server
-        ports:
-            - "3000:80"
+  postgres:
+    image: postgres:latest
+    restart: always
+    environment:
+      - DATABASE_HOST=127.0.0.1
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=arol
+    logging:
+      options:
+        max-size: 10m
+        max-file: "3"
+    ports:
+      - "54321:5432"
+    volumes:
+      - ./pg/create_fill_tables.sql:/docker-entrypoint-initdb.d/create_fill_tables.sql
+  mongodb:
+    image: mongo:latest
+    volumes:
+      - ./mongo/dump:/dump
+      - ./mongo/init.sh:/docker-entrypoint-initdb.d/init.sh
+    ports:
+      - "57017:27017"
+  express-server:
+    build:
+      dockerfile: Dockerfile
+      context: "./../express-server"
+    depends_on:
+      - postgres
+      - mongodb
+    environment:
+      - POSTGRES_HOST=host.docker.internal
+      - POSTGRES_PORT=54321
+      - MONGODB_HOST=host.docker.internal
+      - MONGODB_PORT=57017
+    ports:
+      - "8080:8080"
+  react-client:
+    stdin_open: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    build:
+      dockerfile: Dockerfile
+      context: ./../react-client
+    depends_on:
+      - express-server
+    ports:
+      - "3000:80"

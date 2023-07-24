@@ -14,15 +14,17 @@ JWT_EXPIRATION=900000
 REFRESH_TOKEN_SECRET_KEY=47e648a61b5c7c8b3d12bb9c46dbc64f35fd2d3fb22bfc5debc9d7cf6036ff1b
 REFRESH_TOKEN_EXPIRATION=2592000000
 POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=postgres
 MONGODB_HOST=localhost
+MONGODB_PORT=27017
 ```
 
 ### Important note
 
-To run project locally, PostgreSQL and MongoDB need to be installed in the system. DB configuration scripts for both
-DBMS-es can be found under ```Docker/pg``` and ```Docker/mongo/data``` dirs.
+To run project locally, PostgreSQL and MongoDB need to be installed in the system. DB configuration scripts/exports for both
+DBMS-es can be found under ```Docker/pg``` and ```Docker/mongo/data``` dirs. These exports need to be imported into the corresponding DBMS manually.
 
 ### Run server
 
@@ -46,11 +48,17 @@ Step 1: ```Make sure you have Docker installed locally on your system```
 
 Step 2: ```cd ./Docker```
 
-Step 3: ```docker compose up```
+Step 3: ```docker compose up --build```
 
 Step 4: ```Open Docker Desktop and make sure to run all the containers under the "arol-cloud" container```
 
 Step 5: ```Open http://localhost:3000 on you favourite browser```
+
+### PostgreSQL credentials
+
+```username: postgres```
+```password: postgres```
+```port: 5432```
 
 ## DB Schema
 
@@ -73,13 +81,13 @@ Step 5: ```Open http://localhost:3000 on you favourite browser```
 #### User 3
 
 ```username: test2@hotmail.com```
-```password: 123```
+```password: 12345678```
 ```password: Worker```
 
 #### User 4
 
 ```username: worker@hotmail.com```
-```password: 123```
+```password: 12345678```
 ```password: Worker, Manager```
 
 ## API Documentation
