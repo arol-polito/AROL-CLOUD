@@ -76,19 +76,19 @@ Step 5: ```Open http://localhost:3000 on you favourite browser```
 
 ```username: mariodeda2@hotmail.com```
 ```password: 123```
-```password: Worker```
+```roles: Worker```
 
 #### User 3
 
 ```username: test2@hotmail.com```
 ```password: 12345678```
-```password: Worker```
+``roles: Worker```
 
 #### User 4
 
 ```username: worker@hotmail.com```
 ```password: 12345678```
-```password: Worker, Manager```
+```roles: Worker, Manager```
 
 ## API Documentation
 
