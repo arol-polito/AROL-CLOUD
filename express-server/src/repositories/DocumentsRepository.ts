@@ -256,9 +256,11 @@ async function uploadMachineryDocuments(userID: number, machineryUID: string, pa
                 await insertFileOrFolderInDatabase(document)
 
                 try {
-                    await fs.access('./../../documents');
+                    const res = await fs.access('./../../documents');
+                    if (!res)
+                        await fs.mkdir('./../../documents');
                 } catch (e) {
-                    await fs.mkdir('./../../documents');
+                    console.error(e);
                 }
 
                 try {
