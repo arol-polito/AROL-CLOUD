@@ -8,13 +8,13 @@ async function authenticateAndGetUser(email: string, password: string): Promise<
 
     try {
 
-        let result = await pgClient.oneOrNone("SELECT * FROM public.users WHERE email=$1", email)
+        const result = await pgClient.oneOrNone("SELECT * FROM public.users WHERE email=$1", email)
 
         if (!result) {
             throw "User with email " + email + " not found"
         }
 
-        let authenticationSuccess = await bcrypt.compare(password, result.password)
+        const authenticationSuccess = await bcrypt.compare(password, result.password)
 
         if (!authenticationSuccess) {
             throw "Authentication failed: Passwords do not match"
@@ -40,7 +40,7 @@ async function authenticateAndGetUser(email: string, password: string): Promise<
 async function getUserByID(id: number) {
     try {
 
-        let result = await pgClient.oneOrNone("SELECT * FROM public.users WHERE id=$1", id)
+        const result = await pgClient.oneOrNone("SELECT * FROM public.users WHERE id=$1", id)
 
         return new User(
             result.id,
@@ -62,7 +62,7 @@ async function getUserByID(id: number) {
 async function getCompanyUsers(companyID: number): Promise<User[] | null> {
 
     try {
-        let result = await pgClient.manyOrNone(
+        const result = await pgClient.manyOrNone(
             "SELECT * FROM public.users WHERE company_id=$1",
             companyID
         )
@@ -95,10 +95,10 @@ async function getCompanyUsers(companyID: number): Promise<User[] | null> {
 async function createAccount(email: string, password: string, name: string, surname: string, roles: string[], createdBy: string, companyID: number): Promise<User | null> {
 
     try {
-        let salt = await bcrypt.genSalt(10)
-        let hashedPassword = await bcrypt.hash(password, salt)
+        const salt = await bcrypt.genSalt(10)
+        const hashedPassword = await bcrypt.hash(password, salt)
 
-        let insertResult = await pgClient.query(
+        const insertResult = await pgClient.query(
             "INSERT INTO public.users(email, password, name, surname, roles, created_by, company_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
             [email, hashedPassword, name, surname, roles.join(","), createdBy, companyID]
         )
@@ -138,13 +138,13 @@ async function updateAccountDetails(userID: number, email: string, name: string,
 
 }
 
-async function resetAccountPassword(userID: number, newPassword: string): Promise<Boolean> {
+async function resetAccountPassword(userID: number, newPassword: string): Promise<boolean> {
 
     try {
-        let salt = await bcrypt.genSalt(10)
-        let hashedPassword = await bcrypt.hash(newPassword, salt)
+        const salt = await bcrypt.genSalt(10)
+        const hashedPassword = await bcrypt.hash(newPassword, salt)
 
-        let updateResult = await pgClient.query(
+        const updateResult = await pgClient.query(
             "UPDATE public.users SET password = $1 WHERE id=$2 RETURNING *",
             [hashedPassword, userID]
         )
@@ -153,7 +153,7 @@ async function resetAccountPassword(userID: number, newPassword: string): Promis
             throw "File insertion in DB failed"
         }
 
-        let deleteRefTokensResult = await pgClient.query(
+        const deleteRefTokensResult = await pgClient.query(
             "DELETE FROM public.refresh_tokens WHERE user_id=$1",
             [userID]
         )
@@ -171,7 +171,7 @@ async function getUserPermissionsForMachinery(userID: number, machineryUID: stri
 
     try {
 
-        let result = await pgClient.oneOrNone(
+        const result = await pgClient.oneOrNone(
             "SELECT * FROM public.machinery_permissions WHERE user_id=$1 AND machinery_uid=$2",
             [userID, machineryUID]
         )
@@ -202,7 +202,7 @@ async function getAllUserPermissions(userID: number): Promise<MachineryPermissio
 
     try {
 
-        let result = await pgClient.manyOrNone(
+        const result = await pgClient.manyOrNone(
             "SELECT * FROM public.machinery_permissions WHERE user_id=$1",
             userID
         )
@@ -231,14 +231,14 @@ async function getAllUserPermissions(userID: number): Promise<MachineryPermissio
 async function updateUserPermissions(modifierUserID: number, isAdmin: boolean, machineryPermissions: MachineryPermissions) {
     try {
         //GET MODIFIER USER PERMISSIONS
-        let modifierPermissions = await getUserPermissionsForMachinery(modifierUserID, machineryPermissions.machineryUID)
+        const modifierPermissions = await getUserPermissionsForMachinery(modifierUserID, machineryPermissions.machineryUID)
 
         if (!modifierPermissions) {
             throw "Could not get modifier permissions for machinery"
         }
 
         let numValueAdded = 0
-        let params: any[] = []
+        const params: any[] = []
         let query = "UPDATE public.machinery_permissions SET"
         if (modifierPermissions.dashboardsRead || isAdmin) {
             query += " dashboards_read=$" + (numValueAdded + 1)
@@ -307,7 +307,7 @@ async function updateUserPermissions(modifierUserID: number, isAdmin: boolean, m
         params.push(machineryPermissions.machineryUID, machineryPermissions.userID)
 
         //GET CURRENT USER PERMISSIONS
-        let userPermissionsExists = await getUserPermissionsForMachinery(machineryPermissions.userID, machineryPermissions.machineryUID)
+        const userPermissionsExists = await getUserPermissionsForMachinery(machineryPermissions.userID, machineryPermissions.machineryUID)
 
         if (userPermissionsExists === undefined) {
             throw "Could not get user permission for machinery"
@@ -315,7 +315,7 @@ async function updateUserPermissions(modifierUserID: number, isAdmin: boolean, m
 
         //UPDATE EXISTING USER PERMISSIONS
         if (userPermissionsExists) {
-            let updateResult = await pgClient.query(
+            const updateResult = await pgClient.query(
                 query,
                 params
             )
@@ -330,7 +330,7 @@ async function updateUserPermissions(modifierUserID: number, isAdmin: boolean, m
                 updateResult[0].documents_modify === false &&
                 updateResult[0].documents_write === false
             ) {
-                let deleteResult = await deleteUserPermissions(machineryPermissions.userID, machineryPermissions.machineryUID)
+                const deleteResult = await deleteUserPermissions(machineryPermissions.userID, machineryPermissions.machineryUID)
                 if (deleteResult) {
                     return true
                 }
@@ -353,7 +353,7 @@ async function updateUserPermissions(modifierUserID: number, isAdmin: boolean, m
                 return true
             }
 
-            let insertResult = await pgClient.query(
+            const insertResult = await pgClient.query(
                 "INSERT INTO public.machinery_permissions(user_id, machinery_uid, dashboards_write, dashboards_modify, dashboards_read, documents_write, documents_modify, documents_read) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *",
                 [
                     machineryPermissions.userID,
@@ -380,7 +380,7 @@ async function updateUserPermissions(modifierUserID: number, isAdmin: boolean, m
 async function deleteUserPermissions(userID: number, machineryUID: string) {
 
     try {
-        let result = await pgClient.result(
+        const result = await pgClient.result(
             "DELETE FROM public.machinery_permissions WHERE user_id=$1 AND machinery_uid=$2",
             [userID, machineryUID]
         )
@@ -426,7 +426,7 @@ async function deleteUserPermissions(userID: number, machineryUID: string) {
 async function insertRefreshToken(userID: number, refreshToken: string, expiration: number): Promise<RefreshToken | null> {
 
     try {
-        let insertResult = await pgClient.query(
+        const insertResult = await pgClient.query(
             "INSERT INTO public.refresh_tokens(user_id, refresh_token, expiration) VALUES ($1, $2, $3) RETURNING *",
             [userID, refreshToken, expiration]
         )
@@ -447,7 +447,7 @@ async function insertRefreshToken(userID: number, refreshToken: string, expirati
 async function getRefreshToken(userID: number, refreshToken: string): Promise<RefreshToken | null> {
 
     try {
-        let result = await pgClient.oneOrNone(
+        const result = await pgClient.oneOrNone(
             "SELECT * FROM public.refresh_tokens WHERE user_id=$1 AND refresh_token=$2",
             [userID, refreshToken]
         )
@@ -471,7 +471,7 @@ async function getRefreshToken(userID: number, refreshToken: string): Promise<Re
 async function deleteRefreshToken(token: string): Promise<boolean> {
 
     try {
-        let result = await pgClient.result(
+        const result = await pgClient.result(
             "DELETE FROM public.refresh_tokens WHERE refresh_token=$1",
             [token]
         )

@@ -13,14 +13,14 @@ import {Document} from "mongodb";
 import constants from "../utils/Constants";
 
 
-async function verifyMachineryOwnershipByUID(machineryUID: string, companyID: number | null): Promise<Boolean> {
+async function verifyMachineryOwnershipByUID(machineryUID: string, companyID: number | null): Promise<boolean> {
 
     if (companyID === null) {
         return true
     }
 
     try {
-        let checkCompany = await pgClient.one(
+        const checkCompany = await pgClient.one(
             "SELECT COUNT(*) FROM public.company_machineries WHERE company_id=$1 AND machinery_uid=$2",
             [companyID, machineryUID]
         )
@@ -37,14 +37,14 @@ async function verifyMachineryOwnershipByUID(machineryUID: string, companyID: nu
 
 }
 
-async function verifyMachineryOwnershipByModelID(modelID: string, companyID: number | null): Promise<Boolean> {
+async function verifyMachineryOwnershipByModelID(modelID: string, companyID: number | null): Promise<boolean> {
 
     if (companyID === null) {
         return true
     }
 
     try {
-        let checkCompany = await pgClient.one(
+        const checkCompany = await pgClient.one(
             "SELECT COUNT(*) FROM public.company_machineries WHERE company_id=$1 AND machinery_model_id=$2",
             [companyID, modelID]
         )
@@ -64,7 +64,7 @@ async function verifyMachineryOwnershipByModelID(modelID: string, companyID: num
 async function getCompanyMachineries(companyID: number): Promise<Machinery[] | null> {
 
     try {
-        let result = await pgClient.result(
+        const result = await pgClient.result(
             "SELECT * FROM public.company_machineries as CM, public.machineries_catalogue as MC WHERE company_id=$1 AND CM.machinery_model_id=MC.model_id",
             companyID
         )
@@ -92,7 +92,7 @@ async function getCompanyMachineries(companyID: number): Promise<Machinery[] | n
 async function getCompanyMachineryByUID(companyID: number, machineryUID: string): Promise<Machinery | null> {
 
     try {
-        let result = await pgClient.oneOrNone(
+        const result = await pgClient.oneOrNone(
             "SELECT * FROM public.company_machineries as CM, public.machineries_catalogue as MC WHERE machinery_uid=$1 AND company_id=$2 AND CM.machinery_model_id=MC.model_id",
             [machineryUID, companyID]
         )
@@ -118,7 +118,7 @@ async function getCompanyMachineryByUID(companyID: number, machineryUID: string)
 
 async function getMachinerySensors(machineryUID: string): Promise<Sensor[] | null> {
     try {
-        let result = await pgClient.result(
+        const result = await pgClient.result(
             "SELECT * FROM public.machinery_sensors WHERE machinery_uid=$1",
             [machineryUID]
         )
@@ -150,13 +150,13 @@ async function getMachinerySensors(machineryUID: string): Promise<Sensor[] | nul
 
 async function getMachinerySensorData(machineryUID: string, machineryModelID: string, sensorFilters: SensorDataFilters): Promise<SensorDataSample[] | null> {
 
-    let {
+    const {
         numSamplesRequiredPerSensor,
         displayMinTime,
         displayMaxTime
     } = sensorDataQueryBuilder.getMinMaxDisplayTimesAndLimits(sensorFilters)
 
-    let filteredSensorData: SensorDataSample[] = []
+    const filteredSensorData: SensorDataSample[] = []
 
     for (const [key, value] of Object.entries(sensorFilters.sensors)) {
 
@@ -164,7 +164,7 @@ async function getMachinerySensorData(machineryUID: string, machineryModelID: st
 
         for (const sensorFilter of value) {
 
-            let formattedHeadNumber = String(sensorFilter.headNumber).padStart(2, "0")
+            const formattedHeadNumber = String(sensorFilter.headNumber).padStart(2, "0")
 
             const aggregate = [
                 {
@@ -278,7 +278,7 @@ async function getMachinerySensorData(machineryUID: string, machineryModelID: st
                 }
             ]
 
-            let queryResults = mongoClient.db("arol").collection(key).aggregate(
+            const queryResults = mongoClient.db("arol").collection(key).aggregate(
                 aggregate
             )
 
@@ -355,7 +355,7 @@ async function isEndOfSensorDataForMachinery(sensorFilters: SensorDataFilters, m
 
         for (const sensorFilter of value) {
 
-            let formattedHeadNumber = String(sensorFilter.headNumber).padStart(2, "0")
+            const formattedHeadNumber = String(sensorFilter.headNumber).padStart(2, "0")
 
             const aggregate = [
                 {
@@ -466,7 +466,7 @@ async function isEndOfSensorDataForMachinery(sensorFilters: SensorDataFilters, m
                 // }
             ]
 
-            let queryResults = mongoClient.db("arol").collection(key).aggregate(
+            const queryResults = mongoClient.db("arol").collection(key).aggregate(
                 aggregate
             )
 

@@ -1,8 +1,8 @@
-import User from "../../users/interfaces/User";
-import MachineryPermissions from "./MachineryPermissions";
+import type User from '../../users/interfaces/User'
+import type MachineryPermissions from './MachineryPermissions'
 
-export default interface UserWithPermissions{
-    user: User
-    permissions: MachineryPermissions[]
-    active: boolean
+export default interface UserWithPermissions {
+  user: User
+  permissions: MachineryPermissions[]
+  active: boolean
 }

@@ -1,68 +1,58 @@
-import MapPanel from "../components/MapPanel"
-import {useContext, useEffect, useState} from "react";
-import Machinery from "../components/Machinery";
-import machineriesApi from "../../services/MachineryService";
-import {Box, Divider, Heading, HStack, useColorModeValue} from "@chakra-ui/react";
-import NavigatorPanel from "../components/NavigatorPanel";
-import PrincipalContext from "../../utils/contexts/PrincipalContext";
-
-interface MachineriesPageProps{
-
-}
+import MapPanel from '../components/MapPanel'
+import { useEffect, useState } from 'react'
+import type Machinery from '../components/Machinery'
+import machineriesApi from '../../services/MachineryService'
+import { Box, Divider, Heading, HStack, useColorModeValue } from '@chakra-ui/react'
+import NavigatorPanel from '../components/NavigatorPanel';
+import React from 'react';
 
 interface Navigator {
-    stage: number
-    clusterLocation: string
-    machineryUID: string
+  stage: number
+  clusterLocation: string
+  machineryUID: string
 }
 
-export default function MachineriesPage(props: MachineriesPageProps){
+export default function MachineriesPage () {
+  const [machineries, setMachineries] = useState<Map<string, Machinery[]>>(new Map())
+  const [machineriesLoading, setMachineriesLoading] = useState(false)
+  const [navigator, setNavigator] = useState<Navigator>({
+    stage: 0,
+    clusterLocation: '',
+    machineryUID: ''
+  })
 
-    const [machineries, setMachineries] = useState<Map<string, Machinery[]>>(new Map())
-    const [machineriesLoading, setMachineriesLoading] = useState(false)
-    const [navigator, setNavigator] = useState<Navigator>({
-        stage: 0,
-        clusterLocation: "",
-        machineryUID: ""
-    })
+  // Fetch machineries map
+  useEffect(() => {
+    async function retrieveData () {
+      setMachineriesLoading(true)
 
-    //Fetch machineries map
-    useEffect(()=>{
+      try {
+        const data = await machineriesApi.getMachineryByCompany()
+        setMachineries(data)
 
-        async function retrieveData(){
+        if (data.size === 1)
+          setNavigator({
+            stage: 1,
+            clusterLocation: Array.from(data.keys())[0],
+            machineryUID: ''
+          })
+      } catch (e) {
+        console.error(e)
+      }
 
-            setMachineriesLoading(true)
+      setMachineriesLoading(false)
+    }
 
-            try {
-                let data = await machineriesApi.getMachineryByCompany()
-                setMachineries(data)
+    retrieveData()
+  }, [])
 
-                if (data.size === 1) {
-                    setNavigator({
-                        stage: 1,
-                        clusterLocation: Array.from(data.keys())[0],
-                        machineryUID: ""
-                    })
-                }
-            }
-            catch (e){
-                console.log(e)
-            }
-
-            setMachineriesLoading(false)
-
-        }
-
-        retrieveData()
-    }, [])
-
-    return(
-        <Box w={"full"}>
+  return (
+        <Box w="full">
             <Heading mb={6}>Machineries</Heading>
             <HStack
                 bg={useColorModeValue('white', 'gray.900')}
-                boxShadow={'2xl'}
-                rounded={'lg'}
+                boxShadow="2xl"
+                rounded="lg"
                 p={6}
             >
                 <NavigatorPanel
@@ -72,7 +62,7 @@ export default function MachineriesPage(props: MachineriesPageProps){
                     navigator={navigator}
                     setNavigator={setNavigator}
                 />
-                <Divider orientation={"vertical"} height={"500px"} />
+                <Divider orientation="vertical" height="500px"/>
                 <MapPanel
                     machineries={machineries}
                     setMachineries={setMachineries}
@@ -82,6 +72,5 @@ export default function MachineriesPage(props: MachineriesPageProps){
             </HStack>
         </Box>
 
-    )
-
+  )
 }

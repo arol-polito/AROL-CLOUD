@@ -8,14 +8,14 @@ async function getDocument(machineryUID: string, documentUID: string) {
 
     try {
 
-        let fileDB = await getFileFromDatabase(machineryUID, documentUID)
+        const fileDB = await getFileFromDatabase(machineryUID, documentUID)
 
         if (!fileDB) {
             return null
         }
 
 
-        let document: Buffer = fs.readFile('./../../documents/' + fileDB.documentUID!!);
+        const document: Buffer = fs.readFile('./../../documents/' + fileDB.documentUID!);
 
         return document
 
@@ -29,14 +29,14 @@ async function getDocument(machineryUID: string, documentUID: string) {
 async function getMachineryDocuments(machineryUID: string) {
 
     try {
-        let filesDB = await getFilesFromDatabase(machineryUID)
+        const filesDB = await getFilesFromDatabase(machineryUID)
 
-        let fileMap: { [key: string]: any } = {}
+        const fileMap: { [key: string]: any } = {}
         filesDB.forEach((file) => {
 
             let childrenIds: string[] = []
             if (file.isDir) {
-                let childrenParentID = file.location + "\\" + file.name
+                const childrenParentID = file.location + "\\" + file.name
                 childrenIds = filesDB.filter((el) => (el.location === childrenParentID)).map((el) => (el.location + "\\" + el.name))
             }
 
@@ -56,8 +56,8 @@ async function getMachineryDocuments(machineryUID: string) {
 
         })
 
-        let rootParentID = "\\" + machineryUID
-        let rootChildrenIds = filesDB.filter((el) => (el.location === rootParentID)).map((el) => (el.location + "\\" + el.name))
+        const rootParentID = "\\" + machineryUID
+        const rootChildrenIds = filesDB.filter((el) => (el.location === rootParentID)).map((el) => (el.location + "\\" + el.name))
 
         fileMap[rootParentID] = {
             id: rootParentID,
@@ -140,32 +140,32 @@ async function getMachineryDocuments(machineryUID: string) {
 
 async function deleteMachineryDocuments(machineryUID: string, documentsList: FileMapEntry[]): Promise<any[] | null> {
 
-    let deletedDocuments = []
+    const deletedDocuments = []
     for (const document of documentsList) {
 
         try {
-            let documentID = document.id
-            let splitDocumentID = documentID.split("\\")
+            const documentID = document.id
+            const splitDocumentID = documentID.split("\\")
 
             if (splitDocumentID.length > 0) {
-                let documentName = splitDocumentID[splitDocumentID.length - 1]
-                let documentLocation = splitDocumentID.slice(0, splitDocumentID.length - 1).join("\\")
+                const documentName = splitDocumentID[splitDocumentID.length - 1]
+                const documentLocation = splitDocumentID.slice(0, splitDocumentID.length - 1).join("\\")
 
-                let result = await getFileByNameAndLocationFromDatabase(documentLocation, documentName, machineryUID)
+                const result = await getFileByNameAndLocationFromDatabase(documentLocation, documentName, machineryUID)
 
                 if (result) {
                     if (result.isDir) {
-                        let deletedDocsAndFolders = await deleteFolderFromDatabase(machineryUID, documentLocation, documentName)
-                        let deletedDocs = deletedDocsAndFolders.filter((el) => (el.isDocument && el.documentUID))
+                        const deletedDocsAndFolders = await deleteFolderFromDatabase(machineryUID, documentLocation, documentName)
+                        const deletedDocs = deletedDocsAndFolders.filter((el) => (el.isDocument && el.documentUID))
                         for (const deletedDocument of deletedDocs) {
-                            await fs.rm("./../../documents/" + deletedDocument.documentUID!!)
+                            await fs.rm("./../../documents/" + deletedDocument.documentUID!)
                         }
 
                         deletedDocuments.push(document)
 
                     } else if (document.documentUID) {
                         await deleteFileFromDatabase(machineryUID, document.documentUID, documentLocation)
-                        await fs.rm("./../../documents/" + document.documentUID!!)
+                        await fs.rm("./../../documents/" + document.documentUID!)
 
                         deletedDocuments.push(document)
 
@@ -190,10 +190,10 @@ async function createMachineryFolder(folderPath: string, machineryUID: string, u
     }
 
     try {
-        let folder = new Document(
+        const folder = new Document(
             machineryUID,
             null,
-            folderPath.split("\\").pop()!!,
+            folderPath.split("\\").pop()!,
             folderPath.split("\\").slice(0, -1).join("\\"),
             0,
             true,
@@ -218,7 +218,7 @@ async function createMachineryFolder(folderPath: string, machineryUID: string, u
 
 async function uploadMachineryDocuments(userID: number, machineryUID: string, parentFolderPath: string, files: Express.Multer.File[]): Promise<Document[] | null> {
 
-    let uploadedFiles: Document[] = []
+    const uploadedFiles: Document[] = []
 
     try {
 
@@ -236,9 +236,9 @@ async function uploadMachineryDocuments(userID: number, machineryUID: string, pa
                 !dbFile
             ) {
 
-                let multerFile = await fs.readFile(file.path)
+                const multerFile = await fs.readFile(file.path)
 
-                let document = new Document(
+                const document = new Document(
                     machineryUID,
                     file.filename,
                     file.originalname,
@@ -300,14 +300,14 @@ async function renameFileOrFolder(oldFileID: string, documentUID: string, newFil
                 newFileName += ".pdf"
             }
 
-            let parentFolderPath = oldFileID.split("\\").slice(0, -1).join("\\")
+            const parentFolderPath = oldFileID.split("\\").slice(0, -1).join("\\")
             if ((await getFileByNameAndLocationFromDatabase(parentFolderPath, newFileName, machineryUID))) {
                 return null
             }
 
             await renameFileInDatabase(documentUID, newFileName)
         } else {
-            let newFolderID = oldFileID.split("\\").slice(0, -1).join("\\") + "\\" + newFileName
+            const newFolderID = oldFileID.split("\\").slice(0, -1).join("\\") + "\\" + newFileName
 
             await renameFolderInDatabase(oldFileID, newFolderID, machineryUID)
         }
@@ -324,7 +324,7 @@ async function renameFileOrFolder(oldFileID: string, documentUID: string, newFil
 async function getFileFromDatabase(machineryUID: string, documentUID: string): Promise<Document | null> {
 
     try {
-        let result = await pgClient.oneOrNone(
+        const result = await pgClient.oneOrNone(
             "SELECT * FROM public.machinery_documents WHERE machinery_uid=$1 AND document_uid=$2",
             [machineryUID, documentUID]
         )
@@ -359,7 +359,7 @@ async function getFileFromDatabase(machineryUID: string, documentUID: string): P
 async function getFileByNameAndLocationFromDatabase(location: string, filename: string, machineryUID: string) {
 
     try {
-        let result = await pgClient.oneOrNone(
+        const result = await pgClient.oneOrNone(
             "SELECT * FROM public.machinery_documents WHERE location=$1 AND name=$2 AND machinery_uid=$3",
             [location, filename, machineryUID]
         )
@@ -391,7 +391,7 @@ async function getFileByNameAndLocationFromDatabase(location: string, filename: 
 
 async function getFilesFromDatabase(machineryUID: string): Promise<Document[]> {
 
-    let result = await pgClient.result(
+    const result = await pgClient.result(
         "SELECT * FROM public.machinery_documents WHERE machinery_uid=$1",
         machineryUID
     )
@@ -418,7 +418,7 @@ async function getFilesFromDatabase(machineryUID: string): Promise<Document[]> {
 }
 
 async function insertFileOrFolderInDatabase(document: Document) {
-    let result = await pgClient.query(
+    const result = await pgClient.query(
         "INSERT INTO public.machinery_documents(machinery_uid, name, location, is_dir, is_document, is_modifiable, size_bytes, document_uid, creation_timestamp, modification_timestamp, created_by, modified_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *",
         [document.machineryUID, document.name, document.location, document.isDir, document.isDocument, document.isModifiable, document.sizeBytes, document.documentUID, document.creationTimestamp, document.modificationTimestamp, document.createdBy, document.modifiedBy]
     )
@@ -429,7 +429,7 @@ async function insertFileOrFolderInDatabase(document: Document) {
 }
 
 async function renameFileInDatabase(documentUID: string, newFileName: string) {
-    let result = await pgClient.query(
+    const result = await pgClient.query(
         "UPDATE public.machinery_documents SET name=$1 WHERE document_uid=$2 RETURNING *",
         [newFileName, documentUID]
     )
@@ -443,20 +443,20 @@ async function renameFolderInDatabase(oldFolderID: string, newFolderID: string, 
 
     const escapedFolderID = oldFolderID.split("\\").join("\\\\")
 
-    let modifiedFolder = await pgClient.query(
+    const modifiedFolder = await pgClient.query(
         "UPDATE public.machinery_documents SET location=$1, name=$2 WHERE location=$3 AND name=$4 AND machinery_uid=$5 RETURNING *",
         []
     )
 
-    let entriesToModify = await pgClient.manyOrNone(
+    const entriesToModify = await pgClient.manyOrNone(
         "SELECT * FROM public.machinery_documents WHERE location LIKE $1 AND machinery_uid=$2",
         [escapedFolderID + "%", machineryUID]
     )
 
     for (const row of entriesToModify) {
-        let oldID: string = row.file_location
-        let newID: string = newFolderID + oldID.slice(oldFolderID.length)
-        let result = await pgClient.query(
+        const oldID: string = row.file_location
+        const newID: string = newFolderID + oldID.slice(oldFolderID.length)
+        const result = await pgClient.query(
             "UPDATE public.machinery_documents SET location=$1 WHERE document_uid=$2 RETURNING *",
             [newID, row.document_uid]
         )
@@ -469,7 +469,7 @@ async function renameFolderInDatabase(oldFolderID: string, newFolderID: string, 
 
 async function deleteFileFromDatabase(machineryUID: string, documentUID: string, fileLocation: string) {
 
-    let result = await pgClient.result(
+    const result = await pgClient.result(
         "DELETE FROM public.machinery_documents WHERE machinery_uid=$1 AND document_uid=$2 AND location=$3",
         [machineryUID, documentUID, fileLocation]
     )
@@ -487,7 +487,7 @@ async function deleteFolderFromDatabase(machineryUID: string, folderLocation: st
     const folderID = folderLocation + "\\" + folderName
     const escapedFolderID = folderID.split("\\").join("\\\\")
 
-    let deletionResult = await pgClient.query(
+    const deletionResult = await pgClient.query(
         "DELETE FROM public.machinery_documents WHERE ((location LIKE $1) OR (location=$2 AND name=$3)) AND machinery_uid=$4 RETURNING *",
         [escapedFolderID + "%", folderLocation, folderName, machineryUID]
     )

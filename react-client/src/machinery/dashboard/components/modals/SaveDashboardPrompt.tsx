@@ -1,67 +1,66 @@
 import {
-    AlertDialog,
-    AlertDialogBody,
-    AlertDialogContent,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogOverlay,
-    Button,
-    FormControl,
-    FormLabel,
-    Input,
-    Switch,
-    Text,
-    VStack
-} from "@chakra-ui/react";
-import React, {useRef, useState} from "react";
-import dayjs from "dayjs";
-import Dashboard from "../../models/Dashboard";
-import SaveDashboard from "../../interfaces/SaveDashboard";
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Switch,
+  Text,
+  VStack
+} from '@chakra-ui/react'
+import React, { useRef, useState } from 'react'
+import dayjs from 'dayjs'
+import type Dashboard from '../../models/Dashboard'
+import type SaveDashboard from '../../interfaces/SaveDashboard'
 
-interface SaveDashboardPromptProps{
-    dashboard: Dashboard
-    promptOpen: boolean
-    setPromptOpen: React.Dispatch<React.SetStateAction<boolean>>
-    saveDashboard: SaveDashboard
-    setSaveDashboard: React.Dispatch<React.SetStateAction<SaveDashboard>>
-    dashboardSaving: boolean
+interface SaveDashboardPromptProps {
+  dashboard: Dashboard
+  promptOpen: boolean
+  setPromptOpen: React.Dispatch<React.SetStateAction<boolean>>
+  saveDashboard: SaveDashboard
+  setSaveDashboard: React.Dispatch<React.SetStateAction<SaveDashboard>>
+  dashboardSaving: boolean
 }
 
+export default function SaveDashboardPrompt (props: SaveDashboardPromptProps) {
+  const [dashboardName, setDashboardName] = useState(
+    props.dashboard.name !== 'Unsaved new dashboard'
+      ? props.dashboard.name
+      : `Dashboard ${dayjs().format('ddd, MMM D, YYYY H:mm')}`
+  )
+  const [isDefaultDashboard, setIsDefaultDashboard] = useState(props.dashboard.isDefault)
+  const cancelRef = useRef<HTMLButtonElement>(null)
 
-export default function SaveDashboardPrompt(props: SaveDashboardPromptProps){
+  function handlePromptClose () {
+    if (props.dashboardSaving) return
 
-    const [dashboardName, setDashboardName] = useState(
-        props.dashboard.name!=="Unsaved new dashboard" ?
-            props.dashboard.name : "Dashboard "+dayjs().format("ddd, MMM D, YYYY H:mm")
-    )
-    const [isDefaultDashboard, setIsDefaultDashboard] = useState(props.dashboard.isDefault)
-    const cancelRef = useRef<HTMLButtonElement>(null)
+    props.setSaveDashboard({
+      isDefault: false,
+      name: '',
+      save: false,
+      saveAs: false,
+      saveAsError: false
+    })
 
-    function handlePromptClose(){
-        if(props.dashboardSaving) return
+    props.setPromptOpen(false)
+  }
 
-        props.setSaveDashboard({
-            isDefault: false,
-            name: "",
-            save: false,
-            saveAs: false,
-            saveAsError: false
-        })
+  function handleSaveButtonPressed () {
+    props.setSaveDashboard({
+      name: dashboardName,
+      isDefault: isDefaultDashboard,
+      save: false,
+      saveAs: true,
+      saveAsError: false
+    })
+  }
 
-        props.setPromptOpen(false)
-    }
-
-    function handleSaveButtonPressed(){
-        props.setSaveDashboard({
-            name: dashboardName,
-            isDefault: isDefaultDashboard,
-            save: false,
-            saveAs: true,
-            saveAsError: false
-        })
-    }
-
-    return(
+  return (
         <AlertDialog
             isOpen={props.promptOpen}
             leastDestructiveRef={cancelRef}
@@ -74,15 +73,17 @@ export default function SaveDashboardPrompt(props: SaveDashboardPromptProps){
                     </AlertDialogHeader>
 
                     <AlertDialogBody>
-                        <VStack w={"full"} justifyContent={"left"} alignItems={"left"}>
-                            <Text fontSize={"sm"}>Please type a name for the dashboard</Text>
+                        <VStack w="full" justifyContent="left" alignItems="left">
+                            <Text fontSize="sm">Please type a name for the dashboard</Text>
                             <Input
-                                w={"full"}
+                                w="full"
                                 variant='outline'
-                                isInvalid={dashboardName.length===0}
+                                isInvalid={dashboardName.length === 0}
                                 errorBorderColor='red'
                                 value={dashboardName}
-                                onChange={(e) => (setDashboardName(e.target.value))}
+                                onChange={(e) => {
+                                  setDashboardName(e.target.value)
+                                }}
                             />
                             <FormControl display='flex' alignItems='center'>
                                 <FormLabel htmlFor='isDefault' mb='0'>
@@ -91,16 +92,18 @@ export default function SaveDashboardPrompt(props: SaveDashboardPromptProps){
                                 <Switch
                                     id='isDefault'
                                     isChecked={isDefaultDashboard}
-                                    onChange={(e)=>(setIsDefaultDashboard(e.target.checked))}
+                                    onChange={(e) => {
+                                      setIsDefaultDashboard(e.target.checked)
+                                    }}
                                 />
                             </FormControl>
                             {
                                 dashboardName.length === 0 &&
-                                <Text fontSize={"sm"} color={"red"}>Dashboard name cannot be empty</Text>
+                                <Text fontSize="sm" color="red">Dashboard name cannot be empty</Text>
                             }
                             {
                                 props.saveDashboard.saveAsError &&
-                                <Text fontSize={"sm"} color={"red"}>A dashboard with this name already exists</Text>
+                                <Text fontSize="sm" color="red">A dashboard with this name already exists</Text>
                             }
                         </VStack>
                     </AlertDialogBody>
@@ -117,8 +120,8 @@ export default function SaveDashboardPrompt(props: SaveDashboardPromptProps){
                             colorScheme='blue'
                             onClick={handleSaveButtonPressed} ml={3}
                             isLoading={props.dashboardSaving}
-                            loadingText={"Saving"}
-                            disabled={dashboardName.length===0 || props.dashboardSaving}
+                            loadingText="Saving"
+                            disabled={dashboardName.length === 0 || props.dashboardSaving}
                         >
                             Save
                         </Button>
@@ -126,5 +129,5 @@ export default function SaveDashboardPrompt(props: SaveDashboardPromptProps){
                 </AlertDialogContent>
             </AlertDialogOverlay>
         </AlertDialog>
-    )
+  )
 }

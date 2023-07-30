@@ -20,18 +20,18 @@ async function getCompanyMachineries(req: express.Request, res: express.Response
 
         //FILTER MACHINERIES THAT USER CAN VIEW
         if (!req.principal.roles.includes("COMPANY_ROLE_ADMIN")) {
-            let userMachineries = await userRepository.getAllUserPermissions(req.principal.id)
+            const userMachineries = await userRepository.getAllUserPermissions(req.principal.id)
             if (userMachineries) {
-                result = result.filter((machinery) => (userMachineries!!.find((el) => (el.machineryUID === machinery.uid)) !== undefined))
+                result = result.filter((machinery) => (userMachineries!.find((el) => (el.machineryUID === machinery.uid)) !== undefined))
             } else {
                 return res.status(200).json(new Map())
             }
         }
 
-        let machineriesMappedByCluster = new Map<string, Machinery[]>()
+        const machineriesMappedByCluster = new Map<string, Machinery[]>()
         result.forEach((machinery) => {
             if (machineriesMappedByCluster.has(machinery.locationCluster)) {
-                machineriesMappedByCluster.get(machinery.locationCluster)!!.push(machinery)
+                machineriesMappedByCluster.get(machinery.locationCluster)!.push(machinery)
             } else {
                 machineriesMappedByCluster.set(
                     machinery.locationCluster,
@@ -66,7 +66,7 @@ async function getCompanyMachineryByUID(req: express.Request, res: express.Respo
     //    })
     //}
 
-    let result = await machineryRepository.getCompanyMachineryByUID(req.principal.companyID, req.params.machineryUID)
+    const result = await machineryRepository.getCompanyMachineryByUID(req.principal.companyID, req.params.machineryUID)
     if (result) {
         return res.status(200).json(result)
     }
@@ -81,7 +81,7 @@ async function getMachinerySensors(req: express.Request, res: express.Response) 
         })
     }
 
-    let machineryUID = req.query.machineryUID as string
+    const machineryUID = req.query.machineryUID as string
 
     if (!req.principal.roles.includes("COMPANY_ROLE_ADMIN") &&
         !await userRepository.getUserPermissionsForMachinery(req.principal.id, machineryUID)) {
@@ -94,7 +94,7 @@ async function getMachinerySensors(req: express.Request, res: express.Response) 
         })
     }
 
-    let result = await machineryRepository.getMachinerySensors(machineryUID)
+    const result = await machineryRepository.getMachinerySensors(machineryUID)
     if (result) {
         return res.status(200).json(result)
     }
@@ -111,8 +111,8 @@ async function getCompanyMachinerySensorData(req: express.Request, res: express.
         })
     }
 
-    let machineryUID = req.query.machineryUID as string
-    let sensorFilters = req.body.sensorFilters as SensorDataFilters
+    const machineryUID = req.query.machineryUID as string
+    const sensorFilters = req.body.sensorFilters as SensorDataFilters
 
     if (!req.principal.roles.includes("COMPANY_ROLE_ADMIN") &&
         !await userRepository.getUserPermissionsForMachinery(req.principal.id, machineryUID)) {
@@ -125,7 +125,7 @@ async function getCompanyMachinerySensorData(req: express.Request, res: express.
         })
     }
 
-    let machinery = await machineryRepository.getCompanyMachineryByUID(req.principal.companyID!!, machineryUID)
+    const machinery = await machineryRepository.getCompanyMachineryByUID(req.principal.companyID!, machineryUID)
     if (!machinery) {
         return res.status(403).json({
             msg: "Machinery not owned"
@@ -133,7 +133,7 @@ async function getCompanyMachinerySensorData(req: express.Request, res: express.
     }
 
 
-    let filteredSensorData = await machineryRepository.getMachinerySensorData(machineryUID, machinery!!.modelID, sensorFilters)
+    const filteredSensorData = await machineryRepository.getMachinerySensorData(machineryUID, machinery!.modelID, sensorFilters)
     if (!filteredSensorData) {
         return res.status(500).json({
             msg: "Oops! Something went wrong and could not retrieve machinery sensor data"
@@ -141,7 +141,7 @@ async function getCompanyMachinerySensorData(req: express.Request, res: express.
     }
 
     //Retrieve machinery sensors - used for naming each sample
-    let sensors = await machineryRepository.getMachinerySensors(machineryUID)
+    const sensors = await machineryRepository.getMachinerySensors(machineryUID)
     if (!sensors) {
         return res.status(500).json({
             msg: "Oops! Something went wrong and could not retrieve machinery sensor data"
@@ -150,14 +150,14 @@ async function getCompanyMachinerySensorData(req: express.Request, res: express.
 
     try {
 
-        let {
+        const {
             numSamplesRequiredPerSensor,
             displayMinTime,
             displayMaxTime
         } = sensorDataQueryBuilder.getMinMaxDisplayTimesAndLimits(sensorFilters)
 
         //Bucket sensor data samples by corresponding sensor name
-        let {
+        const {
             sensorDataMap,
             sensorInfoMap,
             preliminaryCheckForEndOfData,
@@ -165,10 +165,10 @@ async function getCompanyMachinerySensorData(req: express.Request, res: express.
         } = sensorDataProcessor.groupBySensorName(filteredSensorData, numSamplesRequiredPerSensor, sensors)
 
         //HORIZONTAL SAMPLE MERGING - bucket samples of same sensor using the corresponding merging strategy (min, max, sum, avg, majority...)
-        let binnedSensorDataMap = sensorDataProcessor.binSamples(sensorDataMap, sensorInfoMap)
+        const binnedSensorDataMap = sensorDataProcessor.binSamples(sensorDataMap, sensorInfoMap)
 
         //Transform map of sensor data samples indexed by sensor name to array of sensor data
-        let sensorDataArray = Array.from(binnedSensorDataMap.entries())
+        const sensorDataArray = Array.from(binnedSensorDataMap.entries())
 
         //VERTICAL BUCKETING + eventual (only for multi-value widgets) AGGREGATIONS
         let sensorData = sensorDataProcessor.bucketVerticallyAndAggregateMultiValue(sensorDataArray, sensorFilters)
@@ -180,7 +180,7 @@ async function getCompanyMachinerySensorData(req: express.Request, res: express.
         //sensorData = sensorDataProcessor.insertMachineryOffPadding(sensorData, sensorFilters)
 
         //FORMAT SENSOR DATA for OUTPUT to client
-        let {
+        const {
             cacheSensorData,
             displaySensorData,
             newSensorData

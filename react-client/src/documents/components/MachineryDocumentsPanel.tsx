@@ -1,240 +1,231 @@
 import {
-    Box,
-    Button,
-    HStack,
-    Input,
-    InputGroup,
-    InputLeftElement,
-    InputRightElement,
-    Select,
-    Spinner,
-    Text,
-    VStack
-} from "@chakra-ui/react";
-import React, {useContext, useEffect, useState} from "react";
-import machineryService from "../../services/MachineryService";
-import Machinery from "../../machineries-map/components/Machinery";
-import ToastContext from "../../utils/contexts/ToastContext";
-import {FiSearch, FiX} from "react-icons/fi";
-import MachineryWithDocumentsCard from "./MachineryWithDocumentsCard";
-import MachineryWithDocuments from "../interfaces/MachineryWithDocuments";
-import documentsService from "../../services/DocumentsService";
-import FileMapEntry from "../../machinery/documents/interfaces/FileMapEntry";
-import FileMap from "../../machinery/documents/interfaces/FileMap";
-import permissionChecker from "../../utils/PermissionChecker";
-import PrincipalContext from "../../utils/contexts/PrincipalContext";
-import axiosExceptionHandler from "../../utils/AxiosExceptionHandler";
-import toastHelper from "../../utils/ToastHelper";
+  Box,
+  Button,
+  HStack,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  InputRightElement,
+  Select,
+  Spinner,
+  Text,
+  VStack
+} from '@chakra-ui/react'
+import React, { useContext, useEffect, useState } from 'react'
+import machineryService from '../../services/MachineryService'
+import type Machinery from '../../machineries-map/components/Machinery'
+import ToastContext from '../../utils/contexts/ToastContext'
+import { FiSearch, FiX } from 'react-icons/fi'
+import MachineryWithDocumentsCard from './MachineryWithDocumentsCard'
+import type MachineryWithDocuments from '../interfaces/MachineryWithDocuments'
+import documentsService from '../../services/DocumentsService'
+import type FileMapEntry from '../../machinery/documents/interfaces/FileMapEntry'
+import type FileMap from '../../machinery/documents/interfaces/FileMap'
+import permissionChecker from '../../utils/PermissionChecker'
+import PrincipalContext from '../../utils/contexts/PrincipalContext'
+import axiosExceptionHandler from '../../utils/AxiosExceptionHandler'
+import toastHelper from '../../utils/ToastHelper'
 
-interface MachineryDashboardsPanelProps {
 
-}
+export default function MachineryDocumentsPanel () {
+  const { principal } = useContext(PrincipalContext)
+  const toast = useContext(ToastContext)
 
-export default function MachineryDocumentsPanel(props: MachineryDashboardsPanelProps) {
+  const [machineriesWithDocuments, setMachineriesWithDocuments] = useState<MachineryWithDocuments[]>([])
+  const [machinerySearch, setMachinerySearch] = useState<{
+    searchTerm: string
+    highlightTerm: string
+    doSearch: boolean
+  }>({
+    searchTerm: '',
+    highlightTerm: '',
+    doSearch: false
+  })
+  const [machinerySort, setMachinerySort] = useState('none')
 
-    const {principal} = useContext(PrincipalContext)
-    const toast = useContext(ToastContext)
+  const [loadingMachineries, setLoadingMachineries] = useState(true)
 
-    const [machineriesWithDocuments, setMachineriesWithDocuments] = useState<MachineryWithDocuments[]>([])
-    const [machinerySearch, setMachinerySearch] = useState<{ searchTerm: string, highlightTerm: string, doSearch: boolean }>({
-        searchTerm: "",
-        highlightTerm: "",
-        doSearch: false
-    })
-    const [machinerySort, setMachinerySort] = useState("none")
+  // LOAD MACHINERIES & CORRESPONDING DOCUMENTS
+  useEffect(() => {
+    if (machinerySort !== 'none') return
 
-    const [loadingMachineries, setLoadingMachineries] = useState(true)
+    async function getMachineriesAndDocuments () {
+      setLoadingMachineries(true)
 
-    //LOAD MACHINERIES & CORRESPONDING DOCUMENTS
-    useEffect(() => {
+      try {
+        const machineriesMap = await machineryService.getMachineryByCompany()
+        const machineriesArray: Machinery[] = []
+        machineriesMap.forEach((val) => {
+          machineriesArray.push(...val)
+        })
 
-        if(machinerySort!=="none") return
+        const machineriesWithDocumentsArray: MachineryWithDocuments[] = []
 
-        async function getMachineriesAndDocuments() {
+        for (const machinery of machineriesArray)
+          if (permissionChecker.hasMachineryPermission(principal, machinery.uid, 'documentsRead')) {
+            const fileMap = (await documentsService.getMachineryDocuments(machinery.uid)).fileMap as FileMap
 
-            setLoadingMachineries(true)
+            const documents: FileMapEntry[] = []
+            Object.values(fileMap).forEach((fileMapEntry: FileMapEntry) => {
+              if (!fileMapEntry.isDir)
+                documents.push(fileMapEntry)
+            })
 
-            try {
-                let machineriesMap = await machineryService.getMachineryByCompany()
-                let machineriesArray: Machinery[] = []
-                machineriesMap.forEach((val) => {
-                    machineriesArray.push(...val)
-                })
+            machineriesWithDocumentsArray.push({
+              ...machinery,
+              active: true,
+              documents: documents.sort((a, b) => (a.id > b.id ? 1 : -1))
+            })
+          }
 
-                let machineriesWithDocumentsArray: MachineryWithDocuments[] = []
+        if (machineriesWithDocuments.length > 0) {
+          setMachineriesWithDocuments(machineriesWithDocumentsArray)
 
-                for (const machinery of machineriesArray) {
-                    if(permissionChecker.hasMachineryPermission(principal, machinery.uid, "documentsRead")) {
-                        let fileMap = (await documentsService.getMachineryDocuments(machinery.uid)).fileMap as FileMap
+          setMachinerySearch((val) => {
+            val.doSearch = true
 
-                        let documents: FileMapEntry[] = []
-                        Object.values(fileMap).forEach((fileMapEntry: FileMapEntry) => {
-                            if (!fileMapEntry.isDir) {
-                                documents.push(fileMapEntry)
-                            }
-                        })
+            return { ...val }
+          })
 
-                        machineriesWithDocumentsArray.push({
-                            ...machinery,
-                            active: true,
-                            documents: documents.sort((a, b) => (a.id > b.id ? 1 : -1))
-                        })
-                    }
-                }
+          toastHelper.makeToast(
+            toast,
+            'Sorting applied',
+            'info'
+          )
 
-                if(machineriesWithDocuments.length>0){
+          setLoadingMachineries(false)
 
-                    setMachineriesWithDocuments(machineriesWithDocumentsArray)
-
-                    setMachinerySearch((val)=>{
-                        val.doSearch = true
-                        return {...val}
-                    })
-
-                    toastHelper.makeToast(
-                        toast,
-                        "Sorting applied",
-                        "info"
-                    )
-
-                    setLoadingMachineries(false)
-
-                    return
-                }
-
-                setMachineriesWithDocuments(machineriesWithDocumentsArray)
-
-            } catch (e) {
-                console.log(e)
-                axiosExceptionHandler.handleAxiosExceptionWithToast(
-                    e,
-                    toast,
-                    "Documents could not be fetched"
-                )
-            }
-
-            setLoadingMachineries(false)
-
+          return
         }
 
-        getMachineriesAndDocuments()
+        setMachineriesWithDocuments(machineriesWithDocumentsArray)
+      } catch (e) {
+        console.error(e)
+        axiosExceptionHandler.handleAxiosExceptionWithToast(
+          e,
+          toast,
+          'Documents could not be fetched'
+        )
+      }
 
-    }, [machinerySort])
+      setLoadingMachineries(false)
+    }
 
-    //HANDLE SEARCH
-    useEffect(() => {
+    getMachineriesAndDocuments()
+  }, [machinerySort, machineriesWithDocuments.length, principal, toast])
 
-        if (!machinerySearch.doSearch) return
+  // HANDLE SEARCH
+  useEffect(() => {
+    if (!machinerySearch.doSearch) return
 
-        let searchTerm = machinerySearch.searchTerm.toLowerCase()
-        setMachineriesWithDocuments((val) => {
-            val.forEach((el) => {
-                if (!searchTerm ||
+    const searchTerm = machinerySearch.searchTerm.toLowerCase()
+    setMachineriesWithDocuments((val) => {
+      val.forEach((el) => {
+        if (!searchTerm ||
                     el.uid.toLowerCase().includes(searchTerm) ||
                     el.modelName.toLowerCase().includes(searchTerm) ||
                     el.modelType.toLowerCase().includes(searchTerm) ||
                     el.locationCluster.toLowerCase().includes(searchTerm) ||
-                    el.documents.find((document) => (document.name.toLowerCase().includes(searchTerm)))
-                ) {
-                    el.active = true
-                } else {
-                    el.active = false
-                }
-            })
-            return [...val]
-        })
-
-        setMachinerySearch((val) => {
-            val.doSearch = false
-            val.highlightTerm = val.searchTerm
-            return {...val}
-        })
-
-    }, [machinerySearch])
-
-    //HANDLE SORT
-    useEffect(() => {
-
-        if (machinerySort === "none") return
-
-        setMachineriesWithDocuments((val) => {
-            val.sort((a, b) => {
-
-                switch (machinerySort) {
-                    case "uid": {
-                        return a.uid > b.uid ? 1 : -1
-                    }
-                    case "modelName": {
-                        return a.modelName > b.modelName ? 1 : -1
-                    }
-                    case "type": {
-                        return a.modelType > b.modelType ? 1 : -1
-                    }
-                    case "location": {
-                        return a.locationCluster > b.locationCluster ? 1 : -1
-                    }
-                    case "num-dashboards": {
-                        return b.documents.length - a.documents.length
-                    }
-                    default: {
-                        console.error("Unknown sort term")
-                        return 0
-                    }
-                }
-
-            })
-
-            return [...val]
-        })
-
-        toastHelper.makeToast(
-            toast,
-            "Sorting applied",
-            "info"
+                    (el.documents.find((document) => (document.name.toLowerCase().includes(searchTerm))) != null)
         )
+          el.active = true
+        else
+          el.active = false
+      })
 
-    }, [machinerySort])
+      return [...val]
+    })
 
+    setMachinerySearch((val) => {
+      val.doSearch = false
+      val.highlightTerm = val.searchTerm
 
-    //SEARCH TERM CHANGED EVENT
-    function handleSearchTermChanged(e) {
-        setMachinerySearch((val) => {
-            val.searchTerm = e.target.value
-            return {...val}
-        })
-    }
+      return { ...val }
+    })
+  }, [machinerySearch, machineriesWithDocuments.length, principal, toast])
 
-    //HANDLE SEARCH BUTTON CLICKED
-    function handleSearchButtonClicked() {
-        setMachinerySearch((val) => {
-            val.doSearch = true
-            return {...val}
-        })
-    }
+  // HANDLE SORT
+  useEffect(() => {
+    if (machinerySort === 'none') return
 
-    return (
+    setMachineriesWithDocuments((val) => {
+      val.sort((a, b) => {
+        switch (machinerySort) {
+          case 'uid': {
+            return a.uid > b.uid ? 1 : -1
+          }
+          case 'modelName': {
+            return a.modelName > b.modelName ? 1 : -1
+          }
+          case 'type': {
+            return a.modelType > b.modelType ? 1 : -1
+          }
+          case 'location': {
+            return a.locationCluster > b.locationCluster ? 1 : -1
+          }
+          case 'num-dashboards': {
+            return b.documents.length - a.documents.length
+          }
+          default: {
+            console.error('Unknown sort term')
+
+            return 0
+          }
+        }
+      })
+
+      return [...val]
+    })
+
+    toastHelper.makeToast(
+      toast,
+      'Sorting applied',
+      'info'
+    )
+  }, [machinerySort, toast])
+
+  // SEARCH TERM CHANGED EVENT
+  function handleSearchTermChanged (e) {
+    setMachinerySearch((val) => {
+      val.searchTerm = e.target.value
+
+      return { ...val }
+    })
+  }
+
+  // HANDLE SEARCH BUTTON CLICKED
+  function handleSearchButtonClicked () {
+    setMachinerySearch((val) => {
+      val.doSearch = true
+
+      return { ...val }
+    })
+  }
+
+  return (
         <VStack
-            w={"full"}
-            h={"full"}
+            w="full"
+            h="full"
         >
             <HStack
                 p={6}
-                w={"full"}
+                w="full"
                 borderWidth={1}
-                borderColor={"gray.200"}
-                bgColor={"white"}
-                rounded={'md'}
+                borderColor="gray.200"
+                bgColor="white"
+                rounded="md"
             >
                 <InputGroup size='md'>
                     <InputLeftElement
                         pointerEvents='none'
                         color='gray.300'
                         fontSize='1.2em'
-                        children={<FiSearch/>}
-                    />
+                    >
+                        <FiSearch/>
+                    </InputLeftElement>
                     <Input
                         pr='4.5rem'
-                        type={'text'}
+                        type="text"
                         placeholder='Search machinery or document'
                         value={machinerySearch.searchTerm}
                         onChange={handleSearchTermChanged}
@@ -243,22 +234,22 @@ export default function MachineryDocumentsPanel(props: MachineryDashboardsPanelP
                         <Box
                             pr={1}
                             _hover={{
-                                cursor: "pointer"
+                              cursor: 'pointer'
                             }}
-                            onClick={()=>{
-                                setMachinerySearch({
-                                    searchTerm: "",
-                                    doSearch: true,
-                                    highlightTerm: ""
-                                })
+                            onClick={() => {
+                              setMachinerySearch({
+                                searchTerm: '',
+                                doSearch: true,
+                                highlightTerm: ''
+                              })
                             }}
                         >
-                            <FiX size={18} color={"gray"}/>
+                            <FiX size={18} color="gray"/>
                         </Box>
                         <Button
                             h='1.75rem'
                             size='sm'
-                            colorScheme={"blue"}
+                            colorScheme="blue"
                             onClick={handleSearchButtonClicked}
                         >
                             Search
@@ -266,9 +257,11 @@ export default function MachineryDocumentsPanel(props: MachineryDashboardsPanelP
                     </InputRightElement>
                 </InputGroup>
                 <Select
-                    w={"350px"}
+                    w="350px"
                     value={machinerySort}
-                    onChange={(e) => (setMachinerySort(e.target.value))}
+                    onChange={(e) => {
+                      setMachinerySort(e.target.value)
+                    }}
                 >
                     <option value='none'>Sort by default order</option>
                     <option value='uid'>Sort by machinery ID</option>
@@ -282,25 +275,25 @@ export default function MachineryDocumentsPanel(props: MachineryDashboardsPanelP
             {
                 !loadingMachineries &&
                 machineriesWithDocuments
-                    .filter((machineryWithDashboards) => (machineryWithDashboards.active))
-                    .map((machineryWithDashboards) => (
+                  .filter((machineryWithDashboards) => (machineryWithDashboards.active))
+                  .map((machineryWithDashboards) => (
                         <MachineryWithDocumentsCard
                             key={machineryWithDashboards.uid}
                             machineryWithDocuments={machineryWithDashboards}
                             highlightTerm={machinerySearch.highlightTerm}
                         />
-                    ))
+                  ))
             }
             {
                 !loadingMachineries &&
                 machineriesWithDocuments
-                    .filter((machineryWithDashboards) => (machineryWithDashboards.active))
-                    .length === 0 &&
+                  .filter((machineryWithDashboards) => (machineryWithDashboards.active))
+                  .length === 0 &&
                 <HStack
-                    w={"full"}
-                    h={"200px"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
+                    w="full"
+                    h="200px"
+                    justifyContent="center"
+                    alignItems="center"
                 >
                     {
                         machinerySearch.highlightTerm &&
@@ -315,16 +308,15 @@ export default function MachineryDocumentsPanel(props: MachineryDashboardsPanelP
             {
                 loadingMachineries &&
                 <VStack
-                    w={"full"}
-                    h={"300px"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
+                    w="full"
+                    h="300px"
+                    justifyContent="center"
+                    alignItems="center"
                 >
-                    <Spinner size={"xl"}/>
+                    <Spinner size="xl"/>
                 </VStack>
             }
 
         </VStack>
-    )
-
+  )
 }

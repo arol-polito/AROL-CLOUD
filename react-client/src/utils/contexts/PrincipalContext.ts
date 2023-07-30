@@ -1,19 +1,19 @@
-import React from "react";
-import UserDetails from "../../authentication/interfaces/UserDetails";
+import React from 'react'
+import type UserDetails from '../../authentication/interfaces/UserDetails'
 
-interface Action{
-    type: string
-    principal: UserDetails | null
+interface Action {
+  type: string
+  principal: UserDetails | null
 }
 
 interface PrincipalContextInterface {
-    principal: UserDetails | null
-    dispatchPrincipal: React.Dispatch<Action>
+  principal: UserDetails | null
+  dispatchPrincipal: React.Dispatch<Action>
 }
 
 const PrincipalContext = React.createContext<PrincipalContextInterface>({
-    principal: null,
-    dispatchPrincipal: () => {}
-});
+  principal: null,
+  dispatchPrincipal: () => void 0
+})
 
-export default PrincipalContext;
+export default PrincipalContext

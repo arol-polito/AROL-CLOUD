@@ -1,5 +1,4 @@
-import FileMapEntry from "./FileMapEntry";
+import type FileMapEntry from './FileMapEntry'
 
-export default interface FileMap {
-    [key: string]: FileMapEntry
-}
+export default type
+FileMap = Record<string, FileMapEntry>

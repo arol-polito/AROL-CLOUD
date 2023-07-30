@@ -21,11 +21,11 @@ function parseQueryResult(response: TimestreamQuery.Types.QueryResponse, categor
     //console.log("Metadata: " + JSON.stringify(columnInfo));
     //console.log("Data: ");
 
-    let requiredSensorsMap: Map<number, string[]> = new Map<number, string[]>()
+    const requiredSensorsMap: Map<number, string[]> = new Map<number, string[]>()
     let plcColumns: string[] = []
     if (category === "plc") {
         requiredSensorsMap.set(0, sensorFilter[0].sensorNames.map(el => el.name))
-        plcColumns = columnInfo.map((el: TimestreamQuery.ColumnInfo) => (el.Name!!.toLowerCase()))
+        plcColumns = columnInfo.map((el: TimestreamQuery.ColumnInfo) => (el.Name!.toLowerCase()))
     } else if (category === "eqtq") {
         sensorFilter.forEach((sensorFilterEntry) => {
             requiredSensorsMap.set(sensorFilterEntry.headNumber, sensorFilterEntry.sensorNames.map(el => el.name))
@@ -36,28 +36,28 @@ function parseQueryResult(response: TimestreamQuery.Types.QueryResponse, categor
         })
     }
 
-    let sensorData: {
+    const sensorData: {
         name: string
         value: number
         time: number
     }[] = []
     rows.forEach((row) => {
-        let parsedRow = parseRow(columnInfo, row)
+        const parsedRow = parseRow(columnInfo, row)
 
         let requiredSensorsArray: string[] = []
         let rowHeadNumber = 0
         let sampleTime: number = 0
         if (category === "plc") {
             rowHeadNumber = 0
-            requiredSensorsArray = requiredSensorsMap.get(0)!!
+            requiredSensorsArray = requiredSensorsMap.get(0)!
             sampleTime = new Date(parsedRow.time).getTime()
         } else if (category === "eqtq") {
             rowHeadNumber = parseInt(parsedRow.iot_shadow.substring(10))
-            requiredSensorsArray = requiredSensorsMap.get(rowHeadNumber)!!
+            requiredSensorsArray = requiredSensorsMap.get(rowHeadNumber)!
             sampleTime = new Date(parsedRow.Index_time).getTime()
         } else if (category === "ns") {
             rowHeadNumber = parseInt(parsedRow.iot_shadow.substring(7))
-            requiredSensorsArray = requiredSensorsMap.get(rowHeadNumber)!!
+            requiredSensorsArray = requiredSensorsMap.get(rowHeadNumber)!
             sampleTime = new Date(parsedRow.IdNode_time).getTime()
         }
 
@@ -109,8 +109,8 @@ function parseRow(columnInfo: TimestreamQuery.ColumnInfoList, row: TimestreamQue
 
     let i;
     for (i = 0; i < data.length; i++) {
-        let info = columnInfo[i];
-        let datum = data[i];
+        const info = columnInfo[i];
+        const datum = data[i];
         rowOutput.push(parseDatum(info, datum));
     }
 
@@ -123,9 +123,9 @@ function parseRow(columnInfo: TimestreamQuery.ColumnInfoList, row: TimestreamQue
 }
 
 function parseDatum(info: TimestreamQuery.ColumnInfo, datum: TimestreamQuery.Datum) {
-    let datumObject: any = {}
+    const datumObject: any = {}
     if (datum.NullValue) {
-        datumObject[info.Name!!] = null
+        datumObject[info.Name!] = null
         return datumObject
     }
 
@@ -138,14 +138,14 @@ function parseDatum(info: TimestreamQuery.ColumnInfo, datum: TimestreamQuery.Dat
     // If the column is of Array Type
     else if (columnType.ArrayColumnInfo != null) {
         const arrayValues = datum.ArrayValue;
-        datumObject[info.Name!!] = parseArray(info.Type.ArrayColumnInfo!!, arrayValues!!)
+        datumObject[info.Name!] = parseArray(info.Type.ArrayColumnInfo!, arrayValues!)
         return datumObject;
     }
     // If the column is of Row Type
     else if (columnType.RowColumnInfo != null) {
         const rowColumnInfo = info.Type.RowColumnInfo;
         const rowValues = datum.RowValue;
-        return parseRow(rowColumnInfo!!, rowValues!!);
+        return parseRow(rowColumnInfo!, rowValues!);
     }
     // If the column is of Scalar Type
     else {
@@ -155,10 +155,10 @@ function parseDatum(info: TimestreamQuery.ColumnInfo, datum: TimestreamQuery.Dat
 
 function parseTimeSeries(info: TimestreamQuery.ColumnInfo, datum: TimestreamQuery.Datum) {
     const timeSeriesOutput: any[] = [];
-    datum.TimeSeriesValue!!.forEach(function (dataPoint) {
+    datum.TimeSeriesValue!.forEach(function (dataPoint) {
         timeSeriesOutput.push({
             time: dataPoint.Time,
-            value: parseDatum(info.Type.TimeSeriesMeasureValueColumnInfo!!, dataPoint.Value)
+            value: parseDatum(info.Type.TimeSeriesMeasureValueColumnInfo!, dataPoint.Value)
         })
     });
 
@@ -166,7 +166,7 @@ function parseTimeSeries(info: TimestreamQuery.ColumnInfo, datum: TimestreamQuer
 }
 
 function parseScalarType(info: TimestreamQuery.ColumnInfo, datum: TimestreamQuery.Datum) {
-    let scalarObject: any = {}
+    const scalarObject: any = {}
     scalarObject[parseColumnName(info)] = datum.ScalarValue
     return scalarObject;
 }

@@ -19,7 +19,7 @@ function buildRetrieveSensorDataQuery(sensorFilters: SensorDataFilters, category
         throw "Unsupported sensor category - supported categories are: " + supportedTypes.join(",")
     }
 
-    let numColsChecked = 0
+    const numColsChecked = 0
     let query = ""
 
     if (category === "eqtq") {
@@ -30,7 +30,7 @@ function buildRetrieveSensorDataQuery(sensorFilters: SensorDataFilters, category
         query = "SELECT * FROM " + dbName + "." + plcTable + " WHERE "
     }
 
-    let machineryHeadsArray: string[] = getMachineryHeadsArray(sensorFilters, category)
+    const machineryHeadsArray: string[] = getMachineryHeadsArray(sensorFilters, category)
 
     query += "iot_shadow IN (" + machineryHeadsArray.join(",") + ") "
 
@@ -127,7 +127,7 @@ function buildCheckEndOfSensorDataQuery(sensorFilters: SensorDataFilters, catego
 
     }
 
-    let sensorNamesArray: string[] = getMachineryHeadsArray(sensorFilters, category)
+    const sensorNamesArray: string[] = getMachineryHeadsArray(sensorFilters, category)
 
     query += "iot_thing IN (" + sensorNamesArray.join(",") + ") AND to_milliseconds(time) < " + lastSampleTime + " LIMIT 1"
 
@@ -215,11 +215,11 @@ function getMachineryHeadsArray(sensorFilters: SensorDataFilters, category: stri
         return ["'PLC'"]
     }
 
-    let machineryHeadsArray: string[] = []
+    const machineryHeadsArray: string[] = []
     Object.values(sensorFilters.sensors).forEach((sensorToMonitorCategory) => {
         sensorToMonitorCategory.forEach((sensorToMonitorEntry) => {
             if (category === "eqtq") {
-                let formattedHeadNumber = String(sensorToMonitorEntry.headNumber).padStart(2, "0")
+                const formattedHeadNumber = String(sensorToMonitorEntry.headNumber).padStart(2, "0")
                 machineryHeadsArray.push("'EQTQ-Head_" + formattedHeadNumber + "'")
             } else if (category === "ns") {
                 machineryHeadsArray.push("'NS-head" + sensorToMonitorEntry.headNumber + "'")

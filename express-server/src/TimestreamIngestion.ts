@@ -5,15 +5,15 @@ const AWS = require("aws-sdk");
 
 AWS.config.update({region: "us-east-1"});
 
-var https = require('http');
-var agent = new https.Agent({
+const https = require('http');
+const agent = new https.Agent({
     maxSockets: 5000
 });
 
 const TIMESTREAM_DB_NAME = "testDB"
 const TIMESTREAM_TABLE_NAME = "testTable"
 
-let writeClient = new AWS.TimestreamWrite({
+const writeClient = new AWS.TimestreamWrite({
     endpoint: process.env.TIMESTREAM_ENDPOINT_URL,  // required for localstack
     accessKeyId: process.env.TIMESTREAM_ACCESS_KEY,
     secretAccessKey: process.env.TIMESTREAM_SECRET_KEY,
@@ -23,7 +23,7 @@ let writeClient = new AWS.TimestreamWrite({
         agent: agent
     }
 });
-let queryClient = new AWS.TimestreamQuery({
+const queryClient = new AWS.TimestreamQuery({
     endpoint: process.env.TIMESTREAM_ENDPOINT_URL,  // required for localstack
     accessKeyId: process.env.TIMESTREAM_ACCESS_KEY,
     secretAccessKey: process.env.TIMESTREAM_SECRET_KEY,
@@ -59,16 +59,16 @@ async function readEntriesFromMongoDB() {
         }
     ]
 
-    let sensorData: {
+    const sensorData: {
         name: string
         value: number
         time: number
     }[] = []
-    let collections = ["eqtq", "plc", "drive"]
+    const collections = ["eqtq", "plc", "drive"]
 
     for (const collection of collections) {
 
-        let queryResults = mongoClient.db("arol").collection(collection).aggregate(
+        const queryResults = mongoClient.db("arol").collection(collection).aggregate(
             aggregate
         )
         await queryResults.forEach((queryResultObject: Document) => {
@@ -94,11 +94,11 @@ async function readEntriesFromMongoDB() {
 
 async function timestreamIngestion() {
 
-    let sensorData: { name: string, value: number, time: number }[] = await readEntriesFromMongoDB()
+    const sensorData: { name: string, value: number, time: number }[] = await readEntriesFromMongoDB()
 
     console.log(sensorData.length)
 
-    let records = sensorData.map((el) => (
+    const records = sensorData.map((el) => (
         {
             "MeasureName": el.name.toString(),
             "MeasureValue": el.value.toString(),
@@ -111,14 +111,14 @@ async function timestreamIngestion() {
     for (let i = 0; i < records.length; i += chunkSize) {
         const chunk = records.slice(i, i + chunkSize);
 
-        let params = {
+        const params = {
             "DatabaseName": TIMESTREAM_DB_NAME,
             "TableName": TIMESTREAM_TABLE_NAME,
             "Records": chunk
         }
 
         try {
-            let writeRequest = await writeClient.writeRecords(params).promise()
+            const writeRequest = await writeClient.writeRecords(params).promise()
             console.log("done chunk " + i)
         } catch (e) {
             console.log(e)
@@ -131,9 +131,9 @@ async function timestreamIngestion() {
 
 async function timestreamQuery() {
 
-    let query = "SELECT time as time, measure_value::double as measureValue FROM testDB.testTable WHERE measure_name='H23_AverageTorque'"
+    const query = "SELECT time as time, measure_value::double as measureValue FROM testDB.testTable WHERE measure_name='H23_AverageTorque'"
 
-    let response = await queryClient.query({
+    const response = await queryClient.query({
         QueryString: query
     }).promise()
 

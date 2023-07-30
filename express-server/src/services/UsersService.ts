@@ -5,10 +5,10 @@ import MachineryPermissions from "../entities/MachineryPermissions";
 
 require('dotenv').config({path: __dirname + "/./../.env"})
 
-const jwtSecret = process.env.JWT_SECRET_KEY!!
-const jwtExpiration = Number(process.env.JWT_EXPIRATION!!)
-const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET_KEY!!
-const refreshTokenExpiration = Number(process.env.REFRESH_TOKEN_EXPIRATION!!)
+const jwtSecret = process.env.JWT_SECRET_KEY!
+const jwtExpiration = Number(process.env.JWT_EXPIRATION!)
+const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET_KEY!
+const refreshTokenExpiration = Number(process.env.REFRESH_TOKEN_EXPIRATION!)
 
 interface UserCredentials {
     email: string
@@ -48,9 +48,9 @@ interface PasswordResetDetails {
 
 async function login(req: express.Request, res: express.Response) {
 
-    let userCredentials: UserCredentials = req.body
+    const userCredentials: UserCredentials = req.body
 
-    let existingUser = await userRepository.authenticateAndGetUser(userCredentials!!.email, userCredentials!!.password)
+    const existingUser = await userRepository.authenticateAndGetUser(userCredentials!.email, userCredentials!.password)
 
     if (!existingUser) {
         console.log("non existing user")
@@ -67,7 +67,7 @@ async function login(req: express.Request, res: express.Response) {
     }
 
     const refreshTokenExpiry = Date.now() + refreshTokenExpiration
-    let refreshToken = jwt.sign(
+    const refreshToken = jwt.sign(
         {
             id: existingUser.id,
             exp: refreshTokenExpiry
@@ -75,7 +75,7 @@ async function login(req: express.Request, res: express.Response) {
         refreshTokenSecret
     );
 
-    let refreshTokenInsertedInDB = await userRepository.insertRefreshToken(existingUser.id, refreshToken, refreshTokenExpiry)
+    const refreshTokenInsertedInDB = await userRepository.insertRefreshToken(existingUser.id, refreshToken, refreshTokenExpiry)
     if (!refreshTokenInsertedInDB) {
         return res.status(500).json({
             msg: "Oops! Failed to create a refresh token, please ty again later"
@@ -83,7 +83,7 @@ async function login(req: express.Request, res: express.Response) {
     }
 
     let jwtToken;
-    let tokenExpiration = Math.floor(Date.now()) + jwtExpiration
+    const tokenExpiration = Math.floor(Date.now()) + jwtExpiration
     try {
 
         //Creating jwt token
@@ -106,8 +106,8 @@ async function login(req: express.Request, res: express.Response) {
         })
     }
 
-    let userPermissionsObject: UserPermissions = {}
-    let userPermissionsArray = await userRepository.getAllUserPermissions(existingUser.id)
+    const userPermissionsObject: UserPermissions = {}
+    const userPermissionsArray = await userRepository.getAllUserPermissions(existingUser.id)
     if (!userPermissionsArray) {
         return res.status(500).json({
             msg: "Oops! Failed to get user permissions"
@@ -143,16 +143,16 @@ async function login(req: express.Request, res: express.Response) {
 
 async function logout(req: express.Request, res: express.Response) {
 
-    let userID = parseInt(req.query.id as string)
-    let token = req.query.token as string
+    const userID = parseInt(req.query.id as string)
+    const token = req.query.token as string
 
-    let result = await userRepository.getRefreshToken(
+    const result = await userRepository.getRefreshToken(
         userID,
         token
     )
 
     if (result) {
-        await userRepository.deleteRefreshToken(result!!.refreshToken)
+        await userRepository.deleteRefreshToken(result!.refreshToken)
         return res.sendStatus(200)
     }
 
@@ -170,9 +170,9 @@ async function getCompanyUsers(req: express.Request, res: express.Response) {
         })
     }
 
-    let companyID: number = req.principal.companyID
+    const companyID: number = req.principal.companyID
 
-    let companyUsers = await userRepository.getCompanyUsers(companyID)
+    const companyUsers = await userRepository.getCompanyUsers(companyID)
     if (companyUsers) {
         return res.status(200).json(companyUsers)
     } else {
@@ -192,16 +192,16 @@ async function updateAccountDetails(req: express.Request, res: express.Response)
 
     //TODO: check role here
 
-    let companyID: number = req.principal.companyID
+    const companyID: number = req.principal.companyID
 
-    let newAccountDetails: AccountUpdateDetails = req.body
+    const newAccountDetails: AccountUpdateDetails = req.body
 
-    let userToUpdate = await userRepository.getUserByID(newAccountDetails.id)
+    const userToUpdate = await userRepository.getUserByID(newAccountDetails.id)
     if (!userToUpdate || userToUpdate.companyID !== companyID) {
         return res.sendStatus(403)
     }
 
-    let updateResult = await userRepository.updateAccountDetails(newAccountDetails.id, newAccountDetails.email, newAccountDetails.name, newAccountDetails.surname, newAccountDetails.roles, newAccountDetails.active)
+    const updateResult = await userRepository.updateAccountDetails(newAccountDetails.id, newAccountDetails.email, newAccountDetails.name, newAccountDetails.surname, newAccountDetails.roles, newAccountDetails.active)
     if (updateResult) {
         return res.status(200).json(updateResult)
     } else {
@@ -221,16 +221,16 @@ async function resetAccountPassword(req: express.Request, res: express.Response)
 
     //TODO: verify role
 
-    let companyID: number = req.principal.companyID
+    const companyID: number = req.principal.companyID
 
-    let resetPasswordDetails: PasswordResetDetails = req.body
+    const resetPasswordDetails: PasswordResetDetails = req.body
 
-    let userToResetPassword = await userRepository.getUserByID(resetPasswordDetails.id)
+    const userToResetPassword = await userRepository.getUserByID(resetPasswordDetails.id)
     if (!userToResetPassword || userToResetPassword.companyID !== companyID) {
         return res.sendStatus(403)
     }
 
-    let updateResult = await userRepository.resetAccountPassword(resetPasswordDetails.id, resetPasswordDetails.password)
+    const updateResult = await userRepository.resetAccountPassword(resetPasswordDetails.id, resetPasswordDetails.password)
     if (updateResult) {
         return res.status(200).json(updateResult)
     } else {
@@ -248,13 +248,13 @@ async function createAccount(req: express.Request, res: express.Response) {
         })
     }
 
-    let companyID: number = req.principal.companyID
+    const companyID: number = req.principal.companyID
 
-    let userDetails: UserDetails = req.body
+    const userDetails: UserDetails = req.body
 
-    let createdBy: string = req.principal.id.toString()
+    const createdBy: string = req.principal.id.toString()
 
-    let result = await userRepository.createAccount(
+    const result = await userRepository.createAccount(
         userDetails.email,
         userDetails.password,
         userDetails.name,
@@ -276,8 +276,8 @@ async function createAccount(req: express.Request, res: express.Response) {
 
 async function getUserPermissionsForMachinery(req: express.Request, res: express.Response) {
 
-    let userID: number = parseInt(req.params.userID.toString())
-    let machineryUID: string = req.params.machineryUID.toString()
+    const userID: number = parseInt(req.params.userID.toString())
+    const machineryUID: string = req.params.machineryUID.toString()
 
 
     if (!req.principal.roles.includes("COMPANY_ROLE_ADMIN")) {
@@ -287,15 +287,15 @@ async function getUserPermissionsForMachinery(req: express.Request, res: express
             })
         }
 
-        let companyID: number = req.principal.companyID
+        const companyID: number = req.principal.companyID
 
-        let userToResetPassword = await userRepository.getUserByID(userID)
+        const userToResetPassword = await userRepository.getUserByID(userID)
         if (!userToResetPassword || userToResetPassword.companyID !== companyID) {
             return res.sendStatus(403)
         }
     }
 
-    let result = await userRepository.getUserPermissionsForMachinery(userID, machineryUID)
+    const result = await userRepository.getUserPermissionsForMachinery(userID, machineryUID)
     if (result !== undefined) {
         return res.status(200).json(result)
     }
@@ -308,7 +308,7 @@ async function getUserPermissionsForMachinery(req: express.Request, res: express
 
 async function getAllUserPermissions(req: express.Request, res: express.Response) {
 
-    let userID: number = parseInt(req.params.userID.toString())
+    const userID: number = parseInt(req.params.userID.toString())
 
     if (!req.principal.roles.includes("COMPANY_ROLE_ADMIN")) {
         if (!req.principal.companyID) {
@@ -317,15 +317,15 @@ async function getAllUserPermissions(req: express.Request, res: express.Response
             })
         }
 
-        let companyID: number = req.principal.companyID
+        const companyID: number = req.principal.companyID
 
-        let userToGetPermissions = await userRepository.getUserByID(userID)
+        const userToGetPermissions = await userRepository.getUserByID(userID)
         if (!userToGetPermissions || userToGetPermissions.companyID !== companyID) {
             return res.sendStatus(403)
         }
     }
 
-    let result = await userRepository.getAllUserPermissions(userID)
+    const result = await userRepository.getAllUserPermissions(userID)
     if (result) {
         return res.status(200).json(result)
     }
@@ -338,8 +338,8 @@ async function getAllUserPermissions(req: express.Request, res: express.Response
 
 async function updateUserPermissions(req: express.Request, res: express.Response) {
 
-    let userPermissions: MachineryPermissions = req.body
-    let userID = req.principal.id
+    const userPermissions: MachineryPermissions = req.body
+    const userID = req.principal.id
 
     if (!req.principal.roles.includes("COMPANY_ROLE_ADMIN")) {
         if (!req.principal.companyID) {
@@ -348,15 +348,15 @@ async function updateUserPermissions(req: express.Request, res: express.Response
             })
         }
 
-        let companyID: number = req.principal.companyID
+        const companyID: number = req.principal.companyID
 
-        let userToUpdatePermissions = await userRepository.getUserByID(userPermissions.userID)
+        const userToUpdatePermissions = await userRepository.getUserByID(userPermissions.userID)
         if (!userToUpdatePermissions || userToUpdatePermissions.companyID !== companyID) {
             return res.sendStatus(403)
         }
     }
 
-    let result = await userRepository.updateUserPermissions(userID, req.principal.roles.includes("COMPANY_ROLE_ADMIN"), userPermissions)
+    const result = await userRepository.updateUserPermissions(userID, req.principal.roles.includes("COMPANY_ROLE_ADMIN"), userPermissions)
     if (result) {
         return res.status(200).json(result)
     }
@@ -368,10 +368,10 @@ async function updateUserPermissions(req: express.Request, res: express.Response
 
 async function refreshToken(req: express.Request, res: express.Response) {
 
-    let userID = parseInt(req.query.id as string)
-    let refToken = req.query.token as string
+    const userID = parseInt(req.query.id as string)
+    const refToken = req.query.token as string
 
-    let result = await userRepository.getRefreshToken(
+    const result = await userRepository.getRefreshToken(
         userID,
         refToken
     )
@@ -383,7 +383,7 @@ async function refreshToken(req: express.Request, res: express.Response) {
         })
     }
 
-    let userDetails = await userRepository.getUserByID(userID)
+    const userDetails = await userRepository.getUserByID(userID)
     if (!userDetails) {
         return res.status(400).json({
             msg: "Invalid refresh token"
@@ -416,7 +416,7 @@ async function refreshToken(req: express.Request, res: express.Response) {
 
 
     const refreshTokenExpiry = Date.now() + refreshTokenExpiration
-    let refreshToken = jwt.sign(
+    const refreshToken = jwt.sign(
         {
             id: userID,
             exp: refreshTokenExpiry
@@ -424,7 +424,7 @@ async function refreshToken(req: express.Request, res: express.Response) {
         refreshTokenSecret
     );
 
-    let refreshTokenInsertedInDB = await userRepository.insertRefreshToken(userID, refreshToken, refreshTokenExpiry)
+    const refreshTokenInsertedInDB = await userRepository.insertRefreshToken(userID, refreshToken, refreshTokenExpiry)
     if (!refreshTokenInsertedInDB) {
         return res.status(500).json({
             msg: "Oops! Failed to create a refresh token, please ty again later"
@@ -432,7 +432,7 @@ async function refreshToken(req: express.Request, res: express.Response) {
     }
 
     let newJwtToken;
-    let tokenExpiration = Math.floor(Date.now()) + jwtExpiration
+    const tokenExpiration = Math.floor(Date.now()) + jwtExpiration
     try {
         //Creating jwt token
         newJwtToken = jwt.sign(
@@ -454,8 +454,8 @@ async function refreshToken(req: express.Request, res: express.Response) {
         })
     }
 
-    let userPermissionsObject: UserPermissions = {}
-    let userPermissionsArray = await userRepository.getAllUserPermissions(userDetails.id)
+    const userPermissionsObject: UserPermissions = {}
+    const userPermissionsArray = await userRepository.getAllUserPermissions(userDetails.id)
     if (!userPermissionsArray) {
         return res.status(500).json({
             msg: "Oops! Failed to get user permissions"

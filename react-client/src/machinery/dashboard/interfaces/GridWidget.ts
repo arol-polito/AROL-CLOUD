@@ -1,11 +1,11 @@
-import SensorDataFilters from "./SensorDataFilters";
+import type SensorDataFilters from './SensorDataFilters'
 
 export default interface GridWidget {
-    id: string
-    name: string
-    category: string
-    type: string
-    maxSensors: number
-    static: boolean
-    sensorsMonitoring: SensorDataFilters
+  id: string
+  name: string
+  category: string
+  type: string
+  maxSensors: number
+  static: boolean
+  sensorsMonitoring: SensorDataFilters
 }

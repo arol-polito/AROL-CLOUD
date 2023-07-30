@@ -31,7 +31,7 @@ async function saveDashboard(dashboard: Dashboard, userID: number): Promise<bool
 
             }
 
-            let duplicateResult = await pgClient.query(
+            const duplicateResult = await pgClient.query(
                 "SELECT COUNT(*) AS num_dashboards FROM public.machinery_dashboards WHERE machinery_uid=$1 AND dashboard->>'name' = $2",
                 [dashboard.machineryUID, dashboard.name]
             )
@@ -40,7 +40,7 @@ async function saveDashboard(dashboard: Dashboard, userID: number): Promise<bool
                 throw "Could not count number of dashboards while saving dashboard"
             }
 
-            let duplicate = Number(duplicateResult[0].num_dashboards)
+            const duplicate = Number(duplicateResult[0].num_dashboards)
             if (duplicate===0) {
                 throw "No dashboard with this name found"
             }
@@ -84,7 +84,7 @@ async function saveAsDashboard(dashboard: Dashboard, userID: number): Promise<bo
                 )
             }
 
-            let duplicateResult = await pgClient.query(
+            const duplicateResult = await pgClient.query(
                 "SELECT COUNT(*) AS num_dashboards FROM public.machinery_dashboards WHERE machinery_uid=$1 AND dashboard->>'name' = $2",
                 [dashboard.machineryUID, dashboard.name]
             )
@@ -93,7 +93,7 @@ async function saveAsDashboard(dashboard: Dashboard, userID: number): Promise<bo
                 throw "Could not count number of dashboards while saving as dashboard"
             }
 
-            let duplicate = Number(duplicateResult[0].num_dashboards)
+            const duplicate = Number(duplicateResult[0].num_dashboards)
 
             if (duplicate > 0) {
                 throw "Dashboard with this name already exists"
@@ -122,7 +122,7 @@ async function saveAsDashboard(dashboard: Dashboard, userID: number): Promise<bo
 async function deleteDashboard(dashboardName: string, machineryUID: string): Promise<boolean | null> {
 
     try {
-        let result = await pgClient.query(
+        const result = await pgClient.query(
             "DELETE FROM public.machinery_dashboards WHERE dashboard->>'name'=$1 AND machinery_uid=$2 RETURNING *",
             [dashboardName, machineryUID]
         )
@@ -140,7 +140,7 @@ async function loadDashboard(dashboardName: string, machineryUID: string): Promi
 
     try {
 
-        let result = await pgClient.oneOrNone(
+        const result = await pgClient.oneOrNone(
             "SELECT dashboard FROM public.machinery_dashboards WHERE dashboard->>'name'=$1 AND machinery_uid=$2",
             [dashboardName, machineryUID]
         )
@@ -163,7 +163,7 @@ async function loadDefaultDashboard(machineryUID: string): Promise<Dashboard | n
 
     try {
 
-        let result = await pgClient.oneOrNone(
+        const result = await pgClient.oneOrNone(
             "SELECT dashboard FROM public.machinery_dashboards WHERE (dashboard->>'isDefault')::boolean=true AND machinery_uid=$1 LIMIT 1",
             [machineryUID]
         )
@@ -186,19 +186,19 @@ async function getDashboards(machineryUID: string): Promise<SavedDashboard[] | n
     try {
 
         //Retrieve all dashboards of the given machinery
-        let result = await pgClient.manyOrNone(
+        const result = await pgClient.manyOrNone(
             "SELECT dashboard FROM public.machinery_dashboards WHERE machinery_uid=$1",
             [machineryUID]
         )
 
-        let savedDashboards: SavedDashboard[] = []
+        const savedDashboards: SavedDashboard[] = []
         await result.forEach((row: any) => {
 
             //Cast DB dashboard object
-            let dashboard = row.dashboard as Dashboard
+            const dashboard = row.dashboard as Dashboard
 
             //Count distinct sensors monitored in the given dashboard
-            let sensorsMonitored: string[] = []
+            const sensorsMonitored: string[] = []
             dashboard.grid.widgets.forEach((widget) => {
                 Object.values(widget.sensorsMonitoring.sensors).forEach((value) => {
                     value.forEach((sensorMonitoringHead) => {
@@ -247,7 +247,7 @@ async function getDashboardTemplates(machineryUID: string, companyID: number, us
             throw "Could not fetch company machineries"
         }
 
-        let machineryFound = companyMachineries.find((machinery) => (machinery.uid === machineryUID))
+        const machineryFound = companyMachineries.find((machinery) => (machinery.uid === machineryUID))
         if (!machineryFound) {
             // noinspection ExceptionCaughtLocallyJS
             throw "MachineryUID does not exist"
@@ -255,9 +255,9 @@ async function getDashboardTemplates(machineryUID: string, companyID: number, us
 
         //FILTER OUT MACHINERIES TO WHICH I DO NOT HAVE PERMISSION
         if (!userRoles.includes("COMPANY_ROLE_ADMIN")) {
-            let userMachineries = await userRepository.getAllUserPermissions(userID)
+            const userMachineries = await userRepository.getAllUserPermissions(userID)
             if (userMachineries) {
-                companyMachineries = companyMachineries.filter((machinery) => (userMachineries!!.find((el) => (el.dashboardsRead && el.machineryUID === machinery.uid)) !== undefined))
+                companyMachineries = companyMachineries.filter((machinery) => (userMachineries!.find((el) => (el.dashboardsRead && el.machineryUID === machinery.uid)) !== undefined))
             } else {
                 // noinspection ExceptionCaughtLocallyJS
                 throw "Could not fetch machinery permissions of user"
@@ -266,8 +266,8 @@ async function getDashboardTemplates(machineryUID: string, companyID: number, us
 
         //FIND ALL MACHINERIES THAT HAVE THE SAME MODEL AS THE CURRENT MACHINERY
         //Takes care of filtering out the current machinery
-        let machineryModel = machineryFound.modelID
-        let sameModelMachineryUIDs: string[] = []
+        const machineryModel = machineryFound.modelID
+        const sameModelMachineryUIDs: string[] = []
         companyMachineries.forEach((machinery) => {
             if (machinery.uid !== machineryUID && machinery.modelID === machineryModel) {
                 sameModelMachineryUIDs.push(machinery.uid)
@@ -280,16 +280,16 @@ async function getDashboardTemplates(machineryUID: string, companyID: number, us
 
 
         //FETCH TEMPLATES
-        let result = await pgClient.manyOrNone(
+        const result = await pgClient.manyOrNone(
             "SELECT dashboard FROM public.machinery_dashboards WHERE machinery_uid = ANY ($1)",
             [sameModelMachineryUIDs]
         )
 
-        let templateDashboards: SavedDashboard[] = []
+        const templateDashboards: SavedDashboard[] = []
         await result.forEach((row: any) => {
 
             //Cast DB dashboard object
-            let dashboard = row.dashboard as Dashboard
+            const dashboard = row.dashboard as Dashboard
 
             //Count distinct sensors monitored in the given dashboard
             // let sensorsMonitored: string[] = []

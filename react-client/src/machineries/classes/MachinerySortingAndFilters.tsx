@@ -1,12 +1,12 @@
-import MachineryFilter from "./MachineryFilter";
+import type MachineryFilter from './MachineryFilter'
 
 export default interface MachinerySortingAndFilters {
-    sortingList: Array<{
-        entry: string
-        selected: boolean
-    }>
-    filtersMap: Map<string, MachineryFilter>
-    searchTerm: string,
-    submit: boolean
+  sortingList: Array<{
+    entry: string
+    selected: boolean
+  }>
+  filtersMap: Map<string, MachineryFilter>
+  searchTerm: string
+  submit: boolean
 
 }

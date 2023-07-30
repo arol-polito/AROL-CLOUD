@@ -5,9 +5,9 @@ import userRepository from "../repositories/UserRepository";
 
 async function saveDashboard(req: express.Request, res: express.Response) {
 
-    let userID = req.principal.id
-    let companyID = req.principal.companyID
-    let dashboard = req.body.dashboard
+    const userID = req.principal.id
+    const companyID = req.principal.companyID
+    const dashboard = req.body.dashboard
     if (!userID) {
         return res.status(404).json({
             msg: "User ID unknown"
@@ -22,12 +22,12 @@ async function saveDashboard(req: express.Request, res: express.Response) {
 
     if (!req.principal.roles.includes("COMPANY_ROLE_ADMIN")) {
 
-        let userPermissions = await userRepository.getUserPermissionsForMachinery(req.principal.id, dashboard.machineryUID)
+        const userPermissions = await userRepository.getUserPermissionsForMachinery(req.principal.id, dashboard.machineryUID)
         if (!userPermissions) {
             return res.sendStatus(403)
         }
 
-        let dashboardExists = await dashboardRepository.loadDashboard(dashboard.name, dashboard.machineryUID)
+        const dashboardExists = await dashboardRepository.loadDashboard(dashboard.name, dashboard.machineryUID)
         if (dashboardExists && !userPermissions.dashboardsModify) {
             return res.sendStatus(403)
         } else if (!dashboardExists && !userPermissions.dashboardsWrite) {
@@ -38,7 +38,7 @@ async function saveDashboard(req: express.Request, res: express.Response) {
 
     dashboard.lastSave = Date.now()
     dashboard.numUnsavedChanges = 0
-    let result = await dashboardRepository.saveDashboard(dashboard, userID)
+    const result = await dashboardRepository.saveDashboard(dashboard, userID)
     if (result) {
         return res.sendStatus(200)
     } else if (result === false) {
@@ -53,9 +53,9 @@ async function saveDashboard(req: express.Request, res: express.Response) {
 
 async function saveAsDashboard(req: express.Request, res: express.Response) {
 
-    let userID = req.principal.id
-    let companyID = req.principal.companyID
-    let dashboard = req.body.dashboard
+    const userID = req.principal.id
+    const companyID = req.principal.companyID
+    const dashboard = req.body.dashboard
     if (!userID) {
         return res.status(404).json({
             msg: "User ID unknown"
@@ -70,12 +70,12 @@ async function saveAsDashboard(req: express.Request, res: express.Response) {
 
     if (!req.principal.roles.includes("COMPANY_ROLE_ADMIN")) {
 
-        let userPermissions = await userRepository.getUserPermissionsForMachinery(req.principal.id, dashboard.machineryUID)
+        const userPermissions = await userRepository.getUserPermissionsForMachinery(req.principal.id, dashboard.machineryUID)
         if (!userPermissions) {
             return res.sendStatus(403)
         }
 
-        let dashboardExists = await dashboardRepository.loadDashboard(dashboard.name, dashboard.machineryUID)
+        const dashboardExists = await dashboardRepository.loadDashboard(dashboard.name, dashboard.machineryUID)
         if (dashboardExists && !userPermissions.dashboardsModify) {
             return res.sendStatus(403)
         } else if (!dashboardExists && !userPermissions.dashboardsWrite) {
@@ -86,7 +86,7 @@ async function saveAsDashboard(req: express.Request, res: express.Response) {
 
     dashboard.lastSave = Date.now()
     dashboard.numUnsavedChanges = 0
-    let result = await dashboardRepository.saveAsDashboard(dashboard, userID)
+    const result = await dashboardRepository.saveAsDashboard(dashboard, userID)
     if (result) {
         return res.sendStatus(200)
     } else if (result === false) {
@@ -100,9 +100,9 @@ async function saveAsDashboard(req: express.Request, res: express.Response) {
 
 async function deleteDashboard(req: express.Request, res: express.Response) {
 
-    let userID = req.principal.id
-    let machineryUID = req.query.machineryUID as string
-    let dashboardName = req.query.dashboardName as string
+    const userID = req.principal.id
+    const machineryUID = req.query.machineryUID as string
+    const dashboardName = req.query.dashboardName as string
     if (!userID) {
         return res.status(400).json({
             msg: "User ID unknown"
@@ -111,7 +111,7 @@ async function deleteDashboard(req: express.Request, res: express.Response) {
 
     if (!req.principal.roles.includes("COMPANY_ROLE_ADMIN")) {
 
-        let userPermissions = await userRepository.getUserPermissionsForMachinery(req.principal.id, machineryUID)
+        const userPermissions = await userRepository.getUserPermissionsForMachinery(req.principal.id, machineryUID)
         if (!userPermissions || !userPermissions.dashboardsWrite) {
             return res.sendStatus(403)
         }
@@ -123,7 +123,7 @@ async function deleteDashboard(req: express.Request, res: express.Response) {
         })
     }
 
-    let result = await dashboardRepository.deleteDashboard(dashboardName, machineryUID)
+    const result = await dashboardRepository.deleteDashboard(dashboardName, machineryUID)
     if (result === null) {
         return res.status(500).json({
             msg: "Oops! Could not delete the dashboard"
@@ -139,9 +139,9 @@ async function deleteDashboard(req: express.Request, res: express.Response) {
 }
 
 async function loadDashboard(req: express.Request, res: express.Response) {
-    let userID = req.principal.id
-    let machineryUID = req.query.machineryUID as string
-    let dashboardName = req.query.dashboardName as string
+    const userID = req.principal.id
+    const machineryUID = req.query.machineryUID as string
+    const dashboardName = req.query.dashboardName as string
 
     if (!userID) {
         return res.status(400).json({
@@ -151,7 +151,7 @@ async function loadDashboard(req: express.Request, res: express.Response) {
 
     if (!req.principal.roles.includes("COMPANY_ROLE_ADMIN")) {
 
-        let userPermissions = await userRepository.getUserPermissionsForMachinery(req.principal.id, machineryUID)
+        const userPermissions = await userRepository.getUserPermissionsForMachinery(req.principal.id, machineryUID)
         if (!userPermissions || !userPermissions.dashboardsRead) {
             return res.sendStatus(403)
         }
@@ -163,7 +163,7 @@ async function loadDashboard(req: express.Request, res: express.Response) {
         })
     }
 
-    let result = await dashboardRepository.loadDashboard(dashboardName, machineryUID)
+    const result = await dashboardRepository.loadDashboard(dashboardName, machineryUID)
     if (result) {
         return res.status(200).json(result)
     }
@@ -175,8 +175,8 @@ async function loadDashboard(req: express.Request, res: express.Response) {
 
 async function loadDefaultDashboard(req: express.Request, res: express.Response) {
 
-    let userID = req.principal.id
-    let machineryUID = req.query.machineryUID as string
+    const userID = req.principal.id
+    const machineryUID = req.query.machineryUID as string
 
     if (!userID) {
         return res.status(400).json({
@@ -186,7 +186,7 @@ async function loadDefaultDashboard(req: express.Request, res: express.Response)
 
     if (!req.principal.roles.includes("COMPANY_ROLE_ADMIN")) {
 
-        let userPermissions = await userRepository.getUserPermissionsForMachinery(req.principal.id, machineryUID)
+        const userPermissions = await userRepository.getUserPermissionsForMachinery(req.principal.id, machineryUID)
         if (!userPermissions || !userPermissions.dashboardsRead) {
             return res.sendStatus(403)
         }
@@ -198,7 +198,7 @@ async function loadDefaultDashboard(req: express.Request, res: express.Response)
         })
     }
 
-    let result = await dashboardRepository.loadDefaultDashboard(machineryUID)
+    const result = await dashboardRepository.loadDefaultDashboard(machineryUID)
     if (result) {
         return res.status(200).json(result)
     }
@@ -209,10 +209,10 @@ async function loadDefaultDashboard(req: express.Request, res: express.Response)
 
 
 async function getDashboards(req: express.Request, res: express.Response) {
-    let machineryUID = req.query.machineryUID as string
+    const machineryUID = req.query.machineryUID as string
 
     if (!req.principal.roles.includes("COMPANY_ROLE_ADMIN")) {
-        let userPermissions = await userRepository.getUserPermissionsForMachinery(req.principal.id, machineryUID)
+        const userPermissions = await userRepository.getUserPermissionsForMachinery(req.principal.id, machineryUID)
         console.log(userPermissions)
         if (!userPermissions || !userPermissions.dashboardsRead) {
             return res.sendStatus(403)
@@ -225,7 +225,7 @@ async function getDashboards(req: express.Request, res: express.Response) {
         })
     }
 
-    let result = await dashboardRepository.getDashboards(machineryUID)
+    const result = await dashboardRepository.getDashboards(machineryUID)
     if (result) {
         // console.log(result)
         return res.status(200).json(result)
@@ -243,12 +243,12 @@ async function getDashboardTemplates(req: express.Request, res: express.Response
         })
     }
 
-    let machineryUID = req.query.machineryUID as string
-    let companyID = req.principal.companyID
-    let userID = req.principal.id
+    const machineryUID = req.query.machineryUID as string
+    const companyID = req.principal.companyID
+    const userID = req.principal.id
 
     if (!req.principal.roles.includes("COMPANY_ROLE_ADMIN")) {
-        let userPermissions = await userRepository.getUserPermissionsForMachinery(req.principal.id, machineryUID)
+        const userPermissions = await userRepository.getUserPermissionsForMachinery(req.principal.id, machineryUID)
         console.log(userPermissions)
         if (!userPermissions || !userPermissions.dashboardsWrite) {
             return res.sendStatus(403)
@@ -261,7 +261,7 @@ async function getDashboardTemplates(req: express.Request, res: express.Response
         })
     }
 
-    let result = await dashboardRepository.getDashboardTemplates(machineryUID, companyID!!, userID, req.principal.roles)
+    const result = await dashboardRepository.getDashboardTemplates(machineryUID, companyID!, userID, req.principal.roles)
     if (result) {
         // console.log(result)
         return res.status(200).json(result)

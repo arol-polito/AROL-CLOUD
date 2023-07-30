@@ -1,27 +1,20 @@
-import {Box, Heading, HStack} from "@chakra-ui/react";
-import UsersPanel from "../../users/components/UsersPanel";
-import MachineryPermissionsPanel from "../components/MachineryPermissionsPanel";
+import { Box, Heading, HStack } from '@chakra-ui/react'
+import MachineryPermissionsPanel from '../components/MachineryPermissionsPanel'
+import React from 'react'
 
-interface MachineryPermissionsPageProps {
-
-}
-
-export default function MachineryPermissionsPage(props: MachineryPermissionsPageProps){
-
-
-    return(
-        <Box w={"full"}>
+export default function MachineryPermissionsPage () {
+  return (
+        <Box w="full">
             <Heading mb={6}>Machinery permissions management</Heading>
             <HStack
-                w={"full"}
+                w="full"
                 // bg={useColorModeValue('white', 'gray.900')}
                 // boxShadow={'2xl'}
                 // rounded={'lg'}
                 // p={6}
             >
-                <MachineryPermissionsPanel />
+                <MachineryPermissionsPanel/>
             </HStack>
         </Box>
-    )
-
+  )
 }

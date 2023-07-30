@@ -7,14 +7,14 @@ import SensorDataFilters from "../interfaces/SensorDataFilters";
 
 //Bucket (group) sensor data samples by corresponding sensor name
 function groupBySensorName(sensorData: SensorDataSample[], numSamplesRequired: number, machinerySensors: Sensor[]) {
-    let sensorDataMap: Map<string, { value: number, time: number }[]> = new Map()
-    let sensorInfoMap: Map<string, Sensor> = new Map()
+    const sensorDataMap: Map<string, { value: number, time: number }[]> = new Map()
+    const sensorInfoMap: Map<string, Sensor> = new Map()
     let preliminaryCheckForEndOfData: "true" | "indefinite" | "false" = "true"
     let minSampleTime = Number.MAX_SAFE_INTEGER
 
     sensorData
         .forEach((entry: { name: string, value: number, time: number }) => {
-            let sensorDataMapEntry = sensorDataMap.get(entry.name)
+            const sensorDataMapEntry = sensorDataMap.get(entry.name)
             if (sensorDataMapEntry) {
                 //Add sensor data to map only if limit of samples is not exceeded
                 sensorDataMapEntry.push({value: entry.value, time: entry.time})
@@ -22,7 +22,7 @@ function groupBySensorName(sensorData: SensorDataSample[], numSamplesRequired: n
             } else {
                 sensorDataMap.set(entry.name, [{value: entry.value, time: entry.time}])
 
-                let sensor = machinerySensors!!.find((el) => (entry.name.endsWith(el.internalName)))
+                const sensor = machinerySensors!.find((el) => (entry.name.endsWith(el.internalName)))
                 if (!sensor) {
                     throw "Could not find sensor info for " + entry.name
                 }
@@ -48,7 +48,7 @@ function groupBySensorName(sensorData: SensorDataSample[], numSamplesRequired: n
     }
 
     for (const [sensorName, dataSamples] of sensorDataMap.entries()) {
-        let ascSortedDataSamples = dataSamples.sort((a, b) => (a.time - b.time))
+        const ascSortedDataSamples = dataSamples.sort((a, b) => (a.time - b.time))
         if (ascSortedDataSamples.length > 0 && ascSortedDataSamples[0].time < minSampleTime) {
             minSampleTime = ascSortedDataSamples[0].time
         }
@@ -66,24 +66,24 @@ function groupBySensorName(sensorData: SensorDataSample[], numSamplesRequired: n
 }
 
 function binSamples(sensorDataMap: Map<string, { value: number, time: number }[]>, sensorInfoMap: Map<string, Sensor>) {
-    let binnedSensorDataMap = new Map<string, { value: number, time: number }[]>()
+    const binnedSensorDataMap = new Map<string, { value: number, time: number }[]>()
 
     sensorDataMap.forEach((value, key) => {
 
-        let clusteredValue: { value: number, time: number }[] = []
+        const clusteredValue: { value: number, time: number }[] = []
 
         let i, j
 
         //HORIZONTAL MERGING of each sensor
         for (i = 0; i < value.length; i++) {
 
-            let startIndex = i
+            const startIndex = i
             let endIndex = i
 
             //Find last index that is included in the merging interval
             for (j = i + 1; j < value.length; j++) {
 
-                let timeDiff = value[j].time - value[i].time
+                const timeDiff = value[j].time - value[i].time
                 if (timeDiff < constants.HORIZONTAL_BUCKETING_MILLISECONDS) {
                     endIndex = j
                 } else {
@@ -101,7 +101,7 @@ function binSamples(sensorDataMap: Map<string, { value: number, time: number }[]
             //Merging done only if interval contains at least 2 samples
             //Merging done by the corresponding merging strategy (min, max, sum, avg, majority...)
             else {
-                let bucketingType = sensorInfoMap.get(key)!!.bucketingType
+                const bucketingType = sensorInfoMap.get(key)!.bucketingType
 
                 switch (bucketingType) {
                     case "average": {
@@ -143,12 +143,12 @@ function binSamples(sensorDataMap: Map<string, { value: number, time: number }[]
                         // console.log("majority")
                         console.log(value, key)
 
-                        let modeMap: Map<number, { time: number, occurrences: number }> = new Map()
+                        const modeMap: Map<number, { time: number, occurrences: number }> = new Map()
                         let maxEl = value[startIndex].value, maxCount = 1
 
                         for (let k = startIndex; k <= endIndex; k++) {
-                            let val = value[k].value
-                            let time = value[k].time
+                            const val = value[k].value
+                            const time = value[k].time
 
                             if (!modeMap.get(val)) {
                                 modeMap.set(val, {
@@ -156,21 +156,21 @@ function binSamples(sensorDataMap: Map<string, { value: number, time: number }[]
                                     occurrences: 1
                                 });
                             } else {
-                                let currEntry = modeMap.get(val)!!
+                                const currEntry = modeMap.get(val)!
                                 currEntry.occurrences++
                                 modeMap.set(val, currEntry)
                             }
 
-                            if (modeMap.get(val)!!.occurrences > maxCount) {
+                            if (modeMap.get(val)!.occurrences > maxCount) {
                                 maxEl = val;
-                                maxCount = modeMap.get(val)!!.occurrences
+                                maxCount = modeMap.get(val)!.occurrences
                             }
                         }
 
                         console.log(modeMap)
 
                         clusteredValue.push({
-                            time: Math.ceil(modeMap.get(maxEl)!!.time),
+                            time: Math.ceil(modeMap.get(maxEl)!.time),
                             value: maxEl
                         })
 
@@ -199,21 +199,21 @@ function binSamples(sensorDataMap: Map<string, { value: number, time: number }[]
 
 function bucketVerticallyAndAggregateMultiValue(sensorDataArray: [string, { value: number, time: number }[]][], sensorFilters: SensorDataFilters) {
 
-    let sensorData: SensorData[] = []
-    let sensorDataCursors = new Array(sensorDataArray.length).fill(0)
+    const sensorData: SensorData[] = []
+    const sensorDataCursors = new Array(sensorDataArray.length).fill(0)
     let stop = false
     while (!stop) {
 
-        let currentEntries: { value: number, time: number }[] = []
+        const currentEntries: { value: number, time: number }[] = []
         sensorDataCursors.forEach((cursorValue, index) => {
             if (cursorValue < sensorDataArray[index][1].length) {
                 currentEntries.push(sensorDataArray[index][1][cursorValue])
             }
         })
 
-        let minTime = Math.min(...currentEntries.map((el) => (el.time)))
+        const minTime = Math.min(...currentEntries.map((el) => (el.time)))
 
-        let sensorDataObject: SensorData = {
+        const sensorDataObject: SensorData = {
             active: false,
             activeData: {},
             allData: {},
@@ -271,7 +271,7 @@ function bucketVerticallyAndAggregateMultiValue(sensorDataArray: [string, { valu
 
         if (numSamplesInBucket > 0) {
 
-            let time = avgTime / numSamplesInBucket
+            const time = avgTime / numSamplesInBucket
 
             //AGGREGATIONS FOR MULTI-VALUE widgets)
             if (sensorFilters.widgetCategory === constants.WIDGETTYPE_MULTI) {
@@ -285,7 +285,7 @@ function bucketVerticallyAndAggregateMultiValue(sensorDataArray: [string, { valu
                                 ...Object.values(sensorDataObject.allData)
                                     .map((val) => (val !== null ? val : Number.MAX_SAFE_INTEGER))
                             )
-                            let sensorDataEntry = Object.entries(sensorDataObject.activeData).find(([, val]) => (val === aggregateValue))
+                            const sensorDataEntry = Object.entries(sensorDataObject.activeData).find(([, val]) => (val === aggregateValue))
                             if (sensorDataEntry) {
                                 aggregateNote = sensorDataEntry[0]
                             }
@@ -296,7 +296,7 @@ function bucketVerticallyAndAggregateMultiValue(sensorDataArray: [string, { valu
                                 ...Object.values(sensorDataObject.allData)
                                     .map((val) => (val !== null ? val : Number.MIN_SAFE_INTEGER))
                             )
-                            let sensorDataEntry = Object.entries(sensorDataObject.activeData).find(([, val]) => (val === aggregateValue))
+                            const sensorDataEntry = Object.entries(sensorDataObject.activeData).find(([, val]) => (val === aggregateValue))
                             if (sensorDataEntry) {
                                 aggregateNote = sensorDataEntry[0]
                             }
@@ -340,9 +340,9 @@ function bucketVerticallyAndAggregateMultiValue(sensorDataArray: [string, { valu
             //3 padding entries for multi-value widgets
             if (sensorData.length > 0) {
 
-                let previousSampleTime = sensorData[sensorData.length - 1].time
+                const previousSampleTime = sensorData[sensorData.length - 1].time
 
-                let timeDiff = time - previousSampleTime
+                const timeDiff = time - previousSampleTime
 
                 if (timeDiff > 600000) {
                     removeTrailingFillerValues = true
@@ -392,7 +392,7 @@ function bucketVerticallyAndAggregateMultiValue(sensorDataArray: [string, { valu
                     break
                 }
 
-                let fillersStopRemoval: string[] = []
+                const fillersStopRemoval: string[] = []
                 fillersToRemove.forEach((el) => {
                     if (sensorData[i].activeData.hasOwnProperty(el)) {
                         fillersStopRemoval.push(el)
@@ -425,7 +425,7 @@ function bucketVerticallyAndAggregateMultiValue(sensorDataArray: [string, { valu
 function aggregateSingleValue(sensorData: SensorData[], sensorFilters: SensorDataFilters, displayMinTime: number) {
     if (sensorData.length > 0 && sensorFilters.widgetCategory === constants.WIDGETTYPE_SINGLE && sensorFilters.aggregations.length > 0) {
 
-        let aggregation = sensorFilters.aggregations[0]
+        const aggregation = sensorFilters.aggregations[0]
         let aggregateValue: SensorData | null = null
 
         let numSamplesToSlice
@@ -441,13 +441,13 @@ function aggregateSingleValue(sensorData: SensorData[], sensorFilters: SensorDat
                 let minEntry: SensorData
                 sensorData.slice(-numSamplesToSlice).filter((val) => (!val.machineryOff)).forEach((val) => {
 
-                    let objectKeys = Object.keys(val.allData)
+                    const objectKeys = Object.keys(val.allData)
 
                     if (objectKeys.length > 0 &&
                         val.allData[objectKeys[0]] &&
-                        val.allData[objectKeys[0]]!! < min
+                        val.allData[objectKeys[0]]! < min
                     ) {
-                        min = val.allData[objectKeys[0]]!!
+                        min = val.allData[objectKeys[0]]!
                         minEntry = val
                     }
 
@@ -460,7 +460,7 @@ function aggregateSingleValue(sensorData: SensorData[], sensorFilters: SensorDat
                         aggregationData: {
                             aggregation: {
                                 value: min,
-                                note: "Minimum value at " + minEntry!!.formattedTime!!
+                                note: "Minimum value at " + minEntry!.formattedTime!
                             }
                         },
                         allData: {},
@@ -482,13 +482,13 @@ function aggregateSingleValue(sensorData: SensorData[], sensorFilters: SensorDat
                 let maxEntry: SensorData
                 sensorData.slice(-numSamplesToSlice).filter((val) => (!val.machineryOff)).forEach((val) => {
 
-                    let objectKeys = Object.keys(val.allData)
+                    const objectKeys = Object.keys(val.allData)
 
                     if (objectKeys.length > 0 &&
                         val.allData[objectKeys[0]] &&
-                        val.allData[objectKeys[0]]!! > max
+                        val.allData[objectKeys[0]]! > max
                     ) {
-                        max = val.allData[objectKeys[0]]!!
+                        max = val.allData[objectKeys[0]]!
                         maxEntry = val
                     }
 
@@ -501,7 +501,7 @@ function aggregateSingleValue(sensorData: SensorData[], sensorFilters: SensorDat
                         aggregationData: {
                             aggregation: {
                                 value: max,
-                                note: "Maximum value at " + maxEntry!!.formattedTime
+                                note: "Maximum value at " + maxEntry!.formattedTime
                             }
                         },
                         allData: {},
@@ -523,12 +523,12 @@ function aggregateSingleValue(sensorData: SensorData[], sensorFilters: SensorDat
                 let numValues = 0
                 sensorData.slice(-numSamplesToSlice).filter((val) => (!val.machineryOff)).forEach((val) => {
 
-                    let objectKeys = Object.keys(val.allData)
+                    const objectKeys = Object.keys(val.allData)
 
                     if (objectKeys.length > 0 &&
                         val.allData[objectKeys[0]]
                     ) {
-                        sum += val.allData[objectKeys[0]]!!
+                        sum += val.allData[objectKeys[0]]!
                         numValues++
                     }
                 })
@@ -574,13 +574,13 @@ function insertMachineryOffPadding(sensorData: SensorData[], sensorFilters: Sens
     }
 
     if(sensorFilters.requestType===constants.REQUESTTYPE_CACHE){
-        let timeDiff = sensorFilters.cacheDataRequestMaxTime - sensorData[sensorData.length-1].time
+        const timeDiff = sensorFilters.cacheDataRequestMaxTime - sensorData[sensorData.length-1].time
         if(timeDiff > 60000){
             return [...sensorData, ...generateMachineryOffEntries(sensorFilters, sensorFilters.cacheDataRequestMaxTime, timeDiff, sensorData[sensorData.length-1].time)]
         }
     }
     else if(sensorFilters.requestType===constants.REQUESTTYPE_NEW){
-        let timeDiff = sensorData[0].time - sensorFilters.newDataRequestMinTime
+        const timeDiff = sensorData[0].time - sensorFilters.newDataRequestMinTime
         if(timeDiff > 60000){
             return [...generateMachineryOffEntries(sensorFilters, sensorData[0].time, timeDiff, sensorFilters.newDataRequestMinTime), ...sensorData]
         }
@@ -643,9 +643,9 @@ function generateMachineryOffEntries(sensorFilters: SensorDataFilters, time: num
         throw "Unknown widget category" + sensorFilters.widgetCategory
     }
 
-    let machineryOffEntries: SensorData[] = []
+    const machineryOffEntries: SensorData[] = []
     for (let i = 0; i < numPaddingEntriesToAdd; i++) {
-        let emptySensorDataObject: SensorData = {
+        const emptySensorDataObject: SensorData = {
             active: true,
             time: time - ((timeDiff / 4) * (3 - i)),
             minTime: time - ((timeDiff / 4) * (3 - i)),

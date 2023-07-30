@@ -1,277 +1,253 @@
 import {
-    ChonkyActions,
-    ChonkyFileActionData,
-    ChonkyIconName,
-    defineFileAction,
-    FileArray,
-    FileData,
-    FileHelper,
-    FullFileBrowser
-} from 'chonky';
-import {Box, Spinner, VStack} from "@chakra-ui/react";
-import React, {useCallback, useEffect, useState} from "react";
-import documentsService from "../../../services/DocumentsService";
-import Machinery from "../../../machineries-map/components/Machinery";
-import {useNavigate} from "react-router-dom";
-import FileMap from "../interfaces/FileMap";
-import UploadFilesModal from "./modals/UploadFilesModal";
-import NewFolderPrompt from "./modals/NewFolderPrompt";
-import RenamePrompt from "./modals/RenamePrompt";
-import DeleteFilesPrompt from "./modals/DeleteFilesPrompt";
+  ChonkyActions,
+  type ChonkyFileActionData,
+  ChonkyIconName,
+  defineFileAction,
+  type FileArray,
+  type FileData,
+  FileHelper,
+  FullFileBrowser
+} from 'chonky'
+import { Box, Spinner, VStack } from '@chakra-ui/react'
+import React, { useCallback, useEffect, useState } from 'react'
+import documentsService from '../../../services/DocumentsService'
+import type Machinery from '../../../machineries-map/components/Machinery'
+import { useNavigate } from 'react-router-dom'
+import type FileMap from '../interfaces/FileMap'
+import UploadFilesModal from './modals/UploadFilesModal'
+import NewFolderPrompt from './modals/NewFolderPrompt'
+import RenamePrompt from './modals/RenamePrompt'
+import DeleteFilesPrompt from './modals/DeleteFilesPrompt'
 
 interface DocumentsPanelProps {
-    machinery: Machinery
-    documentsPermissions: {read: boolean, modify: boolean, write: boolean}
+  machinery: Machinery
+  documentsPermissions: { read: boolean, modify: boolean, write: boolean }
 }
 
 interface DeleteFiles {
-    promptOpen: boolean
-    filesToDelete: FileData[]
-    doDelete: boolean
+  promptOpen: boolean
+  filesToDelete: FileData[]
+  doDelete: boolean
 }
 
-export default function DocumentsPanel(props: DocumentsPanelProps) {
+export default function DocumentsPanel (props: DocumentsPanelProps) {
+  const navigate = useNavigate()
 
-    const navigate = useNavigate()
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
-    const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [fileActions, setFileActions] = useState<any[]>([])
 
-    const [fileActions, setFileActions] = useState<any[]>([])
+  const [fileMap, setFileMap] = useState<FileMap>({})
 
-    const [fileMap, setFileMap] = useState<FileMap>({})
+  const [files, setFiles] = useState<FileArray>([])
+  const [folderChain, setFolderChain] = useState<FileArray>([])
+  const [currentFolderId, setCurrentFolderId] = useState('')
 
-    const [files, setFiles] = useState<FileArray>([])
-    const [folderChain, setFolderChain] = useState<FileArray>([])
-    const [currentFolderId, setCurrentFolderId] = useState("");
+  const [deleteFiles, setDeleteFiles] = useState<DeleteFiles>({
+    promptOpen: false,
+    filesToDelete: [],
+    doDelete: false
+  })
+  const [renamePromptOpen, setRenamePromptOpen] = useState<FileData | null>(null)
+  const [newFolderPromptOpen, setNewFolderPromptOpen] = useState<boolean>(false)
+  const [uploadFilesModalOpen, setUploadFilesModalOpen] = useState<boolean>(false)
 
-    const [deleteFiles, setDeleteFiles] = useState<DeleteFiles>({
+  // POPULATE ACTIONS BASED ON USER PERMISSIONS
+  useEffect(() => {
+    setFileActions((val) => {
+      val = []
+      if (props.documentsPermissions.modify) {
+        const RenameAction = defineFileAction({
+          id: 'rename',
+          requiresSelection: true,
+          button: {
+            name: 'Rename',
+            toolbar: false,
+            contextMenu: true,
+            tooltip: 'Rename the file/folder',
+            icon: ChonkyIconName.terminal,
+            iconOnly: false
+          }
+        } as const)
+
+        val.push(RenameAction)
+      }
+      if (props.documentsPermissions.write)
+        val.push(...[ChonkyActions.CreateFolder, ChonkyActions.DeleteFiles, ChonkyActions.UploadFiles])
+
+      return [...val]
+    })
+  }, [props.documentsPermissions.modify, props.documentsPermissions.write])
+
+  // FETCH MACHINERY DOCUMENTS
+  useEffect(() => {
+    async function getData () {
+      setIsLoading(true)
+
+      const result = await documentsService.getMachineryDocuments(props.machinery.uid)
+
+      // Object.values(result.fileMap as FileMap).forEach((doc: FileMapEntry)=>{
+      //     console.log(doc.modDate)
+      //     result.fileMap[doc.id].modDate = new Date(doc.modDate)
+      // })
+
+      setFileMap(result.fileMap)
+
+      setCurrentFolderId(result.rootFolderId)
+
+      setIsLoading(false)
+    }
+
+    getData()
+  }, [props.machinery.uid])
+
+  // BROWSE FILES AND FOLDERS
+  useEffect(() => {
+    if (!currentFolderId) return
+
+    const currentFolder = fileMap[currentFolderId]
+
+    if (!currentFolder) {
+      console.error('ERROR in finding folder')
+
+      return
+    }
+
+    // FILES
+    const files = currentFolder.childrenIds
+      ? currentFolder.childrenIds.map((fileId: string) => fileMap[fileId] ?? null)
+      : []
+    setFiles(files)
+
+    // FOLDER CHAIN
+    const newFolderChain = [currentFolder]
+
+    let parentId = currentFolder.parentId
+    while (parentId) {
+      const parentFile = fileMap[parentId]
+      if (parentFile) {
+        newFolderChain.unshift(parentFile)
+        parentId = parentFile.parentId
+      } else
+        parentId = ''
+    }
+
+    setFolderChain(newFolderChain)
+  }, [currentFolderId, fileMap])
+
+  // DELETE FILE(S) and/or FOLDER(S)
+  useEffect(() => {
+    if (!deleteFiles.doDelete) return
+
+    async function performDelete () {
+      const result = await documentsService.deleteMachineryDocuments(props.machinery.uid, deleteFiles.filesToDelete)
+
+      setFileMap((oldVal) => {
+        const newVal = { ...oldVal }
+        result.forEach((deletedDocument: FileData) => {
+          if (deletedDocument.isDir)
+            Object.entries(newVal).forEach(([fileID, file]) => {
+              if (file.parentId.includes(deletedDocument.id, 0))
+                delete newVal[fileID]
+            })
+
+          // Update parent folder document count
+          const parentID = newVal[deletedDocument.id].parentId
+          if (newVal.hasOwnProperty(parentID)) {
+            const newEntry = { ...newVal[parentID] }
+
+            // With variable otherwise object is immutable
+            const newChildrenIds = newEntry.childrenIds.filter((el) => (el !== deletedDocument.id))
+            newEntry.childrenIds = newChildrenIds
+            newEntry.childrenCount--
+
+            newVal[parentID] = newEntry
+          }
+
+          delete newVal[deletedDocument.id]
+        })
+
+        // console.log(newVal)
+
+        return newVal
+      })
+
+      setDeleteFiles({
         promptOpen: false,
         filesToDelete: [],
         doDelete: false
-    })
-    const [renamePromptOpen, setRenamePromptOpen] = useState<FileData | null>(null)
-    const [newFolderPromptOpen, setNewFolderPromptOpen] = useState<boolean>(false)
-    const [uploadFilesModalOpen, setUploadFilesModalOpen] = useState<boolean>(false)
+      })
+    }
 
-    //POPULATE ACTIONS BASED ON USER PERMISSIONS
-    useEffect(()=>{
+    performDelete()
+  }, [deleteFiles, props.machinery.uid])
 
-        setFileActions((val)=>{
-            val = []
-            if(props.documentsPermissions.modify){
-                const RenameAction = defineFileAction({
-                    id: 'rename',
-                    requiresSelection: true,
-                    button: {
-                        name: 'Rename',
-                        toolbar: false,
-                        contextMenu: true,
-                        tooltip: "Rename the file/folder",
-                        icon: ChonkyIconName.terminal,
-                        iconOnly: false,
-                    },
-                } as const);
+  // FILE ACTIONS(open file/delete/create folder...)
+  const handleFileAction = useCallback((data: ChonkyFileActionData) => {
+    if (data.id === ChonkyActions.OpenFiles.id) {
+      const { targetFile, files } = data.payload
+      const fileToOpen = targetFile ?? files[0]
 
-                val.push(RenameAction)
-            }
-            if(props.documentsPermissions.write){
-                val.push(...[ChonkyActions.CreateFolder, ChonkyActions.DeleteFiles, ChonkyActions.UploadFiles])
-            }
+      const document = fileToOpen
 
-            return [...val]
-        })
+      if (fileToOpen && FileHelper.isDirectory(fileToOpen)) {
+        setCurrentFolderId(fileToOpen.id)
 
-    }, [])
+        return
+      }
 
-    //FETCH MACHINERY DOCUMENTS
-    useEffect(() => {
+      const documentUID = document.documentUID
 
-        async function getData() {
+      const documentObject = fileMap[document.id]
 
-            setIsLoading(true)
-
-            let result = await documentsService.getMachineryDocuments(props.machinery.uid)
-
-            // Object.values(result.fileMap as FileMap).forEach((doc: FileMapEntry)=>{
-            //     console.log(doc.modDate)
-            //     result.fileMap[doc.id].modDate = new Date(doc.modDate)
-            // })
-
-            setFileMap(result.fileMap)
-
-            setCurrentFolderId(result.rootFolderId)
-
-            setIsLoading(false)
-
+      navigate(`/machinery/${props.machinery.uid}/documents/${documentUID}`, {
+        state: {
+          document: documentObject,
+          machinery: props.machinery
         }
+      })
+    } else if (data.id.toString() === 'rename')
+      setRenamePromptOpen(data.state.selectedFilesForAction[0])
+    else if (data.id === ChonkyActions.DeleteFiles.id)
+      setDeleteFiles({
+        promptOpen: true,
+        filesToDelete: data.state.selectedFilesForAction,
+        doDelete: false
+      })
+    else if (data.id === ChonkyActions.MoveFiles.id) {
+      // moveFiles(
+      //     data.payload.files,
+      //     data.payload.source!,
+      //     data.payload.destination
+      // );
+    } else if (data.id === ChonkyActions.CreateFolder.id)
+      setNewFolderPromptOpen(true)
+    else if (data.id === ChonkyActions.UploadFiles.id)
+      setUploadFilesModalOpen(true)
 
-        getData()
+    // showActionNotification(data);
+  }, [setCurrentFolderId, fileMap, navigate, props.machinery]
+  )
 
-    }, [])
-
-    //BROWSE FILES AND FOLDERS
-    useEffect(() => {
-
-        if (!currentFolderId) return
-
-        const currentFolder = fileMap[currentFolderId];
-
-        if (!currentFolder) {
-            console.error("ERROR in finding folder")
-            return
-        }
-
-
-        //FILES
-        const files = currentFolder.childrenIds
-            ? currentFolder.childrenIds.map((fileId: string) => fileMap[fileId] ?? null)
-            : [];
-        setFiles(files);
-
-        //FOLDER CHAIN
-        const newFolderChain = [currentFolder];
-
-        let parentId = currentFolder.parentId;
-        while (parentId) {
-            const parentFile = fileMap[parentId];
-            if (parentFile) {
-                newFolderChain.unshift(parentFile);
-                parentId = parentFile.parentId;
-            } else {
-                parentId = "";
-            }
-        }
-
-        setFolderChain(newFolderChain)
-
-    }, [currentFolderId, fileMap])
-
-    //DELETE FILE(S) and/or FOLDER(S)
-    useEffect(() => {
-
-        if (!deleteFiles.doDelete) return
-
-        async function performDelete() {
-
-            let result = await documentsService.deleteMachineryDocuments(props.machinery.uid, deleteFiles.filesToDelete)
-
-            setFileMap((oldVal) => {
-
-                let newVal = {...oldVal}
-                result.forEach((deletedDocument: FileData) => {
-
-                    if (deletedDocument.isDir) {
-
-                        Object.entries(newVal).forEach(([fileID, file]) => {
-                            if (file.parentId.includes(deletedDocument.id, 0)) {
-                                delete newVal[fileID]
-                            }
-                        })
-                    }
-
-                    //Update parent folder document count
-                    let parentID = newVal[deletedDocument.id].parentId
-                    if (newVal.hasOwnProperty(parentID)) {
-
-                        let newEntry = {...newVal[parentID]}
-
-                        //With variable otherwise object is immutable
-                        let newChildrenIds = newEntry.childrenIds.filter((el) => (el !== deletedDocument.id))
-                        newEntry.childrenIds = newChildrenIds
-                        newEntry.childrenCount--
-
-                        newVal[parentID] = newEntry
-                    }
-
-                    delete newVal[deletedDocument.id]
-
-                })
-
-                //console.log(newVal)
-
-                return newVal
-            })
-
-            setDeleteFiles({
-                promptOpen: false,
-                filesToDelete: [],
-                doDelete: false
-            })
-
-        }
-
-        performDelete()
-
-    }, [deleteFiles])
-
-    //FILE ACTIONS(open file/delete/create folder...)
-    const handleFileAction = useCallback((data: ChonkyFileActionData) => {
-
-            if (data.id === ChonkyActions.OpenFiles.id) {
-                let {targetFile, files} = data.payload;
-                let fileToOpen = targetFile ?? files[0] as FileData;
-
-                let document = fileToOpen
-
-                if (fileToOpen && FileHelper.isDirectory(fileToOpen)) {
-                    setCurrentFolderId(fileToOpen.id);
-                    return;
-                }
-
-                let documentUID = document.documentUID
-
-                let documentObject = fileMap[document.id]
-
-                navigate("/machinery/" + props.machinery.uid + "/documents/" + documentUID, {
-                    state: {
-                        document: documentObject,
-                        machinery: props.machinery
-                    }
-                })
-
-            } else if(data.id.toString() === "rename"){
-                setRenamePromptOpen(data.state.selectedFilesForAction[0])
-            } else if (data.id === ChonkyActions.DeleteFiles.id) {
-                setDeleteFiles({
-                    promptOpen: true,
-                    filesToDelete: data.state.selectedFilesForAction,
-                    doDelete: false
-                })
-
-            } else if (data.id === ChonkyActions.MoveFiles.id) {
-                // moveFiles(
-                //     data.payload.files,
-                //     data.payload.source!,
-                //     data.payload.destination
-                // );
-            } else if (data.id === ChonkyActions.CreateFolder.id) {
-                setNewFolderPromptOpen(true)
-            } else if (data.id === ChonkyActions.UploadFiles.id) {
-                setUploadFilesModalOpen(true)
-            }
-            //showActionNotification(data);
-        }, [setCurrentFolderId, fileMap]
-    );
-
-    return (
+  return (
         <>
             <VStack
-                h={"500px"}
-                w={"full"}
-                bg={'white'}
-                boxShadow={'2xl'}
-                rounded={'lg'}
-                justifyContent={"center"}
-                alignItems={"center"}
+                h="500px"
+                w="full"
+                bg="white"
+                boxShadow="2xl"
+                rounded="lg"
+                justifyContent="center"
+                alignItems="center"
             >
                 {
                     isLoading &&
-                    <Spinner size={"xl"}/>
+                    <Spinner size="xl"/>
                 }
                 {
                     !isLoading &&
                     currentFolderId &&
-                    <Box w={"full"} minH={"full"}>
+                    <Box w="full" minH="full">
                         <FullFileBrowser
                             files={files}
                             folderChain={folderChain}
@@ -300,7 +276,7 @@ export default function DocumentsPanel(props: DocumentsPanelProps) {
                 />
             }
             {
-                renamePromptOpen &&
+                (renamePromptOpen != null) &&
                 <RenamePrompt
                     machinery={props.machinery}
                     renamePromptOpen={renamePromptOpen}
@@ -322,10 +298,5 @@ export default function DocumentsPanel(props: DocumentsPanelProps) {
                 />
             }
         </>
-    )
+  )
 }
-
-
-
-
-

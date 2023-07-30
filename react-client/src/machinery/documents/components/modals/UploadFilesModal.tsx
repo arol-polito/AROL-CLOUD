@@ -1,7 +1,7 @@
-import Machinery from "../../../../machineries-map/components/Machinery";
-import React, {useContext, useEffect, useState} from "react";
-import FileMap from "../../interfaces/FileMap";
-import documentsService from "../../../../services/DocumentsService";
+import type Machinery from '../../../../machineries-map/components/Machinery'
+import React, {useContext, useEffect, useState} from 'react'
+import type FileMap from '../../interfaces/FileMap'
+import documentsService from '../../../../services/DocumentsService'
 import {
     Box,
     Button,
@@ -21,12 +21,11 @@ import {
     ModalOverlay,
     Text,
     VStack
-} from "@chakra-ui/react";
-import {FiFile, FiTrash} from "react-icons/fi";
-import {Simulate} from "react-dom/test-utils";
-import toastHelper from "../../../../utils/ToastHelper";
-import ToastContext from "../../../../utils/contexts/ToastContext";
-import axiosExceptionHandler from "../../../../utils/AxiosExceptionHandler";
+} from '@chakra-ui/react'
+import {FiFile, FiTrash} from 'react-icons/fi'
+import toastHelper from '../../../../utils/ToastHelper'
+import ToastContext from '../../../../utils/contexts/ToastContext'
+import axiosExceptionHandler from '../../../../utils/AxiosExceptionHandler'
 
 interface UploadFilesModalProps {
     machinery: Machinery
@@ -38,7 +37,6 @@ interface UploadFilesModalProps {
 }
 
 export default function UploadFilesModal(props: UploadFilesModalProps) {
-
     const toast = useContext(ToastContext)
 
     const [isDragging, setIsDragging] = useState(false)
@@ -49,52 +47,44 @@ export default function UploadFilesModal(props: UploadFilesModalProps) {
     const [doUpload, setDoUpload] = useState<boolean>(false)
     const [isUploading, setIsUploading] = useState<boolean>(false)
 
-    //UPLOAD FILES
+    // UPLOAD FILES
     useEffect(() => {
-
         if (!doUpload) return
 
         async function upload() {
-
             setIsUploading(true)
 
             try {
+                const formData = new FormData()
+                for (const file of selectedFiles)
+                    if (!file.name.endsWith('.pdf')) {
+                        const newFile = JSON.parse(JSON.stringify(file))
+                        newFile.name += '.pdf'
+                        formData.append('files', newFile)
+                    } else
+                        formData.append('files', file)
 
-                let formData = new FormData()
-                for (const file of selectedFiles) {
-                    if(!file.name.endsWith(".pdf")){
-                        let newFile = JSON.parse(JSON.stringify(file))
-                        newFile.name+=".pdf"
-                        formData.append("files", newFile)
-                    }
-                    else{
-                        formData.append("files", file)
-                    }
-                }
+                formData.append('parentFolderPath', props.parentFolderID)
 
-                formData.append("parentFolderPath", props.parentFolderID)
-
-                let uploadedFiles = await documentsService.uploadMachineryDocuments(
+                const uploadedFiles = await documentsService.uploadMachineryDocuments(
                     props.machinery.uid,
                     formData
                 )
 
                 props.setFileMap((val) => {
-
-                    let newChildrenIds: string[] = []
+                    const newChildrenIds: string[] = []
 
                     selectedFiles.forEach((selectedFile) => {
-                        if(!uploadedFiles.find((el)=>(el.name===selectedFile.name))){
+                        if (uploadedFiles.find((el) => (el.name === selectedFile.name)) == null)
                             return
-                        }
 
-                        let uploadedFile = uploadedFiles.find((el) => (el.name=== selectedFile.name))
-                        if (uploadedFile) {
-                            let id = props.parentFolderID + "\\" + uploadedFile.documentUID
+                        const uploadedFile = uploadedFiles.find((el) => (el.name === selectedFile.name))
+                        if (uploadedFile != null) {
+                            const id = `${props.parentFolderID}\\${uploadedFile.documentUID}`
                             val[id] = {
                                 childrenCount: 0,
                                 childrenIds: [],
-                                id: id,
+                                id,
                                 documentUID: uploadedFile.documentUID,
                                 isDir: false,
                                 isDocument: true,
@@ -107,10 +97,9 @@ export default function UploadFilesModal(props: UploadFilesModalProps) {
 
                             newChildrenIds.push(id)
                         }
-
                     })
 
-                    let currentFolder = {...val[props.parentFolderID]}
+                    const currentFolder = {...val[props.parentFolderID]}
                     currentFolder.childrenIds = [...currentFolder.childrenIds, ...newChildrenIds]
                     currentFolder.childrenCount += newChildrenIds.length
 
@@ -119,157 +108,141 @@ export default function UploadFilesModal(props: UploadFilesModalProps) {
                     return {...val}
                 })
 
-                if(uploadedFiles.length!==selectedFiles.length) {
+                if (uploadedFiles.length !== selectedFiles.length)
                     toastHelper.makeToast(
                         toast,
-                        uploadedFiles.length + " out of " + selectedFiles.length + " files uploaded",
-                        "warning"
+                        `${uploadedFiles.length} out of ${selectedFiles.length} files uploaded`,
+                        'warning'
                     )
-                }
-                else{
+                else
                     toastHelper.makeToast(
                         toast,
-                        "All files successfully uploaded",
-                        "success"
+                        'All files successfully uploaded',
+                        'success'
                     )
-                }
 
                 props.setUploadFilesModalOpen(false)
-
             } catch (e) {
-                console.log(e)
+                console.error(e)
                 axiosExceptionHandler.handleAxiosExceptionWithToast(
                     e,
                     toast,
-                    "Files could not be uploaded"
+                    'Files could not be uploaded'
                 )
             }
 
             setDoUpload(false)
             setIsUploading(false)
-
         }
 
         upload()
+    }, [doUpload, props, selectedFiles, toast])
 
-    }, [doUpload])
-
-    //UPLOAD BUTTON CLICKED
+    // UPLOAD BUTTON CLICKED
     function handleUploadClicked() {
         setDoUpload(true)
     }
 
-    //CLOSE MODAL
+    // CLOSE MODAL
     function handleClose() {
         props.setUploadFilesModalOpen(false)
     }
 
-    //FILES ADDED FOR UPLOAD
+    // FILES ADDED FOR UPLOAD
     function handleFilesSelected(e: React.ChangeEvent<HTMLInputElement>) {
-
         setSelectedFiles((val) => {
-
-            if (!e.target.files) {
+            if (e.target.files == null)
                 return val
-            }
 
-            let files = e.target.files!!
+            const files = e.target.files
 
-            let filesArray: File[] = []
+            const filesArray: File[] = []
 
             for (let i = 0; i < files.length; i++) {
+                const file = files.item(i)
 
-                let file = files.item(i)!!
-
-                if (file.type==="application/pdf") {
+                if (file && file.type === 'application/pdf')
                     filesArray.push(file)
-                }
-
             }
 
             return [...val, ...filesArray]
         })
-
     }
 
-    //FILES DROPPED FOR UPLOAD
+    // FILES DROPPED FOR UPLOAD
     function handleFilesDropped(e: React.DragEvent<HTMLInputElement>) {
-
         setSelectedFiles((val) => {
-
-            if (!e.dataTransfer.files) {
+            if (!e.dataTransfer.files)
                 return val
-            }
 
-            let files = e.dataTransfer.files
+            const files = e.dataTransfer.files
 
-            let filesArray: File[] = []
+            const filesArray: File[] = []
 
             for (let i = 0; i < files.length; i++) {
+                const file = files.item(i);
 
-
-                let file = files.item(i)!!
-
-                if (file.type==="application/pdf") {
+                if (file && file.type === 'application/pdf')
                     filesArray.push(file)
-                }
-
             }
 
             return [...val, ...filesArray]
         })
-
     }
 
-    //HANDLE DRAG ENTER
-    function handleOnDragEnter(){
+    // HANDLE DRAG ENTER
+    function handleOnDragEnter() {
         setIsDragging(true)
     }
 
-    //HANDLE DRAG LEAVE
-    function handleOnDragLeave(){
+    // HANDLE DRAG LEAVE
+    function handleOnDragLeave() {
         setIsDragging(false)
     }
 
     return (
         <Modal
             isOpen={props.uploadFilesModalOpen}
-            size={"3xl"}
+            size="3xl"
             onClose={handleClose}
         >
             <ModalOverlay
-                onMouseDown={(e)=>(e.stopPropagation())}
+                onMouseDown={(e) => {
+                    e.stopPropagation()
+                }}
             />
             <ModalContent
-                onMouseDown={(e) => (e.stopPropagation())}
+                onMouseDown={(e) => {
+                    e.stopPropagation()
+                }}
             >
                 <ModalHeader>Upload documents</ModalHeader>
                 <ModalCloseButton/>
                 <ModalBody>
                     <VStack
-                        w={"full"}
-                        alignItems={"left"}
+                        w="full"
+                        alignItems="left"
                     >
                         <VStack
-                            w={"full"}
-                            h={"200px"}
-                            bgColor={"gray.100"}
-                            rounded={"xl"}
-                            justifyContent={"center"}
-                            alignItems={"center"}
-                            position={"relative"}
+                            w="full"
+                            h="200px"
+                            bgColor="gray.100"
+                            rounded="xl"
+                            justifyContent="center"
+                            alignItems="center"
+                            position="relative"
                         >
                             <FiFile size={50}/>
                             {
                                 !isDragging &&
                                 <>
-                                    <Text fontSize={"md"} fontWeight={650} pt={4}>Drag & Drop PDF documents here</Text>
-                                    <Text fontSize={"md"} fontWeight={300} mt={"0!important"}>or click to select</Text>
+                                    <Text fontSize="md" fontWeight={650} pt={4}>Drag & Drop PDF documents here</Text>
+                                    <Text fontSize="md" fontWeight={300} mt="0!important">or click to select</Text>
                                 </>
                             }
                             {
                                 isDragging &&
-                                <Text fontSize={"md"} fontWeight={300} mt={"0!important"}>Drop here</Text>
+                                <Text fontSize="md" fontWeight={300} mt="0!important">Drop here</Text>
                             }
                             <Input
                                 type="file"
@@ -281,19 +254,21 @@ export default function UploadFilesModal(props: UploadFilesModalProps) {
                                 opacity="0"
                                 aria-hidden="true"
                                 accept=".pdf"
-                                multiple={true}
                                 _hover={{
-                                    cursor: "pointer"
+                                    cursor: 'pointer'
                                 }}
-                                onChange={(e) => (handleFilesSelected(e))}
+                                onChange={(e) => {
+                                    handleFilesSelected(e)
+                                }}
                                 onDrop={handleFilesDropped}
                                 onDragEnter={handleOnDragEnter}
                                 onDragLeave={handleOnDragLeave}
+                                multiple
                             />
                         </VStack>
                         <VStack
-                            w={"full"}
-                            alignItems={"left"}
+                            w="full"
+                            alignItems="left"
                         >
                             {
                                 selectedFiles.map((file, index) => (
@@ -311,7 +286,7 @@ export default function UploadFilesModal(props: UploadFilesModalProps) {
                             }
                             {
                                 selectedFiles.length === 0 &&
-                                <Box w={"full"} textAlign={"center"} mt={2}>
+                                <Box w="full" textAlign="center" mt={2}>
                                     <Text>
                                         No files selected
                                     </Text>
@@ -327,9 +302,9 @@ export default function UploadFilesModal(props: UploadFilesModalProps) {
                     </Button>
                     <Button
                         colorScheme='blue'
-                        disabled={selectedFiles.length === 0 || numErrors>0}
+                        disabled={selectedFiles.length === 0 || numErrors > 0}
                         isLoading={isUploading}
-                        loadingText={"Uploading"}
+                        loadingText="Uploading"
                         onClick={handleUploadClicked}
                     >
                         Upload
@@ -340,96 +315,96 @@ export default function UploadFilesModal(props: UploadFilesModalProps) {
     )
 }
 
-interface FileEntryProps{
+interface FileEntryProps {
     file: File
     index: number
     selectedFiles: File[]
     setSelectedFiles: React.Dispatch<React.SetStateAction<File[]>>
     setNumErrors: React.Dispatch<React.SetStateAction<number>>
-    fileMap: FileMap,
+    fileMap: FileMap
     parentFolderID: string
 }
 
-function FileEntry(props: FileEntryProps){
+function FileEntry(props: FileEntryProps) {
+    const [fileName, setFileName] = useState(props.file.name.endsWith('.pdf') ? props.file.name.slice(0, -4) : props.file.name)
+    const [fileNameError, setFileNameError] = useState('')
 
-    const [fileName, setFileName] = useState(props.file.name.endsWith(".pdf") ? props.file.name.slice(0,-4) : props.file.name)
-    const [fileNameError, setFileNameError] = useState("")
+    // CHECK FOR ERRORS IN FILE NAME
+    useEffect(() => {
+        if (fileName.trim().length === 0) {
+            setFileNameError((val) => {
+                if (val.length === 0)
+                    props.setNumErrors((el) => (el + 1))
 
-    //CHECK FOR ERRORS IN FILE NAME
-    useEffect(()=>{
-        if(fileName.trim().length===0){
-            setFileNameError((val)=>{
-                if(val.length===0){
-                    props.setNumErrors((el)=>(el+1))
-                }
-                return "File name cannot be empty"
+                return 'File name cannot be empty'
             })
+
             return
         }
 
-        const completeFilename = fileName+".pdf"
-        if(
-            props.selectedFiles.find((el, index)=>(index!==props.index && el.name===completeFilename)) ||
-            Object.values(props.fileMap).find((el)=>(el.parentId===props.parentFolderID && el.name===completeFilename))
-        ){
-            setFileNameError((val)=>{
-                if(val.length===0){
-                    props.setNumErrors((el)=>(el+1))
-                }
-                return "A file with the same name already exists"
+        const completeFilename = `${fileName}.pdf`
+        if (
+            (props.selectedFiles.find((el, index) => (index !== props.index && el.name === completeFilename)) != null) ||
+            (Object.values(props.fileMap).find((el: any) => (el.parentId === props.parentFolderID && el.name === completeFilename)) != null)
+        ) {
+            setFileNameError((val) => {
+                if (val.length === 0)
+                    props.setNumErrors((el) => (el + 1))
+
+                return 'A file with the same name already exists'
             })
+
             return
         }
 
-        setFileNameError((val)=>{
-            if(val.length>0){
-                props.setNumErrors((el)=>(el-1))
-            }
-            return ""
+        setFileNameError((val) => {
+            if (val.length > 0)
+                props.setNumErrors((el) => (el - 1))
+
+            return ''
         })
+    }, [fileName, props])
 
-    },[fileName])
-
-    //HANDLE FILE NAME CHANGED
-    function handleFileNameChanged(newFileName: string){
+    // HANDLE FILE NAME CHANGED
+    function handleFileNameChanged(newFileName: string) {
         setFileName(newFileName)
 
-        props.setSelectedFiles((val)=>{
-            const newFile = new File([val[props.index]], newFileName+".pdf", {type: val[props.index].type});
+        props.setSelectedFiles((val) => {
+            const newFile = new File([val[props.index]], `${newFileName}.pdf`, {type: val[props.index].type})
             val[props.index] = newFile
+
             return val
         })
     }
 
-    //REMOVE FILE FROM UPLOAD LIST
+    // REMOVE FILE FROM UPLOAD LIST
     function handleRemoveSelectedFile() {
-
-        props.setSelectedFiles((val) => {
-            return val.filter((file, index) => (index!==props.index))
-        })
-
+        props.setSelectedFiles((val) => val.filter((file, index) => (index !== props.index)))
     }
 
-
-    return(
+    return (
         <>
             <HStack
-                w={"full"}
-                h={"fit-content"}
+                w="full"
+                h="fit-content"
             >
                 <HStack
-                    w={"full"}
-                    justifyContent={"space-between"}
-                    alignItems={"baseline"}
+                    w="full"
+                    justifyContent="space-between"
+                    alignItems="baseline"
                     pr={3}
                 >
-                    <FormControl isInvalid={fileNameError.length>0}>
+                    <FormControl isInvalid={fileNameError.length > 0}>
                         <InputGroup
-                            maxW={"500px"}
+                            maxW="500px"
                             size='sm'
                         >
-                            <Input value={fileName} onChange={(e)=>(handleFileNameChanged(e.target.value))}/>
-                            <InputRightAddon children='.pdf' />
+                            <Input value={fileName} onChange={(e) => {
+                                handleFileNameChanged(e.target.value)
+                            }}/>
+                            <InputRightAddon>
+                                .pdf
+                            </InputRightAddon>
                         </InputGroup>
                         {
                             fileNameError &&
@@ -437,21 +412,21 @@ function FileEntry(props: FileEntryProps){
                         }
                     </FormControl>
                     <Text
-                        fontSize={"sm"}
-                        color={"gray.500"}
-                        whiteSpace={"nowrap"}
+                        fontSize="sm"
+                        color="gray.500"
+                        whiteSpace="nowrap"
                     >
                         {Math.max(props.file.size / 1024, 1).toFixed(1)} KB
                     </Text>
                 </HStack>
                 <HStack
-                    h={"full"}
-                    alignItems={"center"}
+                    h="full"
+                    alignItems="center"
                 >
-                    <Divider orientation={"vertical"} h={"32px"} />
+                    <Divider orientation="vertical" h="32px"/>
                     <Box
                         _hover={{
-                            cursor: "pointer"
+                            cursor: 'pointer'
                         }}
                         onClick={handleRemoveSelectedFile}
                     >
@@ -459,8 +434,7 @@ function FileEntry(props: FileEntryProps){
                     </Box>
                 </HStack>
             </HStack>
-            <Divider orientation={"horizontal"}/>
+            <Divider orientation="horizontal"/>
         </>
     )
-
 }

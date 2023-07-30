@@ -1,12 +1,11 @@
-import {Box, Spinner} from "@chakra-ui/react";
+import { Box, Spinner } from '@chakra-ui/react'
+import React from 'react';
 
-
-export default function LoadingPage(){
-
-    return (
+export default function LoadingPage () {
+  return (
         <Box
-            minW={"full"}
-            minH={"100vh"}
+            minW="full"
+            minH="100vh"
             bg='blackAlpha.300'
         >
             <Spinner
@@ -15,10 +14,10 @@ export default function LoadingPage(){
                 emptyColor='transparent'
                 color='blue.500'
                 size='xl'
-                position={"absolute"}
-                top={"50%"}
-                left={"50%"}
+                position="absolute"
+                top="50%"
+                left="50%"
             />
         </Box>
-    )
+  )
 }

@@ -1,30 +1,30 @@
-import {Box, Button, HStack, Portal, Spinner, Text, VStack} from "@chakra-ui/react";
-import RGL, {Layout, WidthProvider} from "react-grid-layout";
-import 'react-grid-layout/css/styles.css';
-import 'react-resizable/css/styles.css';
+import {Box, Button, HStack, Portal, Spinner, Text, VStack} from '@chakra-ui/react'
+import RGL, {type Layout, WidthProvider} from 'react-grid-layout'
+import 'react-grid-layout/css/styles.css'
+import 'react-resizable/css/styles.css'
 
-import React, {Fragment, useContext, useEffect, useMemo, useRef, useState} from "react";
-import {FiPlus} from "react-icons/fi";
-import Sensor from "../models/Sensor";
-import Widget from "./widget/Widget";
-import Machinery from "../../../machineries-map/components/Machinery";
-import SaveDashboardPrompt from "./modals/SaveDashboardPrompt";
-import dashboardService from "../../../services/DashboardService";
-import Dashboard from "../models/Dashboard";
-import ChartTooltip from "./data-visualization/chart-components/Tooltip";
-import TooltipData from "../interfaces/TooltipData";
-import GridWidget from "../interfaces/GridWidget";
-import DashboardSize from "../interfaces/DashboardSize";
-import ToastContext from "../../../utils/contexts/ToastContext";
+import React, {Fragment, useContext, useEffect, useRef, useState} from 'react'
+import {FiPlus} from 'react-icons/fi'
+import type Sensor from '../models/Sensor'
+import Widget from './widget/Widget'
+import type Machinery from '../../../machineries-map/components/Machinery'
+import SaveDashboardPrompt from './modals/SaveDashboardPrompt'
+import dashboardService from '../../../services/DashboardService'
+import Dashboard from '../models/Dashboard'
+import ChartTooltip from './data-visualization/chart-components/Tooltip'
+import type TooltipData from '../interfaces/TooltipData'
+import type GridWidget from '../interfaces/GridWidget'
+import type DashboardSize from '../interfaces/DashboardSize'
+import ToastContext from '../../../utils/contexts/ToastContext'
 
-import {useResizeDetector} from 'react-resize-detector';
-import LoadDashboardAction from "../../machinery/interfaces/LoadDashboardAction";
-import axiosExceptionHandler from "../../../utils/AxiosExceptionHandler";
-import toastHelper from "../../../utils/ToastHelper";
-import SaveDashboard from "../interfaces/SaveDashboard";
-import DashboardControlPanel from "./DashboardControlPanel";
+import {useResizeDetector} from 'react-resize-detector'
+import type LoadDashboardAction from '../../machinery/interfaces/LoadDashboardAction'
+import axiosExceptionHandler from '../../../utils/AxiosExceptionHandler'
+import toastHelper from '../../../utils/ToastHelper'
+import type SaveDashboard from '../interfaces/SaveDashboard'
+import DashboardControlPanel from './DashboardControlPanel'
 
-const ReactGridLayout = WidthProvider(RGL);
+const ReactGridLayout = WidthProvider(RGL)
 
 interface DashboardPanelProps {
     machinery: Machinery
@@ -41,15 +41,14 @@ interface DashboardPanelProps {
 }
 
 export default function DashboardPanel(props: DashboardPanelProps) {
-
     const toast = useContext(ToastContext)
 
     const dashboardContainerRef = useRef<HTMLDivElement>(null)
-    const {width} = useResizeDetector({targetRef: dashboardContainerRef, refreshMode: "debounce", refreshRate: 500});
+    const {width} = useResizeDetector({targetRef: dashboardContainerRef, refreshMode: 'debounce', refreshRate: 500})
 
-    //This is the layout object passed to the react-grid-layout
-    //This object is updated when a widget is dropped/deleted with values from the gridProps state
-    //If not done like this, drag&dropping will not work as intended
+    // This is the layout object passed to the react-grid-layout
+    // This object is updated when a widget is dropped/deleted with values from the gridProps state
+    // If not done like this, drag&dropping will not work as intended
     const [layout, setLayout] = useState<Layout[]>([])
 
     const [dashboardLoading, setDashboardLoading] = useState(false)
@@ -66,22 +65,20 @@ export default function DashboardPanel(props: DashboardPanelProps) {
     const [saveDashboardPromptOpen, setSaveDashboardPromptOpen] = useState(false)
     const [saveDashboard, setSaveDashboard] = useState<SaveDashboard>({
         isDefault: false,
-        name: "",
+        name: '',
         save: false,
         saveAs: false,
         saveAsError: false
     })
 
-    //Avoid "Has unsaved changes" to appear in first time dashboard layout
+    // Avoid "Has unsaved changes" to appear in first time dashboard layout
     const [firstTimeLayout, setFirstTimeLayout] = useState(true)
 
-    //RESET PLACEHOLDERS ON NEW DASHBOARD CREATED
+    // RESET PLACEHOLDERS ON NEW DASHBOARD CREATED
     useEffect(() => {
-
         if (!props.dashboard.isNew) return
 
         props.setDashboard((val) => {
-
             if (val.isNew) {
                 val.isNew = false
 
@@ -89,21 +86,19 @@ export default function DashboardPanel(props: DashboardPanelProps) {
                 setDashboardSize((el) => {
                     el.numCols = val.numCols
                     el.numRows = 4
-                    el.compactType = "vertical"
+                    el.compactType = 'vertical'
+
                     return {...el}
                 })
                 // updateDashboardSize()
             }
 
             return val
-
         })
+    }, [props])
 
-    }, [props.dashboard.isNew])
-
-    //LOAD DEFAULT DASHBOARD
+    // LOAD DEFAULT DASHBOARD
     useEffect(() => {
-
         if (props.dashboard.timestamp > 0) return
 
         async function getDefaultDashboard() {
@@ -111,11 +106,10 @@ export default function DashboardPanel(props: DashboardPanelProps) {
 
             try {
                 let result: Dashboard
-                if (props.dashboardToLoadByDefault) {
+                if (props.dashboardToLoadByDefault)
                     result = await dashboardService.loadDashboard(props.machinery.uid, props.dashboardToLoadByDefault)
-                } else {
+                else
                     result = await dashboardService.loadDefaultDashboard(props.machinery.uid)
-                }
 
                 result.numUnsavedChanges = 0
                 result.lastSave = 0
@@ -123,6 +117,7 @@ export default function DashboardPanel(props: DashboardPanelProps) {
 
                 props.setChartTooltip((val) => {
                     val.active = false
+
                     return {...val}
                 })
 
@@ -130,6 +125,7 @@ export default function DashboardPanel(props: DashboardPanelProps) {
                     val.numCols = result.numCols
                     val.numRows = result.numRows
                     val.compactType = result.gridCompaction
+
                     return {...val}
                 })
                 // updateDashboardSize()
@@ -141,42 +137,36 @@ export default function DashboardPanel(props: DashboardPanelProps) {
 
                 toastHelper.makeToast(
                     toast,
-                    props.dashboardToLoadByDefault ? props.dashboardToLoadByDefault + " loaded" : "Default dashboard loaded",
-                    "info"
+                    props.dashboardToLoadByDefault ? `${props.dashboardToLoadByDefault} loaded` : 'Default dashboard loaded',
+                    'info'
                 )
-
-
             } catch (e) {
-                console.log(e)
+                console.error(e)
             }
 
             setDashboardLoading(false)
         }
 
         getDefaultDashboard()
+    }, [props, toast])
 
-    }, [])
-
-    //SAVE dashboard
+    // SAVE dashboard
     useEffect(() => {
-
         if (!saveDashboard.save) return
 
         async function save() {
-
             setDashboardSaving(true)
 
-            let gridWidgets: GridWidget[] = []
+            const gridWidgets: GridWidget[] = []
             props.dashboard.grid.widgets.forEach((widget) => {
-                let widgetToSave = {...widget}
-                widgetToSave.sensorsMonitoring.requestType = "first-time"
+                const widgetToSave = {...widget}
+                widgetToSave.sensorsMonitoring.requestType = 'first-time'
                 widgetToSave.sensorsMonitoring.cacheDataRequestMaxTime = 0
                 widgetToSave.sensorsMonitoring.newDataRequestMinTime = 0
                 gridWidgets.push(widgetToSave)
             })
 
             try {
-
                 await dashboardService.saveDashboard(
                     new Dashboard(
                         saveDashboard.name,
@@ -195,12 +185,13 @@ export default function DashboardPanel(props: DashboardPanelProps) {
                             layout: props.dashboard.grid.layout
                         }
                     )
-                );
+                )
                 props.setDashboard((val) => {
                     val.name = saveDashboard.name
                     val.isDefault = saveDashboard.isDefault
                     val.numUnsavedChanges = 0
                     val.lastSave = Date.now()
+
                     return {...val}
                 })
 
@@ -208,71 +199,62 @@ export default function DashboardPanel(props: DashboardPanelProps) {
 
                 toastHelper.makeToast(
                     toast,
-                    "Dashboard saved",
-                    "success"
+                    'Dashboard saved',
+                    'success'
                 )
-
             } catch (e: any) {
-                console.log(e)
+                console.error(e)
                 let openSaveAsModal = false
 
                 try {
-                    if (e.response!!.status === 404) {
-                        console.log("404")
+                    if (e.response?.status === 404) {
                         setSaveDashboardPromptOpen(true)
                         openSaveAsModal = true
-                    } else {
+                    } else
                         openSaveAsModal = false
-                    }
                 } catch (e1) {
                     openSaveAsModal = false
                 }
 
-                if (!openSaveAsModal) {
+                if (!openSaveAsModal)
                     axiosExceptionHandler.handleAxiosExceptionWithToast(
                         e,
                         toast,
-                        "Dashboard could not be saved"
+                        'Dashboard could not be saved'
                     )
-                }
             }
 
             setSaveDashboard({
                 isDefault: false,
-                name: "",
+                name: '',
                 save: false,
                 saveAs: false,
                 saveAsError: false
             })
 
             setDashboardSaving(false)
-
         }
 
         save()
+    }, [saveDashboard, props, dashboardSize, toast])
 
-    }, [saveDashboard])
-
-    //SAVE AS dashboard
+    // SAVE AS dashboard
     useEffect(() => {
-
         if (!saveDashboard.saveAs) return
 
         async function save() {
-
             setDashboardSaving(true)
 
-            let gridWidgets: GridWidget[] = []
+            const gridWidgets: GridWidget[] = []
             props.dashboard.grid.widgets.forEach((widget) => {
-                let widgetToSave = {...widget}
-                widgetToSave.sensorsMonitoring.requestType = "first-time"
+                const widgetToSave = {...widget}
+                widgetToSave.sensorsMonitoring.requestType = 'first-time'
                 widgetToSave.sensorsMonitoring.cacheDataRequestMaxTime = 0
                 widgetToSave.sensorsMonitoring.newDataRequestMinTime = 0
                 gridWidgets.push(widgetToSave)
             })
 
             try {
-
                 await dashboardService.saveAsDashboard(
                     new Dashboard(
                         saveDashboard.name,
@@ -291,12 +273,13 @@ export default function DashboardPanel(props: DashboardPanelProps) {
                             layout: props.dashboard.grid.layout
                         }
                     )
-                );
+                )
                 props.setDashboard((val) => {
                     val.name = saveDashboard.name
                     val.isDefault = saveDashboard.isDefault
                     val.numUnsavedChanges = 0
                     val.lastSave = Date.now()
+
                     return {...val}
                 })
 
@@ -304,18 +287,17 @@ export default function DashboardPanel(props: DashboardPanelProps) {
 
                 toastHelper.makeToast(
                     toast,
-                    "Dashboard saved",
-                    "success"
+                    'Dashboard saved',
+                    'success'
                 )
-
             } catch (e: any) {
-                console.log(e)
+                console.error(e)
 
                 try {
-                    if (e.response!!.status === 409) {
+                    if (e.response?.status === 409) {
                         setSaveDashboard({
                             isDefault: false,
-                            name: "",
+                            name: '',
                             save: false,
                             saveAs: false,
                             saveAsError: true
@@ -326,44 +308,39 @@ export default function DashboardPanel(props: DashboardPanelProps) {
                         return
                     }
                 } catch (e1) {
-
+                    console.error(e1);
                 }
 
                 axiosExceptionHandler.handleAxiosExceptionWithToast(
                     e,
                     toast,
-                    "Dashboard could not be saved"
+                    'Dashboard could not be saved'
                 )
             }
 
             setSaveDashboard({
                 isDefault: false,
-                name: "",
+                name: '',
                 save: false,
                 saveAs: false,
                 saveAsError: false
             })
 
             setDashboardSaving(false)
-
         }
 
         save()
+    }, [saveDashboard, props, dashboardSize, toast])
 
-    }, [saveDashboard])
-
-    //LOAD dashboard
+    // LOAD dashboard
     useEffect(() => {
-
         if (!props.loadDashboard.doLoad || props.loadDashboard.isTemplate) return
 
         async function getData() {
-
             setDashboardLoading(true)
 
             try {
-
-                let result = await dashboardService.loadDashboard(props.machinery.uid, props.loadDashboard.name)
+                const result = await dashboardService.loadDashboard(props.machinery.uid, props.loadDashboard.name)
 
                 result.numUnsavedChanges = 0
                 result.lastSave = 0
@@ -371,6 +348,7 @@ export default function DashboardPanel(props: DashboardPanelProps) {
 
                 props.setChartTooltip((val) => {
                     val.active = false
+
                     return {...val}
                 })
 
@@ -378,6 +356,7 @@ export default function DashboardPanel(props: DashboardPanelProps) {
                     val.numCols = result.numCols
                     val.numRows = result.numRows
                     val.compactType = result.gridCompaction
+
                     return {...val}
                 })
                 // updateDashboardSize()
@@ -387,6 +366,7 @@ export default function DashboardPanel(props: DashboardPanelProps) {
 
                 props.setLoadDashboard((val) => {
                     val.doLoad = false
+
                     return {...val}
                 })
 
@@ -394,16 +374,15 @@ export default function DashboardPanel(props: DashboardPanelProps) {
 
                 toastHelper.makeToast(
                     toast,
-                    "Dashboard loaded",
-                    "info"
+                    'Dashboard loaded',
+                    'info'
                 )
-
             } catch (e) {
-                console.log(e)
+                console.error(e)
                 axiosExceptionHandler.handleAxiosExceptionWithToast(
                     e,
                     toast,
-                    "Dashboard could not be loaded"
+                    'Dashboard could not be loaded'
                 )
             }
 
@@ -411,47 +390,45 @@ export default function DashboardPanel(props: DashboardPanelProps) {
         }
 
         getData()
+    }, [props, toast])
 
-    }, [props.loadDashboard])
-
-    //LOAD template
+    // LOAD template
     useEffect(() => {
         if (!props.loadDashboard.doLoad || !props.loadDashboard.isTemplate) return
 
         async function getData() {
-
             setDashboardLoading(true)
 
             try {
+                const result = await dashboardService.loadDashboard(props.loadDashboard.machineryUID, props.loadDashboard.name)
 
-                let result = await dashboardService.loadDashboard(props.loadDashboard.machineryUID, props.loadDashboard.name)
-
-                result.name = "Unsaved new dashboard"
+                result.name = 'Unsaved new dashboard'
                 result.numUnsavedChanges++
                 result.lastSave = 0
                 result.isNew = false
 
                 result.grid.widgets.forEach((widget) => {
                     widget.sensorsMonitoring = {
-                        requestType: "first-time",
+                        requestType: 'first-time',
                         cacheDataRequestMaxTime: 0,
                         newDataRequestMinTime: 0,
                         widgetCategory: widget.sensorsMonitoring.widgetCategory,
                         dataRange: {
                             amount: 15,
-                            unit: "sample"
+                            unit: 'sample'
                         },
                         sensors: {
                             drive: [],
                             eqtq: [],
                             plc: []
                         },
-                        aggregations: [{name: "none", color: "#A0AEC0"}]
+                        aggregations: [{name: 'none', color: '#A0AEC0'}]
                     }
                 })
 
                 props.setChartTooltip((val) => {
                     val.active = false
+
                     return {...val}
                 })
 
@@ -459,6 +436,7 @@ export default function DashboardPanel(props: DashboardPanelProps) {
                     val.numCols = result.numCols
                     val.numRows = result.numRows
                     val.compactType = result.gridCompaction
+
                     return {...val}
                 })
                 // updateDashboardSize()
@@ -468,21 +446,21 @@ export default function DashboardPanel(props: DashboardPanelProps) {
 
                 props.setLoadDashboard((val) => {
                     val.doLoad = false
+
                     return {...val}
                 })
 
                 toastHelper.makeToast(
                     toast,
-                    "Dashboard template loaded",
-                    "info"
+                    'Dashboard template loaded',
+                    'info'
                 )
-
             } catch (e) {
-                console.log(e)
+                console.error(e)
                 axiosExceptionHandler.handleAxiosExceptionWithToast(
                     e,
                     toast,
-                    "Dashboard template could not be loaded"
+                    'Dashboard template could not be loaded'
                 )
             }
 
@@ -490,152 +468,147 @@ export default function DashboardPanel(props: DashboardPanelProps) {
         }
 
         getData()
+    }, [props, toast])
 
-    }, [props.loadDashboard])
-
-    //DASHBOARD PROPS (width, numCols, rowHeight)
+    // DASHBOARD PROPS (width, numCols, rowHeight)
     useEffect(() => {
-        if (width === undefined) return;
+        if (width === undefined) return
 
-        let dashboardContainerWidth = width!!
+        const dashboardContainerWidth = width
 
-        if (dashboardContainerWidth === dashboardSize.width) return;
+        if (dashboardContainerWidth === dashboardSize.width) return
 
         setDashboardSize((val) => {
-
             val.width = dashboardContainerWidth
             val.rowHeight = (dashboardContainerWidth - (5 * val.numCols)) / val.numCols
 
             return {...val}
         })
 
-        window.dispatchEvent(new Event("resize"));
+        window.dispatchEvent(new Event('resize'))
+    }, [width, dashboardSize.width])
 
-    }, [width])
-
-    const handleWidgetModified = useMemo(
-        () => handleWidgetModifiedFn,
-        []
-    )
-
-    //MODIFY WIDGET - this must be done to have un updated view of the widgets at save time
+    // MODIFY WIDGET - this must be done to have un updated view of the widgets at save time
     function handleWidgetModifiedFn(type: string, bundle: any) {
-
         switch (type) {
-            case "delete": {
+            case 'delete': {
                 props.setDashboard((val) => {
                     val.grid.widgets = val.grid.widgets.filter((el) => (el.id !== bundle.id))
                     val.grid.layout = val.grid.layout.filter((el) => (el.i !== bundle.id))
                     val.numUnsavedChanges++
 
                     setLayout(val.grid.layout)
+
                     return {...val}
                 })
                 break
             }
-            case "rename": {
+            case 'rename': {
                 props.setDashboard((val) => {
-                    val.grid.widgets.find((el) => (el.id === bundle.id))!!.name = bundle.name
-                    val.numUnsavedChanges++
+                    const foundWidget = val.grid.widgets.find((el) => (el.id === bundle.id));
+                    if (foundWidget) {
+                        foundWidget.name = bundle.name
+                        val.numUnsavedChanges++
+                    }
+
                     return val
                 })
                 break
             }
-            case "static": {
+            case 'static': {
                 props.setDashboard((val) => {
-                    let widget = val.grid.widgets.find((el) => (el.id === bundle.id))
-                    const widgetIndex = val.grid.widgets.map((el) => (el.id)).indexOf(bundle.id)
-                    let dashboardLayout = val.grid.layout.find((el) => (el.i === bundle.id))
+                    const widget = val.grid.widgets.find((el) => (el.id === bundle.id))
+                    const dashboardLayout = val.grid.layout.find((el) => (el.i === bundle.id))
 
-                    if (widget) {
-
-                        let isStatic = !widget.static
+                    if (widget != null) {
+                        const isStatic = !widget.static
 
                         widget.static = isStatic
 
-                        if (dashboardLayout) {
+                        if (dashboardLayout != null)
                             dashboardLayout.static = isStatic
-                        }
 
                         setLayout((val) => {
-                            let gridLayoutEntry = layout.find((el) => (el.i === bundle.id))
-                            if (gridLayoutEntry) {
+                            const gridLayoutEntry = layout.find((el) => (el.i === bundle.id))
+                            if (gridLayoutEntry != null) {
                                 gridLayoutEntry.static = isStatic
+
                                 return [...val]
                             }
+
                             return val
                         })
 
                         val.numUnsavedChanges++
 
-                        //Bypass Widget.tsx memoization by creation new object => this will propagate static/not static change
+                        // Bypass Widget.tsx memoization by creation new object => this will propagate static/not static change
                         // val.grid.widgets[widgetIndex] = {...widget}
                     }
+
                     return val
                 })
                 break
             }
-            case "set-sensors-monitoring": {
+            case 'set-sensors-monitoring': {
                 props.setDashboard((val) => {
-                    let gridItemSensor = val.grid.widgets.find((el) => (el.id === bundle.id))!!
-                    gridItemSensor.sensorsMonitoring = bundle.sensorsMonitoring
-                    val.numUnsavedChanges++
+                    const gridItemSensor = val.grid.widgets.find((el) => (el.id === bundle.id))
+
+                    if (gridItemSensor) {
+                        gridItemSensor.sensorsMonitoring = bundle.sensorsMonitoring
+                        val.numUnsavedChanges++
+                    }
+
                     return val
                 })
                 break
             }
             default: {
-                throw Error('Unknown action: ' + type);
+                throw Error(`Unknown action: ${type}`)
             }
         }
     }
 
-    //LAYOUT CHANGES - reposition
+    // LAYOUT CHANGES - reposition
     function onLayoutChange(layout: Layout[]) {
-
         props.setDashboard((val) => {
             val.grid.layout = layout
-            if (!firstTimeLayout) {
+            if (!firstTimeLayout)
                 val.numUnsavedChanges++
-            }
+
             return {...val}
         })
 
-        if (firstTimeLayout) {
+        if (firstTimeLayout)
             setFirstTimeLayout(false)
-        }
     }
 
-    //DRAGGING OVER THE DASHBOARD - decode WIDGET HEIGHT AND WIDTH
+    // DRAGGING OVER THE DASHBOARD - decode WIDGET HEIGHT AND WIDTH
     function onDropDragOver(e: any) {
-        //width&height are coded into the dataTransfer type (e.g 2,1)
-        let dataTransferType = e.dataTransfer.types[0].toString()
-        let wh = dataTransferType.split(",")
+        // width&height are coded into the dataTransfer type (e.g 2,1)
+        const dataTransferType = e.dataTransfer.types[0].toString()
+        const wh = dataTransferType.split(',')
 
         e.preventDefault()
 
-        if (props.chartTooltip.active) {
+        if (props.chartTooltip.active)
             closeTooltip()
-        }
 
         return {w: parseInt(wh[0]), h: parseInt(wh[1])}
     }
 
-    //ON DROP - ADD ITEM TO WIDGETS TO DISPLAY
+    // ON DROP - ADD ITEM TO WIDGETS TO DISPLAY
     function onDrop(rglLayout: RGL.Layout[], layoutItem: Layout, event: any) {
-        //retrieve dataTransfer type as it is the coded info of the width&height of the element
+        // retrieve dataTransfer type as it is the coded info of the width&height of the element
 
-        let dataType = event.dataTransfer.types[0].toString()
-        let widgetData = JSON.parse(event.dataTransfer.getData(dataType))
+        const dataType = event.dataTransfer.types[0].toString()
+        const widgetData = JSON.parse(event.dataTransfer.getData(dataType))
 
         props.setDashboard((val) => {
-
             let newID
-            if (val.grid.widgets.length === 0) {
+            if (val.grid.widgets.length === 0)
                 newID = 0
-            } else {
+            else
                 newID = Math.max(...val.grid.widgets.map((el) => (parseInt(el.id)))) + 1
-            }
 
             val.grid.widgets.push({
                 id: newID.toString(),
@@ -645,41 +618,40 @@ export default function DashboardPanel(props: DashboardPanelProps) {
                 maxSensors: widgetData.maxSensors,
                 static: false,
                 sensorsMonitoring: {
-                    requestType: "first-time",
+                    requestType: 'first-time',
                     cacheDataRequestMaxTime: 0,
                     newDataRequestMinTime: 0,
                     widgetCategory: widgetData.widgetCategory,
                     dataRange: {
                         amount: 15,
-                        unit: "sample"
+                        unit: 'sample'
                     },
                     sensors: {
                         drive: [],
                         eqtq: [],
                         plc: []
                     },
-                    aggregations: [{name: "none", color: "#A0AEC0"}]
+                    aggregations: [{name: 'none', color: '#A0AEC0'}]
                 }
             })
 
             val.grid.layout = rglLayout
 
-            val.grid.layout [val.grid.layout.length - 1].i = newID.toString()
+            val.grid.layout[val.grid.layout.length - 1].i = newID.toString()
 
             val.numUnsavedChanges++
 
             let max = 0
             rglLayout.forEach((item) => {
-                if (item.y + item.h > max) {
+                if (item.y + item.h > max)
                     max = item.y + item.h
-                }
             })
-            if (max > dashboardSize.numRows) {
+            if (max > dashboardSize.numRows)
                 setDashboardSize((el) => {
                     el.numRows = max
+
                     return {...el}
                 })
-            }
 
             setLayout(val.grid.layout)
 
@@ -689,23 +661,21 @@ export default function DashboardPanel(props: DashboardPanelProps) {
         event.preventDefault()
     }
 
-    //LAYOUT CHANGES - resize
-    function onResize(layout: Layout[], oldLayoutItem: Layout, newLayoutItem: Layout, placeholder: any) {
+    // LAYOUT CHANGES - resize
+    function onResize(layout: Layout[]) {
         props.setDashboard((val) => {
-
             let max = 0
 
             layout.forEach((item) => {
-                if (item.y + item.h > max) {
+                if (item.y + item.h > max)
                     max = item.y + item.h
-                }
             })
-            if (max > dashboardSize.numRows) {
+            if (max > dashboardSize.numRows)
                 setDashboardSize((el) => {
                     el.numRows = max
+
                     return {...el}
                 })
-            }
 
             // if (newLayoutItem.h + newLayoutItem.y > dashboardSize.numRows) {
             //     let layoutEntryIndex = layout.map((el) => (el.i)).indexOf(newLayoutItem.i)
@@ -717,29 +687,33 @@ export default function DashboardPanel(props: DashboardPanelProps) {
             val.grid.layout = layout
 
             val.numUnsavedChanges++
+
             return {...val}
         })
     }
 
-    //EXTEND DASHBOARD LENGTH
+    // EXTEND DASHBOARD LENGTH
     function extendDashboard() {
         if (!props.dashboardPermissions.modify) return
 
         setDashboardSize((val) => {
             val.numRows += 2
+
             return {...val}
         })
 
         props.setDashboard((val) => {
             val.numUnsavedChanges++
+
             return val
         })
     }
 
-    //CLOSE TOOLTIP on mouse down over dashboard container
+    // CLOSE TOOLTIP on mouse down over dashboard container
     function closeTooltip() {
         props.setChartTooltip((val) => {
             val.active = false
+
             return {...val}
         })
     }
@@ -757,12 +731,12 @@ export default function DashboardPanel(props: DashboardPanelProps) {
             }
             <VStack
                 ref={dashboardContainerRef}
-                h={"full"}
-                w={"full"}
-                bg={'white'}
-                mb={"10px"}
-                boxShadow={'2xl'}
-                rounded={'lg'}
+                h="full"
+                w="full"
+                bg="white"
+                mb="10px"
+                boxShadow="2xl"
+                rounded="lg"
                 onMouseDown={closeTooltip}
             >
                 <DashboardControlPanel
@@ -777,19 +751,19 @@ export default function DashboardPanel(props: DashboardPanelProps) {
                     setSaveDashboard={setSaveDashboard}
                 />
             </VStack>
-            {/*<Divider orientation={"horizontal"} mt={"0!important"}/>*/}
+            {/* <Divider orientation={"horizontal"} mt={"0!important"}/> */}
             {
                 !dashboardLoading &&
                 <Box
-                    w={"full"}
-                    h={dashboardSize.numRows * dashboardSize.rowHeight + (dashboardSize.numRows + 1) * 8 + 25 + "px"}
-                    position={"relative"}
+                    w="full"
+                    h={`${dashboardSize.numRows * dashboardSize.rowHeight + (dashboardSize.numRows + 1) * 8 + 25}px`}
+                    position="relative"
                 >
                     <Box
-                        w={"full"}
-                        h={dashboardSize.numRows * dashboardSize.rowHeight + (dashboardSize.numRows + 1) * 8 + "px"}
-                        maxHeight={dashboardSize.numRows * dashboardSize.rowHeight + (dashboardSize.numRows + 1) * 8 + "px"}
-                        position={"absolute"}
+                        w="full"
+                        h={`${dashboardSize.numRows * dashboardSize.rowHeight + (dashboardSize.numRows + 1) * 8}px`}
+                        maxHeight={`${dashboardSize.numRows * dashboardSize.rowHeight + (dashboardSize.numRows + 1) * 8}px`}
+                        position="absolute"
                         zIndex={0}
                         left={0}
                         top={0}
@@ -797,27 +771,27 @@ export default function DashboardPanel(props: DashboardPanelProps) {
                         <ReactGridLayout
                             width={~~dashboardSize.width}
                             style={{
-                                height: dashboardSize.numRows * dashboardSize.rowHeight + (dashboardSize.numRows + 1) * 8 + "px",
-                                maxHeight: dashboardSize.numRows * dashboardSize.rowHeight + (dashboardSize.numRows + 1) * 8 + "px"
+                                height: `${dashboardSize.numRows * dashboardSize.rowHeight + (dashboardSize.numRows + 1) * 8}px`,
+                                maxHeight: `${dashboardSize.numRows * dashboardSize.rowHeight + (dashboardSize.numRows + 1) * 8}px`
                             }}
                             margin={[5, 5]}
                             cols={dashboardSize.numCols}
                             rowHeight={dashboardSize.rowHeight}
                             autoSize={false}
                             containerPadding={[0, 0]}
-                            useCSSTransforms={true}
+                            useCSSTransforms
                         >
                             {
                                 Array(dashboardSize.numRows).fill(0).map((valRow, indexRow) => (
                                     Array(dashboardSize.numCols).fill(0).map((valCol, indexCol) => (
                                         <Box
-                                            key={indexRow + "_" + indexCol}
+                                            key={`${indexRow}_${indexCol}`}
                                             data-grid={{x: indexCol, y: indexRow, w: 1, h: 1, static: true}}
-                                            w={"full"}
-                                            h={"full"}
+                                            w="full"
+                                            h="full"
                                             borderWidth={1}
-                                            borderColor={"gray.300"}
-                                            rounded={'md'}
+                                            borderColor="gray.300"
+                                            rounded="md"
                                         />
                                     ))
                                 ))
@@ -825,20 +799,19 @@ export default function DashboardPanel(props: DashboardPanelProps) {
                         </ReactGridLayout>
                     </Box>
                     <Box
-                        w={"full"}
-                        position={"absolute"}
+                        w="full"
+                        position="absolute"
                         zIndex={1}
                         left={0}
                         top={0}
                     >
                         <ReactGridLayout
                             style={{
-                                height: dashboardSize.numRows * dashboardSize.rowHeight + (dashboardSize.numRows + 1) * 8 + "px",
-                                maxHeight: dashboardSize.numRows * dashboardSize.rowHeight + (dashboardSize.numRows + 1) * 8 + "px"
+                                height: `${dashboardSize.numRows * dashboardSize.rowHeight + (dashboardSize.numRows + 1) * 8}px`,
+                                maxHeight: `${dashboardSize.numRows * dashboardSize.rowHeight + (dashboardSize.numRows + 1) * 8}px`
                             }}
                             margin={[5, 5]}
                             autoSize={false}
-                            isBounded={true}
                             width={~~dashboardSize.width}
                             compactType={dashboardSize.compactType}
                             onLayoutChange={onLayoutChange}
@@ -853,7 +826,8 @@ export default function DashboardPanel(props: DashboardPanelProps) {
                             cols={dashboardSize.numCols}
                             rowHeight={dashboardSize.rowHeight}
                             containerPadding={[0, 0]}
-                            useCSSTransforms={true}
+                            isBounded
+                            useCSSTransforms
                         >
                             {props.dashboard.grid.widgets.map((widget, index) =>
                                 <Box key={widget.id}>
@@ -863,7 +837,7 @@ export default function DashboardPanel(props: DashboardPanelProps) {
                                         dashboardSize={dashboardSize}
                                         layout={props.dashboard.grid.layout[index]}
                                         availableSensors={props.availableSensors}
-                                        handleWidgetModified={handleWidgetModified}
+                                        handleWidgetModified={handleWidgetModifiedFn}
                                         sensorsMonitoring={widget.sensorsMonitoring}
                                         chartTooltipActive={props.chartTooltip.active}
                                         setChartTooltip={props.setChartTooltip}
@@ -875,11 +849,11 @@ export default function DashboardPanel(props: DashboardPanelProps) {
                                 props.dashboard.grid.widgets.length === 0 &&
                                 dashboardSize.numRows === 4 &&
                                 <VStack
-                                    bgColor={"white"}
-                                    boxShadow={'xl'}
-                                    rounded={'md'}
-                                    key={"add-widgets-dummy"}
-                                    justifyContent={"center"}
+                                    key="add-widgets-dummy"
+                                    bgColor="white"
+                                    boxShadow="xl"
+                                    rounded="md"
+                                    justifyContent="center"
                                     data-grid={{
                                         x: 0,
                                         y: 0,
@@ -890,10 +864,10 @@ export default function DashboardPanel(props: DashboardPanelProps) {
                                         isResizable: false
                                     }}
                                 >
-                                    <Text fontSize={"2xl"} color={"gray.500"}>Dashboard is empty</Text>
+                                    <Text fontSize="2xl" color="gray.500">Dashboard is empty</Text>
                                     {
                                         props.dashboardPermissions.modify &&
-                                        <Text fontSize={"md"} color={"gray.500"}>Start by drag & dropping widgets
+                                        <Text fontSize="md" color="gray.500">Start by drag & dropping widgets
                                             here</Text>
                                     }
                                 </VStack>
@@ -901,19 +875,19 @@ export default function DashboardPanel(props: DashboardPanelProps) {
                         </ReactGridLayout>
                     </Box>
                     <HStack
-                        position={"absolute"}
-                        w={"full"}
-                        justifyContent={"center"}
+                        position="absolute"
+                        w="full"
+                        justifyContent="center"
                         bottom={0}
                     >
                         <Button
-                            bg={'white'}
-                            boxShadow={'2xl'}
-                            rounded={'lg'}
-                            leftIcon={<FiPlus color={props.dashboardPermissions.modify ? "#000000" : "#A0AEC0"}/>}
+                            bg="white"
+                            boxShadow="2xl"
+                            rounded="lg"
+                            leftIcon={<FiPlus color={props.dashboardPermissions.modify ? '#000000' : '#A0AEC0'}/>}
                             disabled={!props.dashboardPermissions.modify}
                             onClick={extendDashboard}
-                            title={!props.dashboardPermissions.modify ? "Operation not permitted" : ""}
+                            title={!props.dashboardPermissions.modify ? 'Operation not permitted' : ''}
                         >
                             Extend dashboard
                         </Button>
@@ -923,12 +897,12 @@ export default function DashboardPanel(props: DashboardPanelProps) {
             {
                 dashboardLoading &&
                 <VStack
-                    w={"full"}
-                    h={"300px"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
+                    w="full"
+                    h="300px"
+                    justifyContent="center"
+                    alignItems="center"
                 >
-                    <Spinner size={"xl"}/>
+                    <Spinner size="xl"/>
                 </VStack>
             }
             {
@@ -944,5 +918,4 @@ export default function DashboardPanel(props: DashboardPanelProps) {
             }
         </Fragment>
     )
-
 }

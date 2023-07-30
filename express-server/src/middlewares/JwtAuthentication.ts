@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken"
 
 require('dotenv').config({path: __dirname + "/./../.env"})
 
-const jwtSecret = process.env.JWT_SECRET_KEY!!
+const jwtSecret = process.env.JWT_SECRET_KEY!
 
 function authenticateToken(req: express.Request, res: express.Response, next: express.NextFunction) {
 

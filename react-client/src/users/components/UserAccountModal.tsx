@@ -1,9 +1,9 @@
-import React, {useContext, useEffect, useState} from "react";
-import User from "../interfaces/User";
+import React, {useContext, useEffect, useState} from 'react'
+import type User from '../interfaces/User'
 import {
     Box,
     Button,
-    FormControl, FormHelperText,
+    FormControl,
     FormLabel,
     HStack,
     Input,
@@ -15,17 +15,19 @@ import {
     ModalContent,
     ModalFooter,
     ModalHeader,
-    ModalOverlay, Radio, RadioGroup,
+    ModalOverlay,
+    Radio,
+    RadioGroup,
     Select,
     VStack
-} from "@chakra-ui/react";
-import {FiEye, FiEyeOff} from "react-icons/fi";
-import userService from "../../services/UserService";
-import ToastContext from "../../utils/contexts/ToastContext";
-import UserWithPermissions from "../../machinery-users/interfaces/UserWithPermissions";
-import Machinery from "../../machineries-map/components/Machinery";
-import axiosExceptionHandler from "../../utils/AxiosExceptionHandler";
-import toastHelper from "../../utils/ToastHelper";
+} from '@chakra-ui/react'
+import {FiEye, FiEyeOff} from 'react-icons/fi'
+import userService from '../../services/UserService'
+import ToastContext from '../../utils/contexts/ToastContext'
+import type UserWithPermissions from '../../machinery-users/interfaces/UserWithPermissions'
+import type Machinery from '../../machineries-map/components/Machinery'
+import axiosExceptionHandler from '../../utils/AxiosExceptionHandler'
+import toastHelper from '../../utils/ToastHelper'
 
 interface UserAccountModalProps {
     accountModalUser: User | null
@@ -38,52 +40,40 @@ interface UserAccountModalProps {
 }
 
 const rolesOptions = [
-    {value: "none", displayName: "No role selected"},
-    {value: "COMPANY_ROLE_WORKER", displayName: "Worker role"},
-    {value: "COMPANY_ROLE_MANAGER", displayName: "Manager role"},
-    {value: "COMPANY_ROLE_ADMIN", displayName: "Administrator role"},
+    {value: 'none', displayName: 'No role selected'},
+    {value: 'COMPANY_ROLE_WORKER', displayName: 'Worker role'},
+    {value: 'COMPANY_ROLE_MANAGER', displayName: 'Manager role'},
+    {value: 'COMPANY_ROLE_ADMIN', displayName: 'Administrator role'}
 ]
 
 export default function UserAccountModal(props: UserAccountModalProps) {
-
     const toast = useContext(ToastContext)
 
     const [user, setUser] = useState<User>(JSON.parse(JSON.stringify(props.user)))
-    const [userPassword, setUserPassword] = useState("")
+    const [userPassword, setUserPassword] = useState('')
     const [showPassword, setShowPassword] = useState(false)
 
     const [submit, setSubmit] = useState(false)
 
-    //SUBMIT UPDATED USER DETAILS
-    useEffect(()=>{
+    // SUBMIT UPDATED USER DETAILS
+    useEffect(() => {
+        if (!submit) return
 
-        if(!submit) return
+        async function doSubmit() {
+            try {
+                user.roles = user.roles.filter((el) => (el !== 'none'))
 
-        async function doSubmit(){
-
-            try{
-
-                user.roles = user.roles.filter((el)=>(el!=="none"))
-
-                if(props.operationType==="create"){
-                    let newUser: User = await userService.createAccount(user, userPassword)
+                if (props.operationType === 'create') {
+                    const newUser: User = await userService.createAccount(user, userPassword)
                     newUser.active = true
 
-                    if(props.setUsers) {
-                        props.setUsers((val) => {
-                            return Array.from([newUser, ...val])
-                        })
-                    }
-                    else if(props.setUsersWithPermissions && props.machineries){
-
-                        props.setUsersWithPermissions((val)=>{
-
-                            console.log("with perm", val)
-
-                            return [
+                    if (props.setUsers != null)
+                        props.setUsers((val) => Array.from([newUser, ...val]))
+                    else if ((props.setUsersWithPermissions != null) && (props.machineries != null))
+                        props.setUsersWithPermissions((val) => [
                                 {
                                     user: newUser,
-                                    permissions: props.machineries!!.map((el)=>(
+                                    permissions: props.machineries?.map((el) => (
                                         {
                                             dashboardsModify: false,
                                             dashboardsRead: false,
@@ -95,156 +85,140 @@ export default function UserAccountModal(props: UserAccountModalProps) {
                                             machineryUID: el.uid,
                                             userID: newUser.id
                                         }
-                                    )),
+                                    )) || [],
                                     active: true
                                 },
-                                ...val]
-
-                        })
-
-                    }
-                    else{
+                                ...val])
+                    else
                         return
-                    }
 
                     toastHelper.makeToast(
                         toast,
-                        "Account created",
-                        "success"
+                        'Account created',
+                        'success'
                     )
 
                     props.setAccountModalUser(null)
-
-                }
-                else{
+                } else {
                     await userService.updateAccountDetails(user)
 
-                    if(props.setUsers) {
+                    if (props.setUsers != null)
                         props.setUsers((val) => {
-                            let foundUser = val.find((el) => (el.id === user.id))
-                            if (foundUser) {
-                                let userIndex = val.indexOf(foundUser)
+                            const foundUser = val.find((el) => (el.id === user.id))
+                            if (foundUser != null) {
+                                const userIndex = val.indexOf(foundUser)
                                 val[userIndex] = user
                             }
+
                             return [...val]
                         })
-                    }
-                    else if(props.setUsersWithPermissions){
+                    else if (props.setUsersWithPermissions != null)
                         props.setUsersWithPermissions((val) => {
-                            let foundUser = val.find((el) => (el.user.id === user.id))
-                            if (foundUser) {
-                                let userIndex = val.indexOf(foundUser)
+                            const foundUser = val.find((el) => (el.user.id === user.id))
+                            if (foundUser != null) {
+                                const userIndex = val.indexOf(foundUser)
                                 val[userIndex].user = user
                             }
+
                             return [...val]
                         })
-                    }
-                    else{
+                    else
                         return
-                    }
 
                     toastHelper.makeToast(
                         toast,
-                        "Account modified",
-                        "success"
+                        'Account modified',
+                        'success'
                     )
 
                     props.setAccountModalUser(null)
-
                 }
-
-            }
-            catch (e){
-                console.log(e)
+            } catch (e) {
+                console.error(e)
                 axiosExceptionHandler.handleAxiosExceptionWithToast(
                     e,
                     toast,
-                    (props.operationType==="create" ? "Account creation" : "Account modification") +" failed"
+                    `${props.operationType === 'create' ? 'Account creation' : 'Account modification'} failed`
                 )
             }
 
             setSubmit(false)
-
         }
 
         doSubmit()
+    }, [submit, props, toast, user, userPassword])
 
-    }, [submit])
-
-    //USER DETAILS (other than role) MODIFIED
+    // USER DETAILS (other than role) MODIFIED
     function handleUserDetailsChanged(target: string, newValue: string) {
-
-        if (target === "password") {
+        if (target === 'password') {
             setUserPassword(newValue)
+
             return
         }
 
         setUser((val) => {
-
             switch (target) {
-                case "name": {
+                case 'name': {
                     val.name = newValue
                     break
                 }
-                case "surname": {
+                case 'surname': {
                     val.surname = newValue
                     break
                 }
-                case "email": {
+                case 'email': {
                     val.email = newValue
                     break
                 }
-                case "account-status": {
-                    val.accountActive = newValue === "enabled"
+                case 'account-status': {
+                    val.accountActive = newValue === 'enabled'
                     break
                 }
                 default: {
-                    console.error("Unknown target in account form")
+                    console.error('Unknown target in account form')
                     break
                 }
             }
 
             return {...val}
         })
-
     }
 
-    //ADD NEW USER ROLE DROPDOWN
+    // ADD NEW USER ROLE DROPDOWN
     function addUserRole() {
         setUser((val) => {
-            val.roles.push("none")
+            val.roles.push('none')
+
             return {...val}
         })
     }
 
-    //SELECT NEW USER ROLE
+    // SELECT NEW USER ROLE
     function handleRoleSelected(roleValue: string, index: number) {
         setUser((val) => {
-            console.log(index, val.roles, index-val.roles.length)
-            if(index-val.roles.length>0){
+            if (index - val.roles.length > 0)
                 return val
-            }
-            else if(index-val.roles.length===0){
+            else if (index - val.roles.length === 0)
                 val.roles.push(roleValue)
-            }
-            else {
+            else
                 val.roles[index] = roleValue
-            }
+
             return {...val}
         })
     }
 
-    //REMOVE USER ROLE
+    // REMOVE USER ROLE
     function handleRoleRemoved(roleValue: string) {
         setUser((val) => {
             val.roles = val.roles.filter((el) => (el !== roleValue))
+
             return {...val}
         })
     }
 
-    //CLOSE MODAL (only if not submitting)
+    // CLOSE MODAL (only if not submitting)
     function closeModal() {
-        if(submit) return
+        if (submit) return
 
         props.setAccountModalUser(null)
     }
@@ -253,7 +227,7 @@ export default function UserAccountModal(props: UserAccountModalProps) {
         <Modal isOpen={props.accountModalUser !== null} onClose={closeModal}>
             <ModalOverlay/>
             <ModalContent>
-                <ModalHeader>{props.operationType === "create" ? "Create account" : "Modify account"}</ModalHeader>
+                <ModalHeader>{props.operationType === 'create' ? 'Create account' : 'Modify account'}</ModalHeader>
                 <ModalCloseButton/>
                 <ModalBody>
                     <VStack spacing={4}>
@@ -264,7 +238,9 @@ export default function UserAccountModal(props: UserAccountModalProps) {
                                     <Input
                                         type="text"
                                         value={user.name}
-                                        onChange={(e) => (handleUserDetailsChanged("name", e.target.value))}
+                                        onChange={(e) => {
+                                            handleUserDetailsChanged('name', e.target.value)
+                                        }}
                                     />
                                 </FormControl>
                             </Box>
@@ -274,7 +250,9 @@ export default function UserAccountModal(props: UserAccountModalProps) {
                                     <Input
                                         type="text"
                                         value={user.surname}
-                                        onChange={(e) => (handleUserDetailsChanged("surname", e.target.value))}
+                                        onChange={(e) => {
+                                            handleUserDetailsChanged('surname', e.target.value)
+                                        }}
                                     />
                                 </FormControl>
                             </Box>
@@ -284,24 +262,29 @@ export default function UserAccountModal(props: UserAccountModalProps) {
                             <Input
                                 type="email"
                                 value={user.email}
-                                onChange={(e) => (handleUserDetailsChanged("email", e.target.value))}
+                                onChange={(e) => {
+                                    handleUserDetailsChanged('email', e.target.value)
+                                }}
                             />
                         </FormControl>
                         {
-                            props.operationType === "create" &&
+                            props.operationType === 'create' &&
                             <FormControl id="password" isRequired>
                                 <FormLabel>Password</FormLabel>
                                 <InputGroup>
                                     <Input
                                         type={showPassword ? 'text' : 'password'}
                                         value={userPassword}
-                                        onChange={(e) => (handleUserDetailsChanged("password", e.target.value))}
+                                        onChange={(e) => {
+                                            handleUserDetailsChanged('password', e.target.value)
+                                        }}
                                     />
-                                    <InputRightElement h={'full'}>
+                                    <InputRightElement h="full">
                                         <Button
-                                            variant={'ghost'}
-                                            onClick={() =>
+                                            variant="ghost"
+                                            onClick={() => {
                                                 setShowPassword((showPassword) => !showPassword)
+                                            }
                                             }>
                                             {showPassword ? <FiEye/> : <FiEyeOff/>}
                                         </Button>
@@ -312,21 +295,23 @@ export default function UserAccountModal(props: UserAccountModalProps) {
                         <FormControl>
                             <FormLabel>Roles</FormLabel>
                             <VStack
-                                w={"full"}
+                                w="full"
                             >
                                 {
                                     user.roles.map((role, index, array) => (
                                         <HStack
                                             key={index}
-                                            w={"full"}
+                                            w="full"
                                         >
                                             <Select
                                                 value={role}
-                                                onChange={(e) => (handleRoleSelected(e.target.value, index))}
+                                                onChange={(e) => {
+                                                    handleRoleSelected(e.target.value, index)
+                                                }}
                                             >
                                                 {
                                                     rolesOptions
-                                                        .filter((roleOption) => (roleOption.value===role || !array.includes(roleOption.value)))
+                                                        .filter((roleOption) => (roleOption.value === role || !array.includes(roleOption.value)))
                                                         .map((roleOption) => (
                                                             <option
                                                                 key={roleOption.value}
@@ -340,17 +325,19 @@ export default function UserAccountModal(props: UserAccountModalProps) {
                                             {
                                                 index < array.length - 1 &&
                                                 <Button
-                                                    colorScheme={"red"}
-                                                    onClick={() => (handleRoleRemoved(role))}
+                                                    colorScheme="red"
+                                                    onClick={() => {
+                                                        handleRoleRemoved(role)
+                                                    }}
                                                 >
                                                     -
                                                 </Button>
                                             }
                                             {
                                                 index === array.length - 1 &&
-                                                role !== "none" &&
+                                                role !== 'none' &&
                                                 <Button
-                                                    colorScheme={"teal"}
+                                                    colorScheme="teal"
                                                     onClick={addUserRole}
                                                 >
                                                     +
@@ -362,8 +349,10 @@ export default function UserAccountModal(props: UserAccountModalProps) {
                                 {
                                     user.roles.length === 0 &&
                                     <Select
-                                        value={"none"}
-                                        onChange={(e) => (handleRoleSelected(e.target.value, 0))}
+                                        value="none"
+                                        onChange={(e) => {
+                                            handleRoleSelected(e.target.value, 0)
+                                        }}
                                     >
                                         {
                                             rolesOptions
@@ -383,8 +372,10 @@ export default function UserAccountModal(props: UserAccountModalProps) {
                         <FormControl>
                             <FormLabel>Account status</FormLabel>
                             <RadioGroup
-                                onChange={(e) => (handleUserDetailsChanged("account-status", e))}
-                                value={user.accountActive ? "enabled" : "disabled"}
+                                onChange={(e) => {
+                                    handleUserDetailsChanged('account-status', e)
+                                }}
+                                value={user.accountActive ? 'enabled' : 'disabled'}
                             >
                                 <HStack spacing='24px'>
                                     <Radio value='enabled'>Enabled</Radio>
@@ -399,16 +390,17 @@ export default function UserAccountModal(props: UserAccountModalProps) {
                         Close
                     </Button>
                     <Button
-                        colorScheme={"blue"}
+                        colorScheme="blue"
                         isLoading={submit}
-                        loadingText={props.operationType === "create" ? "Creating account" : "Modifying account"}
-                        onClick={()=>(setSubmit(true))}
+                        loadingText={props.operationType === 'create' ? 'Creating account' : 'Modifying account'}
+                        onClick={() => {
+                            setSubmit(true)
+                        }}
                     >
-                        {props.operationType === "create" ? "Create account" : "Modify account"}
+                        {props.operationType === 'create' ? 'Create account' : 'Modify account'}
                     </Button>
                 </ModalFooter>
             </ModalContent>
         </Modal>
     )
-
 }

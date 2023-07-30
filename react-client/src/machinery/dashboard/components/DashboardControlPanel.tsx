@@ -1,19 +1,27 @@
-import Dashboard from "../models/Dashboard";
-import React, {useContext} from "react";
-import DashboardSize from "../interfaces/DashboardSize";
-import {Layout} from "react-grid-layout";
-import SidebarStatusContext from "../../../utils/contexts/SidebarStatusContext";
+import type Dashboard from '../models/Dashboard'
+import React, {useContext} from 'react'
+import type DashboardSize from '../interfaces/DashboardSize'
+import {type Layout} from 'react-grid-layout'
+import SidebarStatusContext from '../../../utils/contexts/SidebarStatusContext'
 import {
-    Box, Button, Divider,
-    HStack, Menu, MenuButton, MenuItem, MenuList,
+    Box,
+    Button,
+    Divider,
+    HStack,
+    Menu,
+    MenuButton,
+    MenuItem,
+    MenuList,
     Popover,
-    PopoverArrow, PopoverBody, PopoverCloseButton,
+    PopoverArrow,
+    PopoverBody,
+    PopoverCloseButton,
     PopoverContent,
     PopoverTrigger,
     Portal,
     Text,
     VStack
-} from "@chakra-ui/react";
+} from '@chakra-ui/react'
 import {
     FiChevronDown,
     FiEdit,
@@ -23,8 +31,8 @@ import {
     FiMoreVertical,
     FiPlus,
     FiSave
-} from "react-icons/fi";
-import SaveDashboard from "../interfaces/SaveDashboard";
+} from 'react-icons/fi'
+import type SaveDashboard from '../interfaces/SaveDashboard'
 
 interface DashboardControlPanelProps {
     dashboard: Dashboard
@@ -39,28 +47,27 @@ interface DashboardControlPanelProps {
 }
 
 export default function DashboardControlPanel(props: DashboardControlPanelProps) {
-
     const {dispatchSidebar} = useContext(SidebarStatusContext)
 
-    //BUTTON CLICK - ADD WIDGET
+    // BUTTON CLICK - ADD WIDGET
     function handleAddWidgetButton() {
         dispatchSidebar({
-            type: "widget-selector-open"
+            type: 'widget-selector-open'
         })
     }
 
-    //DASHBOARD COMPACTION/GRAVITY
+    // DASHBOARD COMPACTION/GRAVITY
     function setDashboardCompactType(compactType: string | null) {
         props.setLayout(props.dashboard.grid.layout)
         props.setDashboardSize((val) => {
             if (val.compactType !== compactType) {
                 switch (compactType) {
-                    case "horizontal": {
-                        val.compactType = "horizontal"
+                    case 'horizontal': {
+                        val.compactType = 'horizontal'
                         break
                     }
-                    case "vertical": {
-                        val.compactType = "vertical"
+                    case 'vertical': {
+                        val.compactType = 'vertical'
                         break
                     }
                     default: {
@@ -71,19 +78,21 @@ export default function DashboardControlPanel(props: DashboardControlPanelProps)
 
                 props.setDashboard((el) => {
                     el.numUnsavedChanges++
+
                     return el
                 })
 
                 return {...val}
             }
+
             return val
         })
     }
 
-    //SAVE DASHBOARD (set states to trigger save)
-    function saveDashboard(isDefault: boolean){
+    // SAVE DASHBOARD (set states to trigger save)
+    function saveDashboard(isDefault: boolean) {
         props.setSaveDashboard({
-            isDefault: isDefault,
+            isDefault,
             name: props.dashboard.name,
             save: true,
             saveAs: false,
@@ -91,71 +100,66 @@ export default function DashboardControlPanel(props: DashboardControlPanelProps)
         })
     }
 
-    //SAVE AS DASHBOARD (set states to trigger save)
-    function saveAsDashboard(){
+    // SAVE AS DASHBOARD (set states to trigger save)
+    function saveAsDashboard() {
         props.setSaveDashboardPromptOpen(true)
     }
 
-    //FORMAT DASHBOARD COMPACTION/GRAVITY TEXT
+    // FORMAT DASHBOARD COMPACTION/GRAVITY TEXT
     function getCompactionType() {
-        if (!props.dashboardCompactType) {
-            return "No grid compaction"
-        }
+        if (props.dashboardCompactType === 'horizontal')
+            return 'Compact grid horizontally'
 
-        if (props.dashboardCompactType === "horizontal") {
-            return "Compact grid horizontally"
-        }
-        if (props.dashboardCompactType === "vertical") {
-            return "Compact grid vertically"
-        }
+        if (props.dashboardCompactType === 'vertical')
+            return 'Compact grid vertically'
+
+        return 'No grid compaction'
     }
-
 
     return (
         <VStack
-            w={"full"}
+            w="full"
         >
             <HStack
-                w={"full"}
-                justifyContent={"center"}
-                alignItems={"baseline"}
+                w="full"
+                justifyContent="center"
+                alignItems="baseline"
                 my={2}
             >
-                <Text fontSize={"md"} fontWeight={500}>{props.dashboard.name}</Text>
+                <Text fontSize="md" fontWeight={500}>{props.dashboard.name}</Text>
                 {
                     props.dashboardPermissions.modify &&
                     <Popover>
                         <PopoverTrigger>
                             <Box
                                 _hover={{
-                                    cursor: "pointer"
+                                    cursor: 'pointer'
                                 }}
                             >
                                 {
-                                    props.dashboard.numUnsavedChanges > 0 ?
-                                        <Text fontSize={"xs"} fontStyle={"italic"} color={"gray.400"}>Changes not
+                                    props.dashboard.numUnsavedChanges > 0
+                                        ? <Text fontSize="xs" fontStyle="italic" color="gray.400">Changes not
                                             yet
                                             saved</Text>
-                                        :
-                                        <Text fontSize={"xs"} fontStyle={"italic"} color={"gray.400"}>Saved</Text>
+                                        : <Text fontSize="xs" fontStyle="italic" color="gray.400">Saved</Text>
                                 }
                             </Box>
                         </PopoverTrigger>
                         <Portal>
-                            <PopoverContent shadow={"2xl"}>
+                            <PopoverContent shadow="2xl">
                                 <PopoverArrow/>
                                 <PopoverCloseButton/>
                                 <PopoverBody>
                                     {
                                         props.dashboard.numUnsavedChanges > 0 &&
-                                        <Text fontSize={"md"}>There
+                                        <Text fontSize="md">There
                                             are {props.dashboard.numUnsavedChanges} unsaved changes. Please consider
                                             saving your modifications as soon as possible so not to risk them being
                                             lost.</Text>
                                     }
                                     {
                                         props.dashboard.numUnsavedChanges === 0 &&
-                                        <Text fontSize={"md"}>All changes
+                                        <Text fontSize="md">All changes
                                             are saved. You can safely navigate away from the dashboard.</Text>
                                     }
                                 </PopoverBody>
@@ -164,76 +168,84 @@ export default function DashboardControlPanel(props: DashboardControlPanelProps)
                     </Popover>
                 }
             </HStack>
-            <Divider orientation={"horizontal"} m={"0!important"}/>
+            <Divider orientation="horizontal" m="0!important"/>
             <HStack
-                w={"full"}
-                justifyContent={"left"}
-                alignItems={"stretch"}
-                mt={"0!important"}
+                w="full"
+                justifyContent="left"
+                alignItems="stretch"
+                mt="0!important"
             >
                 <Button
                     colorScheme='blue'
                     variant='ghost'
                     isDisabled={props.dashboardLoading || !props.dashboardPermissions.modify}
-                    title={!props.dashboardPermissions.modify ? "Operation not permitted" : ""}
+                    title={!props.dashboardPermissions.modify ? 'Operation not permitted' : ''}
                     leftIcon={<FiPlus/>}
                     onClick={handleAddWidgetButton}
                 >
                     Add widget
                 </Button>
-                {/*<Divider orientation={"vertical"} h={"auto"} m={"0!important"}/>*/}
-                {/*<Button*/}
-                {/*    colorScheme='blue'*/}
-                {/*    variant='ghost'*/}
-                {/*    leftIcon={<FiSave/>}*/}
-                {/*    ml={"0!important"}*/}
-                {/*    isDisabled={props.dashboard.grid.widgets.length === 0 || props.dashboardLoading || !props.dashboardPermissions.modify}*/}
-                {/*    title={!props.dashboardPermissions.modify ? "Operation not permitted" : ""}*/}
-                {/*    onClick={() => (}*/}
-                {/*>*/}
-                {/*    Save dashboard*/}
-                {/*</Button>*/}
-                <Divider orientation={"vertical"} h={"auto"} m={"0!important"}/>
+                {/* <Divider orientation={"vertical"} h={"auto"} m={"0!important"}/> */}
+                {/* <Button */}
+                {/*    colorScheme='blue' */}
+                {/*    variant='ghost' */}
+                {/*    leftIcon={<FiSave/>} */}
+                {/*    ml={"0!important"} */}
+                {/*    isDisabled={props.dashboard.grid.widgets.length === 0 || props.dashboardLoading || !props.dashboardPermissions.modify} */}
+                {/*    title={!props.dashboardPermissions.modify ? "Operation not permitted" : ""} */}
+                {/*    onClick={() => (} */}
+                {/* > */}
+                {/*    Save dashboard */}
+                {/* </Button> */}
+                <Divider orientation="vertical" h="auto" m="0!important"/>
                 <Menu>
                     <MenuButton
                         as={Button}
                         leftIcon={<FiSave/>}
                         rightIcon={<FiChevronDown/>}
-                        colorScheme={"blue"}
+                        colorScheme="blue"
                         variant='ghost'
-                        ml={"0!important"}
-                        //Stop click from propagating down to dashboard
-                        onMouseDown={(e) => (e.stopPropagation())}
+                        ml="0!important"
+                        // Stop click from propagating down to dashboard
+                        onMouseDown={(e) => {
+                            e.stopPropagation()
+                        }}
 
                     >
                         Save dashboard
                     </MenuButton>
                     <Portal>
                         <MenuList
-                            shadow={"2xl"}
-                            //Stop click from propagating down to dashboard
-                            onMouseDown={(e) => (e.stopPropagation())}
+                            shadow="2xl"
+                            // Stop click from propagating down to dashboard
+                            onMouseDown={(e) => {
+                                e.stopPropagation()
+                            }}
                         >
                             <MenuItem
                                 icon={<FiSave/>}
                                 isDisabled={props.dashboard.grid.widgets.length === 0 || props.dashboardLoading || !props.dashboardPermissions.modify}
-                                title={!props.dashboardPermissions.modify ? "Operation not permitted" : ""}
-                                onClick={()=>(saveDashboard(false))}
+                                title={!props.dashboardPermissions.modify ? 'Operation not permitted' : ''}
+                                onClick={() => {
+                                    saveDashboard(false)
+                                }}
                             >
                                 Save
                             </MenuItem>
                             <MenuItem
                                 icon={<FiSave/>}
                                 isDisabled={props.dashboard.grid.widgets.length === 0 || props.dashboardLoading || !props.dashboardPermissions.modify}
-                                title={!props.dashboardPermissions.modify ? "Operation not permitted" : ""}
-                                onClick={()=>(saveDashboard(true))}
+                                title={!props.dashboardPermissions.modify ? 'Operation not permitted' : ''}
+                                onClick={() => {
+                                    saveDashboard(true)
+                                }}
                             >
                                 Save and set as default
                             </MenuItem>
                             <MenuItem
                                 icon={<FiEdit/>}
                                 isDisabled={props.dashboard.grid.widgets.length === 0 || props.dashboardLoading || !props.dashboardPermissions.write}
-                                title={!props.dashboardPermissions.write ? "Operation not permitted" : ""}
+                                title={!props.dashboardPermissions.write ? 'Operation not permitted' : ''}
                                 onClick={saveAsDashboard}
                             >
                                 Save as
@@ -241,57 +253,66 @@ export default function DashboardControlPanel(props: DashboardControlPanelProps)
                         </MenuList>
                     </Portal>
                 </Menu>
-                <Divider orientation={"vertical"} h={"auto"} m={"0!important"}/>
+                <Divider orientation="vertical" h="auto" m="0!important"/>
                 <Menu>
                     <MenuButton
                         as={Button}
                         leftIcon={<FiMinimize2/>}
                         rightIcon={<FiChevronDown/>}
-                        colorScheme={"blue"}
+                        colorScheme="blue"
                         variant='ghost'
-                        ml={"0!important"}
-                        //Stop click from propagating down to dashboard
-                        onMouseDown={(e) => (e.stopPropagation())}
+                        ml="0!important"
+                        // Stop click from propagating down to dashboard
+                        onMouseDown={(e) => {
+                            e.stopPropagation()
+                        }}
 
                     >
                         {getCompactionType()}
                     </MenuButton>
                     <Portal>
                         <MenuList
-                            shadow={"2xl"}
-                            //Stop click from propagating down to dashboard
-                            onMouseDown={(e) => (e.stopPropagation())}
+                            shadow="2xl"
+                            // Stop click from propagating down to dashboard
+                            onMouseDown={(e) => {
+                                e.stopPropagation()
+                            }}
                         >
                             <MenuItem
                                 icon={<FiMoreVertical/>}
                                 isDisabled={!props.dashboardPermissions.modify}
-                                title={!props.dashboardPermissions.modify ? "Operation not permitted" : ""}
-                                onClick={() => (setDashboardCompactType("vertical"))}
+                                title={!props.dashboardPermissions.modify ? 'Operation not permitted' : ''}
+                                onClick={() => {
+                                    setDashboardCompactType('vertical')
+                                }}
                             >
                                 Compact vertically
                             </MenuItem>
                             <MenuItem
                                 icon={<FiMoreHorizontal/>}
                                 isDisabled={!props.dashboardPermissions.modify}
-                                title={!props.dashboardPermissions.modify ? "Operation not permitted" : ""}
-                                onClick={() => (setDashboardCompactType("horizontal"))}
+                                title={!props.dashboardPermissions.modify ? 'Operation not permitted' : ''}
+                                onClick={() => {
+                                    setDashboardCompactType('horizontal')
+                                }}
                             >
                                 Compact horizontally
                             </MenuItem>
                             <MenuItem
                                 icon={<FiMaximize2/>}
                                 isDisabled={!props.dashboardPermissions.modify}
-                                title={!props.dashboardPermissions.modify ? "Operation not permitted" : ""}
-                                onClick={() => (setDashboardCompactType(null))}
+                                title={!props.dashboardPermissions.modify ? 'Operation not permitted' : ''}
+                                onClick={() => {
+                                    setDashboardCompactType(null)
+                                }}
                             >
                                 Do not compact
                             </MenuItem>
                         </MenuList>
                     </Portal>
                 </Menu>
-                <Divider orientation={"vertical"} h={"auto"} m={"0!important"}/>
+                <Divider orientation="vertical" h="auto" m="0!important"/>
             </HStack>
         </VStack>
     )
-
 }

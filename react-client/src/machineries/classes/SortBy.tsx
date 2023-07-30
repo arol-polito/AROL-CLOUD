@@ -1,5 +1,4 @@
-
-export default interface SortBy{
-    by: string
-    mode: string
+export default interface SortBy {
+  by: string
+  mode: string
 }

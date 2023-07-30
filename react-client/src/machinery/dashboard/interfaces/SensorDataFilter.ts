@@ -1,4 +1,4 @@
 export default interface SensorDataFilter {
-    headNumber: number
-    sensorNames: {name: string, color: string}[]
+  headNumber: number
+  sensorNames: Array<{ name: string, color: string }>
 }
