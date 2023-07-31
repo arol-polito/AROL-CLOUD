@@ -35,23 +35,23 @@ server.use("/dashboard", dashboardRoutes)
 server.use("/documents", documentsRoutes)
 
 // catch 404 and forward to error handler
-server.use(function (req: express.Request, res: express.Response) {
+server.use((req: express.Request, res: express.Response) => {
     res.status(404).json({
         message: "No such route exists"
     })
 });
 
 // error handler
-server.use(function (err: any, req: express.Request, res: express.Response) {
+server.use((err: any, req: express.Request, res: express.Response) => {
     res.status(err.status || 500).json({
         message: "Error Message"
     })
 });
 
+/* eslint-disable */
 server.listen(port, () => {
-    console.log(`Server is running on port ${port}.`);
+    console.info(`Server is running on port ${port}.`);
 });
-
-// timestreamIngestion.timestreamIngestion()
+/* eslint-enable */
 
 module.exports = server

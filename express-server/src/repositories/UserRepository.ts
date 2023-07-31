@@ -10,15 +10,15 @@ async function authenticateAndGetUser(email: string, password: string): Promise<
 
         const result = await pgClient.oneOrNone("SELECT * FROM public.users WHERE email=$1", email)
 
-        if (!result) {
-            throw "User with email " + email + " not found"
-        }
+        if (!result)
+            throw `User with email ${email} not found`
+
 
         const authenticationSuccess = await bcrypt.compare(password, result.password)
 
-        if (!authenticationSuccess) {
+        if (!authenticationSuccess)
             throw "Authentication failed: Passwords do not match"
-        }
+
 
         return new User(
             result.id,
@@ -32,7 +32,8 @@ async function authenticateAndGetUser(email: string, password: string): Promise<
             result.created_by)
 
     } catch (e) {
-        console.log(e)
+        console.error(e)
+
         return null
     }
 }
@@ -54,7 +55,8 @@ async function getUserByID(id: number) {
             result.created_by)
 
     } catch (e) {
-        console.log(e)
+        console.error(e)
+
         return null
     }
 }
@@ -67,7 +69,7 @@ async function getCompanyUsers(companyID: number): Promise<User[] | null> {
             companyID
         )
 
-        if (result) {
+        if (result)
 
             return result.map((row: any) => (
                 new User(
@@ -82,11 +84,12 @@ async function getCompanyUsers(companyID: number): Promise<User[] | null> {
                     row.created_by
                 )
             ))
-        }
+
 
         return []
     } catch (e) {
-        console.log(e)
+        console.error(e)
+
         return null
     }
 
@@ -116,7 +119,8 @@ async function createAccount(email: string, password: string, name: string, surn
         )
 
     } catch (e) {
-        console.log(e)
+        console.error(e)
+
         return null
     }
 }
@@ -132,7 +136,8 @@ async function updateAccountDetails(userID: number, email: string, name: string,
         return true
 
     } catch (e) {
-        console.log(e)
+        console.error(e)
+
         return false
     }
 
@@ -149,11 +154,11 @@ async function resetAccountPassword(userID: number, newPassword: string): Promis
             [hashedPassword, userID]
         )
 
-        if (!updateResult || updateResult.length === 0) {
+        if (!updateResult || updateResult.length === 0)
             throw "File insertion in DB failed"
-        }
 
-        const deleteRefTokensResult = await pgClient.query(
+
+        await pgClient.query(
             "DELETE FROM public.refresh_tokens WHERE user_id=$1",
             [userID]
         )
@@ -161,7 +166,8 @@ async function resetAccountPassword(userID: number, newPassword: string): Promis
         return true
 
     } catch (e) {
-        console.log(e)
+        console.error(e)
+
         return false
     }
 
@@ -176,7 +182,7 @@ async function getUserPermissionsForMachinery(userID: number, machineryUID: stri
             [userID, machineryUID]
         )
 
-        if (result) {
+        if (result)
             return new MachineryPermissions(
                 result.user_id,
                 result.machinery_uid,
@@ -187,12 +193,13 @@ async function getUserPermissionsForMachinery(userID: number, machineryUID: stri
                 result.documents_modify,
                 result.documents_read,
             )
-        }
+
 
         return null
 
     } catch (e) {
-        console.log(e)
+        console.error(e)
+
         return undefined
     }
 
@@ -222,7 +229,8 @@ async function getAllUserPermissions(userID: number): Promise<MachineryPermissio
 
 
     } catch (e) {
-        console.log(e)
+        console.error(e)
+
         return null
     }
 
@@ -233,85 +241,85 @@ async function updateUserPermissions(modifierUserID: number, isAdmin: boolean, m
         //GET MODIFIER USER PERMISSIONS
         const modifierPermissions = await getUserPermissionsForMachinery(modifierUserID, machineryPermissions.machineryUID)
 
-        if (!modifierPermissions) {
+        if (!modifierPermissions)
             throw "Could not get modifier permissions for machinery"
-        }
+
 
         let numValueAdded = 0
         const params: any[] = []
         let query = "UPDATE public.machinery_permissions SET"
         if (modifierPermissions.dashboardsRead || isAdmin) {
-            query += " dashboards_read=$" + (numValueAdded + 1)
+            query += ` dashboards_read=$${numValueAdded + 1}`
             params.push(machineryPermissions.dashboardsRead)
             numValueAdded++
-        } else {
+        } else
             machineryPermissions.dashboardsRead = false
-        }
+
         if (modifierPermissions.dashboardsModify || isAdmin) {
-            if (numValueAdded) {
+            if (numValueAdded)
                 query += " , "
-            }
-            query += "dashboards_modify=$" + (numValueAdded + 1)
+
+            query += `dashboards_modify=$${numValueAdded + 1}`
             params.push(machineryPermissions.dashboardsModify)
             numValueAdded++
-        } else {
+        } else
             machineryPermissions.dashboardsModify = false
-        }
+
         if (modifierPermissions.dashboardsWrite || isAdmin) {
-            if (numValueAdded) {
+            if (numValueAdded)
                 query += " , "
-            }
-            query += "dashboards_write=$" + (numValueAdded + 1)
+
+            query += `dashboards_write=$${numValueAdded + 1}`
             params.push(machineryPermissions.dashboardsWrite)
             numValueAdded++
-        } else {
+        } else
             machineryPermissions.dashboardsWrite = false
-        }
+
         if (modifierPermissions.documentsRead || isAdmin) {
-            if (numValueAdded) {
+            if (numValueAdded)
                 query += " , "
-            }
-            query += "documents_read=$" + (numValueAdded + 1)
+
+            query += `documents_read=$${numValueAdded + 1}`
             params.push(machineryPermissions.documentsRead)
             numValueAdded++
-        } else {
+        } else
             machineryPermissions.documentsRead = false
-        }
+
         if (modifierPermissions.documentsModify || isAdmin) {
-            if (numValueAdded) {
+            if (numValueAdded)
                 query += " , "
-            }
-            query += "documents_modify=$" + (numValueAdded + 1)
+
+            query += `documents_modify=$${numValueAdded + 1}`
             params.push(machineryPermissions.documentsModify)
             numValueAdded++
-        } else {
+        } else
             machineryPermissions.documentsModify = false
-        }
+
         if (modifierPermissions.documentsWrite || isAdmin) {
-            if (numValueAdded) {
+            if (numValueAdded)
                 query += " , "
-            }
-            query += "documents_write=$" + (numValueAdded + 1)
+
+            query += `documents_write=$${numValueAdded + 1}`
             params.push(machineryPermissions.documentsWrite)
             numValueAdded++
-        } else {
+        } else
             machineryPermissions.documentsWrite = false
-        }
+
 
         //IF MODIFIER HAS NO PERMISSIONS OVER MACHINERY
-        if (numValueAdded === 0) {
+        if (numValueAdded === 0)
             return false
-        }
 
-        query += " WHERE machinery_uid=$" + (numValueAdded + 1) + " AND user_id=$" + (numValueAdded + 2) + " RETURNING *"
+
+        query += ` WHERE machinery_uid=$${numValueAdded + 1} AND user_id=$${numValueAdded + 2} RETURNING *`
         params.push(machineryPermissions.machineryUID, machineryPermissions.userID)
 
         //GET CURRENT USER PERMISSIONS
         const userPermissionsExists = await getUserPermissionsForMachinery(machineryPermissions.userID, machineryPermissions.machineryUID)
 
-        if (userPermissionsExists === undefined) {
+        if (userPermissionsExists === undefined)
             throw "Could not get user permission for machinery"
-        }
+
 
         //UPDATE EXISTING USER PERMISSIONS
         if (userPermissionsExists) {
@@ -331,48 +339,49 @@ async function updateUserPermissions(modifierUserID: number, isAdmin: boolean, m
                 updateResult[0].documents_write === false
             ) {
                 const deleteResult = await deleteUserPermissions(machineryPermissions.userID, machineryPermissions.machineryUID)
-                if (deleteResult) {
+                if (deleteResult)
                     return true
-                }
+
+
                 return false
             }
 
             return updateResult && updateResult.length > 0
         }
         //CREATE USER PERMISSIONS
-        else {
-            //IF NO PERMISSION IS SET TO TRUE
-            if (
-                !machineryPermissions.dashboardsRead &&
-                !machineryPermissions.dashboardsModify &&
-                !machineryPermissions.dashboardsWrite &&
-                !machineryPermissions.documentsRead &&
-                !machineryPermissions.documentsModify &&
-                !machineryPermissions.documentsWrite
-            ) {
-                return true
-            }
 
-            const insertResult = await pgClient.query(
-                "INSERT INTO public.machinery_permissions(user_id, machinery_uid, dashboards_write, dashboards_modify, dashboards_read, documents_write, documents_modify, documents_read) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *",
-                [
-                    machineryPermissions.userID,
-                    machineryPermissions.machineryUID,
-                    machineryPermissions.dashboardsWrite,
-                    machineryPermissions.dashboardsModify,
-                    machineryPermissions.dashboardsRead,
-                    machineryPermissions.documentsWrite,
-                    machineryPermissions.documentsModify,
-                    machineryPermissions.documentsRead
-                ]
-            )
+        //IF NO PERMISSION IS SET TO TRUE
+        if (
+            !machineryPermissions.dashboardsRead &&
+            !machineryPermissions.dashboardsModify &&
+            !machineryPermissions.dashboardsWrite &&
+            !machineryPermissions.documentsRead &&
+            !machineryPermissions.documentsModify &&
+            !machineryPermissions.documentsWrite
+        )
+            return true
 
-            return insertResult && insertResult.length > 0;
-        }
+
+        const insertResult = await pgClient.query(
+            "INSERT INTO public.machinery_permissions(user_id, machinery_uid, dashboards_write, dashboards_modify, dashboards_read, documents_write, documents_modify, documents_read) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *",
+            [
+                machineryPermissions.userID,
+                machineryPermissions.machineryUID,
+                machineryPermissions.dashboardsWrite,
+                machineryPermissions.dashboardsModify,
+                machineryPermissions.dashboardsRead,
+                machineryPermissions.documentsWrite,
+                machineryPermissions.documentsModify,
+                machineryPermissions.documentsRead
+            ]
+        )
+
+        return insertResult && insertResult.length > 0;
 
 
     } catch (e) {
-        console.log(e)
+        console.error(e)
+
         return false
     }
 }
@@ -385,13 +394,14 @@ async function deleteUserPermissions(userID: number, machineryUID: string) {
             [userID, machineryUID]
         )
 
-        if (result.rowCount > 0) {
+        if (result.rowCount > 0)
             return true
-        }
+
 
         return false
     } catch (e) {
-        console.log(e)
+        console.error(e)
+
         return undefined
     }
 
@@ -417,7 +427,7 @@ async function deleteUserPermissions(userID: number, machineryUID: string) {
 //         )
 //
 //     } catch (e) {
-//         console.log(e)
+//         console.error(e)
 //         return null
 //     }
 //
@@ -438,7 +448,8 @@ async function insertRefreshToken(userID: number, refreshToken: string, expirati
         )
 
     } catch (e) {
-        console.log(e)
+        console.error(e)
+
         return null
     }
 
@@ -452,17 +463,18 @@ async function getRefreshToken(userID: number, refreshToken: string): Promise<Re
             [userID, refreshToken]
         )
 
-        if (result) {
+        if (result)
             return new RefreshToken(
                 result.user_id,
                 result.refresh_token,
                 result.expiration
             )
-        }
+
         throw "Refresh token not found in getRefreshToken"
 
     } catch (e) {
-        console.log(e)
+        console.error(e)
+
         return null
     }
 
@@ -476,13 +488,14 @@ async function deleteRefreshToken(token: string): Promise<boolean> {
             [token]
         )
 
-        if (result.rowCount > 0) {
+        if (result.rowCount > 0)
             return true
-        }
+
         throw "Refresh token not found in deleteRefreshToken"
 
     } catch (e) {
-        console.log(e)
+        console.error(e)
+
         return false
     }
 

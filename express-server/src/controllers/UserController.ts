@@ -2,102 +2,109 @@ import express from "express";
 import {validationResult} from "express-validator";
 import usersService from "../services/UsersService";
 
-const getCompanyUsers = async (req: express.Request, res: express.Response) => {
+const getCompanyUsers =  (req: express.Request, res: express.Response) => {
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors)
+        console.error(errors)
+
         return res.status(400).json({
             msg: "Bad request body"
         });
     }
 
-    await usersService.getCompanyUsers(req, res)
+    return usersService.getCompanyUsers(req, res)
 }
 
-const updateAccountDetails = async (req: express.Request, res: express.Response) => {
+const updateAccountDetails =  (req: express.Request, res: express.Response) => {
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors)
+        console.error(errors)
+
         return res.status(400).json({
             msg: "Bad request body"
         });
     }
 
-    await usersService.updateAccountDetails(req, res)
+    return usersService.updateAccountDetails(req, res)
 }
 
-const resetAccountPassword = async (req: express.Request, res: express.Response) => {
+const resetAccountPassword =  (req: express.Request, res: express.Response) => {
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors)
+        console.error(errors)
+
         return res.status(400).json({
             msg: "Bad request body"
         });
     }
 
-    await usersService.resetAccountPassword(req, res)
+    return usersService.resetAccountPassword(req, res)
 }
 
-const createAccount = async (req: express.Request, res: express.Response) => {
+const createAccount =  (req: express.Request, res: express.Response) => {
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors)
+        console.error(errors)
+
         return res.status(400).json({
             msg: "Bad request body"
         });
     }
 
-    await usersService.createAccount(req, res)
+    return usersService.createAccount(req, res)
 }
 
-const getUserPermissionsForMachinery = async (req: express.Request, res: express.Response) => {
+const getUserPermissionsForMachinery =  (req: express.Request, res: express.Response) => {
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors)
+        console.error(errors)
+
         return res.status(400).json({
             msg: "Bad request body"
         });
     }
 
-    await usersService.getUserPermissionsForMachinery(req, res)
+    return usersService.getUserPermissionsForMachinery(req, res)
 }
 
-const getAllUserPermissions = async (req: express.Request, res: express.Response) => {
+const getAllUserPermissions =  (req: express.Request, res: express.Response) => {
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors)
+        console.error(errors)
+
         return res.status(400).json({
             msg: "Bad request body"
         });
     }
 
-    await usersService.getAllUserPermissions(req, res)
+    return usersService.getAllUserPermissions(req, res)
 }
 
-const updateUserPermissions = async (req: express.Request, res: express.Response) => {
+const updateUserPermissions =  (req: express.Request, res: express.Response) => {
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors)
+        console.error(errors)
+
         return res.status(400).json({
             msg: "Bad request body"
         });
     }
 
-    await usersService.updateUserPermissions(req, res)
+    return usersService.updateUserPermissions(req, res)
 }
 
-// const deleteUserPermissions = async (req: express.Request, res: express.Response) => {
+// const deleteUserPermissions =  (req: express.Request, res: express.Response) => {
 //
 //     const errors = validationResult(req);
 //     if (!errors.isEmpty()) {
-//         console.log(errors)
+//         console.error(errors)
 //         return res.status(400).json({
 //             msg: "Bad request body"
 //         });
@@ -106,11 +113,11 @@ const updateUserPermissions = async (req: express.Request, res: express.Response
 //     await usersService.deleteUserPermissions(req, res)
 // }
 //
-// const insertUserPermissions = async (req: express.Request, res: express.Response) => {
+// const insertUserPermissions =  (req: express.Request, res: express.Response) => {
 //
 //     const errors = validationResult(req);
 //     if (!errors.isEmpty()) {
-//         console.log(errors)
+//         console.error(errors)
 //         return res.status(400).json({
 //             msg: "Bad request body"
 //         });

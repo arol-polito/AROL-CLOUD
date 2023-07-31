@@ -2,52 +2,56 @@ import express from "express"
 import machineriesService from "../services/MachineriesService";
 import {validationResult} from "express-validator";
 
-const getCompanyMachineries = async (req: express.Request, res: express.Response) => {
+const getCompanyMachineries = (req: express.Request, res: express.Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors)
+        console.error(errors)
+
         return res.status(400).json({
             msg: "Bad request body"
         });
     }
 
-    await machineriesService.getCompanyMachineries(req, res)
+    return machineriesService.getCompanyMachineries(req, res)
 }
 
-const getCompanyMachineryByUID = async (req: express.Request, res: express.Response) => {
+const getCompanyMachineryByUID = (req: express.Request, res: express.Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors)
+        console.error(errors)
+
         return res.status(400).json({
             msg: "Bad request body"
         });
     }
 
-    await machineriesService.getCompanyMachineryByUID(req, res)
+    return machineriesService.getCompanyMachineryByUID(req, res)
 }
 
-const getCompanyMachinerySensors = async (req: express.Request, res: express.Response) => {
+const getCompanyMachinerySensors = (req: express.Request, res: express.Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors)
+        console.error(errors)
+
         return res.status(400).json({
             msg: "Bad request body"
         });
     }
 
-    await machineriesService.getMachinerySensors(req, res)
+    return machineriesService.getMachinerySensors(req, res)
 }
 
-const getCompanyMachinerySensorsData = async (req: express.Request, res: express.Response) => {
+const getCompanyMachinerySensorsData = (req: express.Request, res: express.Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors)
+        console.error(errors)
+
         return res.status(400).json({
             msg: "Bad request body"
         });
     }
 
-    await machineriesService.getCompanyMachinerySensorData(req, res)
+    return machineriesService.getCompanyMachinerySensorData(req, res)
 }
 
 export default {

@@ -22,10 +22,9 @@ module.exports = {
         'plugin:@typescript-eslint/recommended',
         'plugin:react/recommended',
         // 'prettier',
-        // 'plugin:storybook/recommended',
         'plugin:react-hooks/recommended',
     ],
-    "rules": {
+    rules: {
         curly: ['error', 'multi'],
         'prefer-arrow/prefer-arrow-functions': [
             'error',

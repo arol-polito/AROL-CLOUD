@@ -4,8 +4,6 @@ import Machinery from "../entities/Machinery";
 import pgClient from "../configs/PgClient";
 import Sensor from "../entities/Sensor";
 import SensorDataFilters from "../interfaces/SensorDataFilters";
-import timestreamParser from "../utils/SensorDataQueryResponseParser";
-import {TimestreamQuery} from "aws-sdk";
 import sensorDataQueryBuilder from "../utils/SensorDataQueryBuilder";
 import SensorDataSample from "../interfaces/SensorDataSample";
 import mongoClient from "../configs/MongoClient";
@@ -15,9 +13,9 @@ import constants from "../utils/Constants";
 
 async function verifyMachineryOwnershipByUID(machineryUID: string, companyID: number | null): Promise<boolean> {
 
-    if (companyID === null) {
+    if (companyID === null)
         return true
-    }
+
 
     try {
         const checkCompany = await pgClient.one(
@@ -25,13 +23,14 @@ async function verifyMachineryOwnershipByUID(machineryUID: string, companyID: nu
             [companyID, machineryUID]
         )
 
-        if (checkCompany.count === 0) {
-            throw "Company " + companyID + " has no machinery with UID " + machineryUID
-        }
+        if (checkCompany.count === 0)
+            throw `Company ${companyID} has no machinery with UID ${machineryUID}`
+
 
         return true
     } catch (e) {
-        console.log(e)
+        console.error(e)
+
         return false
     }
 
@@ -39,9 +38,9 @@ async function verifyMachineryOwnershipByUID(machineryUID: string, companyID: nu
 
 async function verifyMachineryOwnershipByModelID(modelID: string, companyID: number | null): Promise<boolean> {
 
-    if (companyID === null) {
+    if (companyID === null)
         return true
-    }
+
 
     try {
         const checkCompany = await pgClient.one(
@@ -49,13 +48,14 @@ async function verifyMachineryOwnershipByModelID(modelID: string, companyID: num
             [companyID, modelID]
         )
 
-        if (checkCompany.count === 0) {
-            throw "Company " + companyID + " has no machinery with Model ID " + modelID
-        }
+        if (checkCompany.count === 0)
+            throw `Company ${companyID} has no machinery with Model ID ${modelID}`
+
 
         return true
     } catch (e) {
-        console.log(e)
+        console.error(e)
+
         return false
     }
 
@@ -83,7 +83,8 @@ async function getCompanyMachineries(companyID: number): Promise<Machinery[] | n
         ))
 
     } catch (e) {
-        console.log(e)
+        console.error(e)
+
         return null
     }
 
@@ -97,7 +98,7 @@ async function getCompanyMachineryByUID(companyID: number, machineryUID: string)
             [machineryUID, companyID]
         )
 
-        if (result) {
+        if (result)
             return new Machinery(
                 result.machinery_uid,
                 result.company_id,
@@ -108,7 +109,8 @@ async function getCompanyMachineryByUID(companyID: number, machineryUID: string)
                 result.location_cluster,
                 result.num_heads
             )
-        }
+
+
         return null
     } catch (e) {
         return null
@@ -143,7 +145,8 @@ async function getMachinerySensors(machineryUID: string): Promise<Sensor[] | nul
         )
 
     } catch (e) {
-        console.log(e)
+        console.error(e)
+
         return null
     }
 }
@@ -151,7 +154,6 @@ async function getMachinerySensors(machineryUID: string): Promise<Sensor[] | nul
 async function getMachinerySensorData(machineryUID: string, machineryModelID: string, sensorFilters: SensorDataFilters): Promise<SensorDataSample[] | null> {
 
     const {
-        numSamplesRequiredPerSensor,
         displayMinTime,
         displayMaxTime
     } = sensorDataQueryBuilder.getMinMaxDisplayTimesAndLimits(sensorFilters)
@@ -187,7 +189,7 @@ async function getMachinerySensorData(machineryUID: string, machineryModelID: st
                                                 folder: {$exists: true}
                                             },
                                             {
-                                                folder: "Head_" + formattedHeadNumber
+                                                folder: `Head_${formattedHeadNumber}`
                                             },
                                         ]
                                     },
@@ -244,7 +246,7 @@ async function getMachinerySensorData(machineryUID: string, machineryModelID: st
                                             {
                                                 $or: [
                                                     ...sensorFilter.sensorNames.map((sensorName) => ({
-                                                        $eq: ["$$sample.name", "H" + formattedHeadNumber + "_" + sensorName.name]
+                                                        $eq: ["$$sample.name", `H${formattedHeadNumber}_${sensorName.name}`]
                                                     }))
                                                 ]
                                             } : {}
@@ -284,13 +286,13 @@ async function getMachinerySensorData(machineryUID: string, machineryModelID: st
 
             await queryResults.forEach((queryResultObject: Document) => {
 
-                if (queryResultObject["folder"]) {
+                if (queryResultObject.folder)
                     // if (sensorFilters.dataRange.unit === "sample") {
                     //     samplesArray.push(...queryResultObject.samples)
                     // } else {
                     filteredSensorData.push(...queryResultObject.samples)
-                    // }
-                } else if (queryResultObject["variable"]) {
+                // }
+                else if (queryResultObject.variable)
                     // if (sensorFilters.dataRange.unit === "sample") {
                     //     samplesArray.push(...queryResultObject.samples.map((el: any) => ({
                     //         name: queryResultObject.variable,
@@ -303,8 +305,8 @@ async function getMachinerySensorData(machineryUID: string, machineryModelID: st
                         value: el.value,
                         time: el.time
                     })))
-                    // }
-                }
+                // }
+
             })
 
             //If single value widget, query only sensor data of first sensor
@@ -316,9 +318,9 @@ async function getMachinerySensorData(machineryUID: string, machineryModelID: st
         }
 
         //If single value widget, query only sensor data of first sensor
-        if (sensorFilters.widgetCategory === constants.WIDGETTYPE_SINGLE && singleValueWidgetSensorFoundFlag) {
+        if (sensorFilters.widgetCategory === constants.WIDGETTYPE_SINGLE && singleValueWidgetSensorFoundFlag)
             break
-        }
+
 
     }
 
@@ -326,18 +328,18 @@ async function getMachinerySensorData(machineryUID: string, machineryModelID: st
 
     return filteredSensorData.map((el) => {
         if (sensorFilters.requestType === constants.REQUESTTYPE_NEW) {
-            if(!["OperationState","Alarm","OperationMode","ProductionSpeed","TotalProduct"].includes(el.name)) {
+            if (!["OperationState", "Alarm", "OperationMode", "ProductionSpeed", "TotalProduct"].includes(el.name))
                 el.value = el.value + (el.value * /*sign*/(Math.round(Math.random()) * 2 - 1) * /*random between 0.01 and 0.4*/((Math.floor(Math.random() * 15) + 1) / 100))
-            }
-            if(el.name==="Alarm"){
+
+            if (el.name === "Alarm")
                 el.value = 0
-            }
-            if(el.name === "ProductionSpeed"){
+
+            if (el.name === "ProductionSpeed")
                 el.value = 46800
-            }
-            if(el.name === "TotalProduct"){
+
+            if (el.name === "TotalProduct")
                 el.value = el.value + (el.value * ((Math.floor(Math.random() * 10) + 1) / 100))
-            }
+
             el.time = Date.now() - 3944700000 + 43200000
         }
         el.value = +el.value.toFixed(2)
@@ -375,7 +377,7 @@ async function isEndOfSensorDataForMachinery(sensorFilters: SensorDataFilters, m
                                                 folder: {$exists: true}
                                             },
                                             {
-                                                folder: "Head_" + formattedHeadNumber
+                                                folder: `Head_${formattedHeadNumber}`
                                             },
                                         ]
                                     },
@@ -429,7 +431,7 @@ async function isEndOfSensorDataForMachinery(sensorFilters: SensorDataFilters, m
                                             {
                                                 $or: [
                                                     ...sensorFilter.sensorNames.map((sensorName) => ({
-                                                        $eq: ["$$sample.name", "H" + formattedHeadNumber + "_" + sensorName.name]
+                                                        $eq: ["$$sample.name", `H${formattedHeadNumber}_${sensorName.name}`]
                                                     }))
                                                 ]
                                             } : {}
@@ -470,7 +472,7 @@ async function isEndOfSensorDataForMachinery(sensorFilters: SensorDataFilters, m
                 aggregate
             )
 
-            await queryResults.forEach((queryResultObject: Document) => {
+            await queryResults.forEach(() => {
                 endOfData = false
             })
 
@@ -480,20 +482,20 @@ async function isEndOfSensorDataForMachinery(sensorFilters: SensorDataFilters, m
                 break
             }
 
-            if (!endOfData) {
+            if (!endOfData)
                 break
-            }
+
 
         }
 
         //If single value widget, query only sensor data of first sensor
-        if (sensorFilters.widgetCategory === constants.WIDGETTYPE_SINGLE && singleValueWidgetSensorFoundFlag) {
+        if (sensorFilters.widgetCategory === constants.WIDGETTYPE_SINGLE && singleValueWidgetSensorFoundFlag)
             break
-        }
 
-        if (!endOfData) {
+
+        if (!endOfData)
             break
-        }
+
 
     }
 

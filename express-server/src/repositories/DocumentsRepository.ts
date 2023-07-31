@@ -10,17 +10,17 @@ async function getDocument(machineryUID: string, documentUID: string) {
 
         const fileDB = await getFileFromDatabase(machineryUID, documentUID)
 
-        if (!fileDB) {
+        if (!fileDB)
             return null
-        }
 
 
-        const document: Buffer = fs.readFile('./../../documents/' + fileDB.documentUID!);
+        const document: Buffer = fs.readFile(`./../../documents/${fileDB.documentUID!}`);
 
         return document
 
     } catch (e) {
-        console.log(e)
+        console.error(e)
+
         return null
     }
 
@@ -36,12 +36,12 @@ async function getMachineryDocuments(machineryUID: string) {
 
             let childrenIds: string[] = []
             if (file.isDir) {
-                const childrenParentID = file.location + "\\" + file.name
-                childrenIds = filesDB.filter((el) => (el.location === childrenParentID)).map((el) => (el.location + "\\" + el.name))
+                const childrenParentID = `${file.location}\\${file.name}`
+                childrenIds = filesDB.filter((el) => (el.location === childrenParentID)).map((el) => (`${el.location}\\${el.name}`))
             }
 
-            fileMap[file.location + "\\" + file.name] = {
-                id: file.location + "\\" + file.name,
+            fileMap[`${file.location}\\${file.name}`] = {
+                id: `${file.location}\\${file.name}`,
                 name: file.name,
                 documentUID: file.documentUID,
                 isDir: file.isDir,
@@ -56,8 +56,8 @@ async function getMachineryDocuments(machineryUID: string) {
 
         })
 
-        const rootParentID = "\\" + machineryUID
-        const rootChildrenIds = filesDB.filter((el) => (el.location === rootParentID)).map((el) => (el.location + "\\" + el.name))
+        const rootParentID = `\\${machineryUID}`
+        const rootChildrenIds = filesDB.filter((el) => (el.location === rootParentID)).map((el) => (`${el.location}\\${el.name}`))
 
         fileMap[rootParentID] = {
             id: rootParentID,
@@ -74,7 +74,8 @@ async function getMachineryDocuments(machineryUID: string) {
             fileMap: fileMap
         }
     } catch (e) {
-        console.log(e)
+        console.error(e)
+
         return null
     }
 
@@ -141,7 +142,7 @@ async function getMachineryDocuments(machineryUID: string) {
 async function deleteMachineryDocuments(machineryUID: string, documentsList: FileMapEntry[]): Promise<any[] | null> {
 
     const deletedDocuments = []
-    for (const document of documentsList) {
+    for (const document of documentsList)
 
         try {
             const documentID = document.id
@@ -153,31 +154,30 @@ async function deleteMachineryDocuments(machineryUID: string, documentsList: Fil
 
                 const result = await getFileByNameAndLocationFromDatabase(documentLocation, documentName, machineryUID)
 
-                if (result) {
+                if (result)
                     if (result.isDir) {
                         const deletedDocsAndFolders = await deleteFolderFromDatabase(machineryUID, documentLocation, documentName)
                         const deletedDocs = deletedDocsAndFolders.filter((el) => (el.isDocument && el.documentUID))
-                        for (const deletedDocument of deletedDocs) {
-                            await fs.rm("./../../documents/" + deletedDocument.documentUID!)
-                        }
+                        for (const deletedDocument of deletedDocs)
+                            await fs.rm(`./../../documents/${deletedDocument.documentUID!}`)
+
 
                         deletedDocuments.push(document)
 
                     } else if (document.documentUID) {
                         await deleteFileFromDatabase(machineryUID, document.documentUID, documentLocation)
-                        await fs.rm("./../../documents/" + document.documentUID!)
+                        await fs.rm(`./../../documents/${document.documentUID!}`)
 
                         deletedDocuments.push(document)
 
                     }
 
-                }
+
             }
         } catch (e) {
-            console.log(e)
+            console.error(e)
         }
 
-    }
 
     return deletedDocuments
 
@@ -185,9 +185,9 @@ async function deleteMachineryDocuments(machineryUID: string, documentsList: Fil
 
 async function createMachineryFolder(folderPath: string, machineryUID: string, userID: number): Promise<boolean | null> {
 
-    if (folderPath.split("\\").length === 0) {
+    if (folderPath.split("\\").length === 0)
         return null
-    }
+
 
     try {
         const folder = new Document(
@@ -208,7 +208,8 @@ async function createMachineryFolder(folderPath: string, machineryUID: string, u
         await insertFileOrFolderInDatabase(folder)
 
     } catch (e) {
-        console.log(e)
+        console.error(e)
+
         return null
     }
 
@@ -224,12 +225,11 @@ async function uploadMachineryDocuments(userID: number, machineryUID: string, pa
 
         for (const file of files) {
 
-            if (!file.originalname.endsWith(".pdf")) {
+            if (!file.originalname.endsWith(".pdf"))
                 file.originalname += ".pdf"
-            }
+
 
             const dbFile = await getFileByNameAndLocationFromDatabase(parentFolderPath, file.originalname, machineryUID)
-            console.log(dbFile)
             if (
                 file.originalname.trim().length > 0 &&
                 file.mimetype === "application/pdf" &&
@@ -262,7 +262,7 @@ async function uploadMachineryDocuments(userID: number, machineryUID: string, pa
                 }
 
                 try {
-                    await fs.writeFile("./../../documents/" + file.filename, multerFile)
+                    await fs.writeFile(`./../../documents/${file.filename}`, multerFile)
                 } catch (e) {
                     await deleteFileFromDatabase(machineryUID, file.filename, parentFolderPath);
                 }
@@ -273,7 +273,8 @@ async function uploadMachineryDocuments(userID: number, machineryUID: string, pa
         }
 
     } catch (e) {
-        console.log(e);
+        console.error(e);
+
         return null;
     }
 
@@ -284,7 +285,8 @@ async function uploadMachineryDocuments(userID: number, machineryUID: string, pa
 async function renameFileOrFolder(oldFileID: string, documentUID: string, newFileName: string, type: string, machineryUID: string) {
 
     if (!["file", "folder"].includes(type)) {
-        console.log("Unknown type " + type)
+        console.error(`Unknown type ${type}`)
+
         return null
     }
 
@@ -292,22 +294,23 @@ async function renameFileOrFolder(oldFileID: string, documentUID: string, newFil
 
         if (type === "file") {
             if (!documentUID) {
-                console.log("Empty documentID")
+                console.error("Empty documentID")
+
                 return null
             }
 
-            if (!newFileName.endsWith(".pdf")) {
+            if (!newFileName.endsWith(".pdf"))
                 newFileName += ".pdf"
-            }
+
 
             const parentFolderPath = oldFileID.split("\\").slice(0, -1).join("\\")
-            if ((await getFileByNameAndLocationFromDatabase(parentFolderPath, newFileName, machineryUID))) {
+            if ((await getFileByNameAndLocationFromDatabase(parentFolderPath, newFileName, machineryUID)))
                 return null
-            }
+
 
             await renameFileInDatabase(documentUID, newFileName)
         } else {
-            const newFolderID = oldFileID.split("\\").slice(0, -1).join("\\") + "\\" + newFileName
+            const newFolderID = `${oldFileID.split("\\").slice(0, -1).join("\\")}\\${newFileName}`
 
             await renameFolderInDatabase(oldFileID, newFolderID, machineryUID)
         }
@@ -315,7 +318,8 @@ async function renameFileOrFolder(oldFileID: string, documentUID: string, newFil
         return true
 
     } catch (e) {
-        console.log(e)
+        console.error(e)
+
         return null
     }
 
@@ -329,11 +333,9 @@ async function getFileFromDatabase(machineryUID: string, documentUID: string): P
             [machineryUID, documentUID]
         )
 
-        console.log(result)
-
-        if (!result) {
+        if (!result)
             return null
-        }
+
 
         return new Document(
             result.machinery_uid,
@@ -350,7 +352,8 @@ async function getFileFromDatabase(machineryUID: string, documentUID: string): P
             result.modified_by
         )
     } catch (e) {
-        console.log(e)
+        console.error(e)
+
         return null
     }
 
@@ -364,9 +367,9 @@ async function getFileByNameAndLocationFromDatabase(location: string, filename: 
             [location, filename, machineryUID]
         )
 
-        if (!result) {
+        if (!result)
             return null
-        }
+
 
         return new Document(
             result.machinery_uid,
@@ -383,7 +386,8 @@ async function getFileByNameAndLocationFromDatabase(location: string, filename: 
             result.modified_byresult
         )
     } catch (e) {
-        console.log(e)
+        console.error(e)
+
         return null
     }
 
@@ -423,9 +427,9 @@ async function insertFileOrFolderInDatabase(document: Document) {
         [document.machineryUID, document.name, document.location, document.isDir, document.isDocument, document.isModifiable, document.sizeBytes, document.documentUID, document.creationTimestamp, document.modificationTimestamp, document.createdBy, document.modifiedBy]
     )
 
-    if (!result || result.length === 0) {
+    if (!result || result.length === 0)
         throw "File insertion in DB failed"
-    }
+
 }
 
 async function renameFileInDatabase(documentUID: string, newFileName: string) {
@@ -434,23 +438,23 @@ async function renameFileInDatabase(documentUID: string, newFileName: string) {
         [newFileName, documentUID]
     )
 
-    if (!result || result.length === 0) {
+    if (!result || result.length === 0)
         throw "File insertion in DB failed"
-    }
+
 }
 
 async function renameFolderInDatabase(oldFolderID: string, newFolderID: string, machineryUID: string) {
 
     const escapedFolderID = oldFolderID.split("\\").join("\\\\")
 
-    const modifiedFolder = await pgClient.query(
+    await pgClient.query(
         "UPDATE public.machinery_documents SET location=$1, name=$2 WHERE location=$3 AND name=$4 AND machinery_uid=$5 RETURNING *",
         []
     )
 
     const entriesToModify = await pgClient.manyOrNone(
         "SELECT * FROM public.machinery_documents WHERE location LIKE $1 AND machinery_uid=$2",
-        [escapedFolderID + "%", machineryUID]
+        [`${escapedFolderID}%`, machineryUID]
     )
 
     for (const row of entriesToModify) {
@@ -460,9 +464,9 @@ async function renameFolderInDatabase(oldFolderID: string, newFolderID: string, 
             "UPDATE public.machinery_documents SET location=$1 WHERE document_uid=$2 RETURNING *",
             [newID, row.document_uid]
         )
-        if (!result || result.length === 0) {
-            throw "Failed update for document " + row.document_uid
-        }
+        if (!result || result.length === 0)
+            throw `Failed update for document ${row.document_uid}`
+
     }
 
 }
@@ -474,22 +478,22 @@ async function deleteFileFromDatabase(machineryUID: string, documentUID: string,
         [machineryUID, documentUID, fileLocation]
     )
 
-    if (result.rowCount > 0) {
+    if (result.rowCount > 0)
         return true
-    }
-    throw "File " + documentUID + " not found in DB"
+
+    throw `File ${documentUID} not found in DB`
 
 
 }
 
 async function deleteFolderFromDatabase(machineryUID: string, folderLocation: string, folderName: string): Promise<Document[]> {
 
-    const folderID = folderLocation + "\\" + folderName
+    const folderID = `${folderLocation}\\${folderName}`
     const escapedFolderID = folderID.split("\\").join("\\\\")
 
     const deletionResult = await pgClient.query(
         "DELETE FROM public.machinery_documents WHERE ((location LIKE $1) OR (location=$2 AND name=$3)) AND machinery_uid=$4 RETURNING *",
-        [escapedFolderID + "%", folderLocation, folderName, machineryUID]
+        [`${escapedFolderID}%`, folderLocation, folderName, machineryUID]
     )
 
     return deletionResult.map((file: any) => (

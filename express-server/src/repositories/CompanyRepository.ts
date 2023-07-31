@@ -9,13 +9,14 @@ async function getCompanyByID(companyID: number): Promise<Company | null> {
             companyID
         )
 
-        if (result) {
+        if (result) 
             return new Company(
                 result.id,
                 result.name,
             )
-        }
-        return null
+        
+        
+return null
     } catch (e) {
         return null
     }
