@@ -54,7 +54,7 @@ jobs:
           VALIDATE_ALL_CODEBASE: true
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_JAVASCRIPT_ES: true
+          VALIDATE_TYPESCRIPT_ES: true
 #          FILTER_REGEX_INCLUDE: .*src/.*
 #          JAVASCRIPT_ES_COllNFIG_FILE: .eslintrc.json
           # Do not lint downloaded code
