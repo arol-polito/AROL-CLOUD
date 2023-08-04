@@ -56,7 +56,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_JAVASCRIPT_ES: true
           FILTER_REGEX_INCLUDE: .*src/.*
-          JAVASCRIPT_ES_CONFIG_FILE: /workflows/linters/.eslintrc.json
+          JAVASCRIPT_ES_CONFIG_FILE: .*eslintrc.json
           # Do not lint downloaded code
           # See https://github.com/super-linter/super-linter
           # FILTER_REGEX_EXCLUDE: .*/download/.*
