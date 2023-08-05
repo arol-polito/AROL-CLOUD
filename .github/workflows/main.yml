@@ -16,7 +16,7 @@ jobs:
           restore-keys: npm-
       - run: npm install --force --ignore-scripts
         working-directory: react-client
-      - run: npm run lint
+      - run: npm run lint:js
         working-directory: react-client
       - run: npm install --ignore-scripts
         working-directory: express-server
