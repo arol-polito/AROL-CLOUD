@@ -256,18 +256,18 @@ export default function NavigatorPanel(props: NavigatorPanelPros) {
                                 >
                                     <Box boxSize='150px'>
                                         <Image
-                                            src={require(`./../../assets/machineries/${entry.modelID}.png`)}
+                                            src={require(`./../../assets/machineries/${entry?.modelID}.png`)}
                                             alt='Dan Abramov'
                                         />
                                     </Box>
                                     <Text fontSize="lg" color="gray.700">
-                                        {entry.modelName}
+                                        {entry?.modelName}
                                     </Text>
                                     <Text fontSize="sm" color="gray.700">
-                                        {entry.numHeads} heads
+                                        {entry?.numHeads} heads
                                     </Text>
                                     <Text fontSize="sm" color="gray.500">
-                                        {entry.modelType}
+                                        {entry?.modelType}
                                     </Text>
                                 </VStack>
                                 <VStack
@@ -278,8 +278,8 @@ export default function NavigatorPanel(props: NavigatorPanelPros) {
                                         colorScheme="blue"
                                         w="full"
                                         leftIcon={<FiGrid/>}
-                                        isDisabled={!permissionChecker.hasMachineryPermission(principal, entry.uid, 'dashboardsRead')}
-                                        title={!permissionChecker.hasMachineryPermission(principal, entry.uid, 'dashboardsRead') ? 'Operation not permitted' : ''}
+                                        isDisabled={!permissionChecker.hasMachineryPermission(principal, entry?.uid || '', 'dashboardsRead')}
+                                        title={!permissionChecker.hasMachineryPermission(principal, entry?.uid || '', 'dashboardsRead') ? 'Operation not permitted' : ''}
                                         onClick={handleDashboardButtonClicked}
                                     >
                                         Open dashboard
@@ -288,8 +288,8 @@ export default function NavigatorPanel(props: NavigatorPanelPros) {
                                         colorScheme="teal"
                                         w="full"
                                         leftIcon={<FiFileText/>}
-                                        isDisabled={!permissionChecker.hasMachineryPermission(principal, entry.uid, 'documentsRead')}
-                                        title={!permissionChecker.hasMachineryPermission(principal, entry.uid, 'documentsRead') ? 'Operation not permitted' : ''}
+                                        isDisabled={!permissionChecker.hasMachineryPermission(principal, entry?.uid || '', 'documentsRead')}
+                                        title={!permissionChecker.hasMachineryPermission(principal, entry?.uid || '', 'documentsRead') ? 'Operation not permitted' : ''}
                                         onClick={handleDocumentsButtonClicked}
                                     >
                                         Machinery documents

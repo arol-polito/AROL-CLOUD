@@ -1,7 +1,7 @@
 import type Machinery from '../../../../machineries-map/components/Machinery'
 import {type FileData} from 'chonky'
 import React, {type ChangeEvent, useEffect, useRef, useState} from 'react'
-import type FileMap from '../../interfaces/FileMap'
+import type {FileMap} from '../../interfaces/FileMap'
 import documentsService from '../../../../services/DocumentsService'
 import {
     AlertDialog,

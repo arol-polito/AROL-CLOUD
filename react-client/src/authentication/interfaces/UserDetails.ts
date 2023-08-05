@@ -1,4 +1,4 @@
-import type UserPermissions from './UserPermissons'
+import type {UserPermissions} from './UserPermissons'
 
 export default interface UserDetails {
   id: string

@@ -1,2 +1,1 @@
-export default type
-UserPermissions = Record<string, Record<string, boolean>>
+export type UserPermissions = Record<string, Record<string, boolean>>

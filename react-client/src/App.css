@@ -9,7 +9,7 @@
 
 @media (prefers-reduced-motion: no-preference) {
     .App-logo {
-        animation: App-logo-spin infinite 20s linear;
+        animation: app-logo-spin infinite 20s linear;
     }
 }
 
@@ -28,33 +28,38 @@
     color: #61dafb;
 }
 
-@keyframes App-logo-spin {
+@keyframes app-logo-spin {
     from {
         transform: rotate(0deg);
     }
+
     to {
         transform: rotate(360deg);
     }
 }
 
-/* ===== Scrollbar CSS ===== */
-/* Firefox */
+/*
+===== Scrollbar CSS =====
+Firefox
+*/
 * {
     scrollbar-width: auto;
-    scrollbar-color: #545454 #ffffff;
+    scrollbar-color: #545454 #fff;
 }
 
-/* Chrome, Edge, and Safari */
+/*
+Chrome, Edge, and Safari
+*/
 *::-webkit-scrollbar {
     width: 12px;
 }
 
 *::-webkit-scrollbar-track {
-    background: #ffffff;
+    background: #fff;
 }
 
 *::-webkit-scrollbar-thumb {
     background-color: #545454;
     border-radius: 6px;
-    border: 3px solid #ffffff;
+    border: 3px solid #fff;
 }

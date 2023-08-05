@@ -4,7 +4,6 @@ import './index.css'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
 import { setChonkyDefaults } from 'chonky'
-// @ts-expect-error
 import { ChonkyIconFA } from 'chonky-icon-fontawesome'
 
 setChonkyDefaults({ iconComponent: ChonkyIconFA })

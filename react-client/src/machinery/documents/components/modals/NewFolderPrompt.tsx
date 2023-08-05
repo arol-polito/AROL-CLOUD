@@ -1,6 +1,6 @@
 import type Machinery from '../../../../machineries-map/components/Machinery'
 import React, { type ChangeEvent, useEffect, useRef, useState } from 'react'
-import type FileMap from '../../interfaces/FileMap'
+import type {FileMap} from '../../interfaces/FileMap'
 import type FileMapEntry from '../../interfaces/FileMapEntry'
 import documentsService from '../../../../services/DocumentsService'
 import {

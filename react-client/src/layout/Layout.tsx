@@ -2,10 +2,9 @@ import {Box, useDisclosure} from '@chakra-ui/react'
 import Sidebar from './Sidebar'
 import Navbar from './Navbar'
 import Router from '../router/Router'
-import {useContext, useMemo} from 'react'
+import React, {useContext, useMemo} from 'react'
 import PrincipalContext from '../utils/contexts/PrincipalContext'
 import SidebarStatusContext from '../utils/contexts/SidebarStatusContext'
-import React from 'react';
 
 export default function Layout() {
     const {principal} = useContext(PrincipalContext)
@@ -37,7 +36,7 @@ export default function Layout() {
                 displaySidebar &&
                 <Sidebar isOpen={isOpen} onOpen={onOpen} onClose={onClose}/>
             }
-            <Navbar onOpen={onOpen}/>
+            <Navbar/>
             <Box ml={{base: 0, md: marginLeft}} p="4">
                 <Router/>
             </Box>

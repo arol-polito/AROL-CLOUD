@@ -811,9 +811,7 @@ function MultiValueDataDisplay (props: MultiValueDataDisplay) {
                                 onMouseUp={(a) => {
                                   handleChartMouseUp(a)
                                 }}
-                                onMouseLeave={(a) => {
-                                  handleChartMouseLeave(a)
-                                }}
+                                onMouseLeave={handleChartMouseLeave}
                             >
                                 <YAxis
                                     {...chartProps.yAxisProps}
@@ -897,9 +895,7 @@ function MultiValueDataDisplay (props: MultiValueDataDisplay) {
                             onMouseUp={(a) => {
                               handleChartMouseUp(a)
                             }}
-                            onMouseLeave={(a) => {
-                              handleChartMouseLeave(a)
-                            }}
+                            onMouseLeave={handleChartMouseLeave}
                         >
                             <YAxis
                                 {...chartProps.yAxisProps}
@@ -984,9 +980,7 @@ function MultiValueDataDisplay (props: MultiValueDataDisplay) {
                             onMouseUp={(a) => {
                               handleChartMouseUp(a)
                             }}
-                            onMouseLeave={(a) => {
-                              handleChartMouseLeave(a)
-                            }}
+                            onMouseLeave={handleChartMouseLeave}
                         >
                             <YAxis
                                 {...chartProps.yAxisProps}
