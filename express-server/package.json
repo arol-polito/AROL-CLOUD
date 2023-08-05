@@ -45,6 +45,7 @@
     "start:production": "npm run build && node build/server.js",
     "build": "rimraf ./build && tsc",
     "migrate": "node-pg-migrate",
-    "lint": "eslint src --ext .ts,.tsx --fix"
+    "lint": "eslint src --ext .ts,.tsx --fix",
+    "ts": "tsc --noEmit"
   }
 }

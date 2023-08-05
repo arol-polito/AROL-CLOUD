@@ -53,7 +53,8 @@
     "eject": "react-scripts eject",
     "lint:css": "stylelint \"src/**/*.{css,scss}\"",
     "lint:js": "eslint src --ext .ts,.tsx --fix",
-    "lint": "npm run lint:css && npm run lint:js"
+    "lint": "npm run lint:css && npm run lint:js",
+    "ts": "tsc --noEmit"
   },
   "eslintConfig": {
     "extends": [

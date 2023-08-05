@@ -1,0 +1,41 @@
+on: [ push ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    name: Run eslint
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '18.x'
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: npm-${{ hashFiles('package-lock.json') }}
+          restore-keys: npm-
+      - run: npm install --force --ignore-scripts
+        working-directory: react-client
+      - run: npm run lint
+        working-directory: react-client
+      - run: npm install --ignore-scripts
+        working-directory: express-server
+      - run: npm run lint
+        working-directory: express-server
+
+  tsc:
+    runs-on: ubuntu-latest
+    name: Check typescript
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '13.x'
+      - run: npm install --force --ignore-scripts
+        working-directory: react-client
+      - run: npm run ts
+        working-directory: react-client
+      - run: npm install --ignore-scripts
+        working-directory: express-server
+      - run: npm run ts
+        working-directory: express-server
