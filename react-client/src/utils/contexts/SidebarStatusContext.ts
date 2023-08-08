@@ -1,25 +1,25 @@
-import React from "react";
+import React from 'react'
 
 interface SidebarStatus {
-    type: string
-    status: string
+  type: string
+  status: string
 }
 
-interface Action{
-    type: string
+interface Action {
+  type: string
 }
 
 interface SidebarStatusContextInterface {
-    sidebarStatus: SidebarStatus
-    dispatchSidebar: React.Dispatch<Action>
+  sidebarStatus: SidebarStatus
+  dispatchSidebar: React.Dispatch<Action>
 }
 
 const SidebarStatusContext = React.createContext<SidebarStatusContextInterface>({
-    sidebarStatus: {
-        type: "",
-        status: ""
-    },
-    dispatchSidebar: () => {}
-});
+  sidebarStatus: {
+    type: '',
+    status: ''
+  },
+  dispatchSidebar: () => void 0
+})
 
-export default SidebarStatusContext;
+export default SidebarStatusContext

@@ -1,77 +1,81 @@
-import {Button, HStack, Input, InputGroup, InputLeftAddon, Text, useColorModeValue, VStack} from "@chakra-ui/react";
-import LogsParameters from "../classes/LogsParameters";
-import React, {useState} from "react";
-import dayjs from 'dayjs';
+import {Button, HStack, Input, InputGroup, InputLeftAddon, Text, useColorModeValue, VStack} from '@chakra-ui/react'
+import type LogsParameters from '../classes/LogsParameters'
+import React, {useState} from 'react'
+import dayjs from 'dayjs'
 
-interface LogsFilteringBarProps{
+interface LogsFilteringBarProps {
     machineryLogsFilter: LogsParameters
     setMachineryLogFilters: Function
 }
 
-export default function LogsFilteringBar(props: LogsFilteringBarProps){
-
+export default function LogsFilteringBar(props: LogsFilteringBarProps) {
     const [dateErrors, setDateErrors] = useState({
-        fromError: "",
-        toError: ""
+        fromError: '',
+        toError: ''
     })
 
-    function handleDateChanged(from: boolean, to: boolean, event: React.ChangeEvent<HTMLInputElement>){
-        console.log(event.target.value)
+    function handleDateChanged(from: boolean, to: boolean, event: React.ChangeEvent<HTMLInputElement>) {
 
-        let inputDate = dayjs(event.target.value)
-        console.log(inputDate)
-        if(from){
-            if(props.machineryLogsFilter?.to &&
+        const inputDate = dayjs(event.target.value)
+
+        if (from) {
+            if (props.machineryLogsFilter?.to &&
                 inputDate.isAfter(dayjs(props.machineryLogsFilter.to))
-            ){
-                console.log("Error in start date")
-                setDateErrors((val)=>{
-                    val.fromError = "Start date cannot be later than end date"
+            ) {
+                setDateErrors((val) => {
+                    val.fromError = 'Start date cannot be later than end date'
+
                     return {...val}
                 })
+
                 return
             }
 
-            setDateErrors({fromError: "",toError: ""})
-            props.setMachineryLogFilters((val: LogsParameters)=> {
+            setDateErrors({fromError: '', toError: ''})
+            props.setMachineryLogFilters((val: LogsParameters) => {
                 val.from = event.target.value
+
                 return {...val}
             })
+
             return
         }
-        if(to){
-            if(props.machineryLogsFilter?.from &&
+        if (to) {
+            if (props.machineryLogsFilter?.from &&
                 inputDate.isBefore(dayjs(props.machineryLogsFilter.from))
-            ){
-                console.log("Error in end date")
-                setDateErrors((val)=>{
-                    val.toError = "End date cannot be earlier than start date"
+            ) {
+                setDateErrors((val) => {
+                    val.toError = 'End date cannot be earlier than start date'
+
                     return {...val}
                 })
+
                 return
             }
 
-            setDateErrors({fromError: "",toError: ""})
-            props.setMachineryLogFilters((val: LogsParameters)=> {
+            setDateErrors({fromError: '', toError: ''})
+            props.setMachineryLogFilters((val: LogsParameters) => {
                 val.to = event.target.value
+
                 return {...val}
             })
-            return
         }
     }
 
-    function handleSearchButtonPressed(){
+    function handleSearchButtonPressed() {
         props.setMachineryLogFilters((val: LogsParameters) => {
             val.submit = true
+
             return {...val}
         })
     }
 
-    function handleResetButtonPressed(){
+    function handleResetButtonPressed() {
         props.setMachineryLogFilters((val: LogsParameters) => {
             val.from = null
             val.to = null
             val.submit = true
+
             return {...val}
         })
     }
@@ -79,62 +83,70 @@ export default function LogsFilteringBar(props: LogsFilteringBarProps){
     return (
 
         <HStack
-            justifyContent={"space-between"}
-            flexWrap={"wrap"}
+            justifyContent="space-between"
+            flexWrap="wrap"
             bg={useColorModeValue('white', 'gray.900')}
-            boxShadow={'2xl'}
-            rounded={'lg'}
+            boxShadow="2xl"
+            rounded="lg"
             gap={5}
             p={6}
             mt={6}
         >
-            <HStack alignItems={"start"}>
+            <HStack alignItems="start">
                 <VStack>
                     <InputGroup>
-                        <InputLeftAddon children='Start date' />
+                        <InputLeftAddon>
+                            Start date
+                        </InputLeftAddon>
                         <Input
-                            width={"fit-content"}
+                            width="fit-content"
                             placeholder="Select Date and Time"
                             size="md"
                             type="datetime-local"
-                            value={props.machineryLogsFilter?.from ? props.machineryLogsFilter.from : ""}
-                            onChange={(e)=>handleDateChanged(true, false, e)}
+                            value={props.machineryLogsFilter?.from ? props.machineryLogsFilter.from : ''}
+                            onChange={(e) => {
+                                handleDateChanged(true, false, e)
+                            }}
                         />
                     </InputGroup>
                     {
                         dateErrors.fromError &&
-                        <Text size={"sm"} color={"red.500"}>{dateErrors.fromError}</Text>
+                        <Text size="sm" color="red.500">{dateErrors.fromError}</Text>
                     }
                 </VStack>
 
                 <VStack>
-                    <InputGroup >
-                        <InputLeftAddon children='End date' />
+                    <InputGroup>
+                        <InputLeftAddon>
+                            End date
+                        </InputLeftAddon>
                         <Input
-                            width={"fit-content"}
+                            width="fit-content"
                             placeholder="Select Date and Time"
                             size="md"
                             type="datetime-local"
-                            value={props.machineryLogsFilter?.to ? props.machineryLogsFilter.to : ""}
-                            onChange={(e)=>handleDateChanged(false, true, e)}
+                            value={props.machineryLogsFilter?.to ? props.machineryLogsFilter.to : ''}
+                            onChange={(e) => {
+                                handleDateChanged(false, true, e)
+                            }}
                         />
                     </InputGroup>
                     {
                         dateErrors.toError &&
-                        <Text size={"sm"} color={"red.500"}>{dateErrors.toError}</Text>
+                        <Text size="sm" color="red.500">{dateErrors.toError}</Text>
                     }
                 </VStack>
             </HStack>
-            <HStack ml={"0!important"}>
+            <HStack ml="0!important">
                 <Button
-                    size={"md"}
+                    size="md"
                     onClick={handleResetButtonPressed}
                 >
                     Reset
                 </Button>
                 <Button
-                    colorScheme={"blue"}
-                    size={"md"}
+                    colorScheme="blue"
+                    size="md"
                     onClick={handleSearchButtonPressed}
                 >
                     Search
@@ -142,7 +154,4 @@ export default function LogsFilteringBar(props: LogsFilteringBarProps){
             </HStack>
         </HStack>
     )
-
 }
-
-

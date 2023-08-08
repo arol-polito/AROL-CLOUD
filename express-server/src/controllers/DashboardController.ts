@@ -2,88 +2,95 @@ import express from "express"
 import dashboardService from "../services/DashboardService";
 import {validationResult} from "express-validator";
 
-const saveDashboard = async (req: express.Request, res: express.Response) => {
+const saveDashboard =  (req: express.Request, res: express.Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors)
+        console.error(errors)
+
         return res.status(400).json({
             msg: "Bad request body"
         });
     }
 
-    await dashboardService.saveDashboard(req, res)
+    return dashboardService.saveDashboard(req, res)
 }
 
-const saveAsDashboard = async (req: express.Request, res: express.Response) => {
+const saveAsDashboard =  (req: express.Request, res: express.Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors)
+        console.error(errors)
+
         return res.status(400).json({
             msg: "Bad request body"
         });
     }
 
-    await dashboardService.saveAsDashboard(req, res)
+    return dashboardService.saveAsDashboard(req, res)
 }
 
-const deleteDashboard = async (req: express.Request, res: express.Response) => {
+const deleteDashboard =  (req: express.Request, res: express.Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors)
+        console.error(errors)
+
         return res.status(400).json({
             msg: "Bad request body"
         });
     }
 
-    await dashboardService.deleteDashboard(req, res)
+    return dashboardService.deleteDashboard(req, res)
 }
 
-const loadDashboard = async (req: express.Request, res: express.Response) => {
+const loadDashboard =  (req: express.Request, res: express.Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors)
+        console.error(errors)
+
         return res.status(400).json({
             msg: "Bad request body"
         });
     }
 
-    await dashboardService.loadDashboard(req, res)
+    return dashboardService.loadDashboard(req, res)
 }
 
-const loadDefaultDashboard = async (req: express.Request, res: express.Response) => {
+const loadDefaultDashboard =  (req: express.Request, res: express.Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors)
+        console.error(errors)
+
         return res.status(400).json({
             msg: "Bad request body"
         });
     }
 
-    await dashboardService.loadDefaultDashboard(req, res)
+    return dashboardService.loadDefaultDashboard(req, res)
 }
 
-const getDashboards = async (req: express.Request, res: express.Response) => {
+const getDashboards =  (req: express.Request, res: express.Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors)
+        console.error(errors)
+
         return res.status(400).json({
             msg: "Bad request body"
         });
     }
 
-    await dashboardService.getDashboards(req, res)
+    return dashboardService.getDashboards(req, res)
 }
 
-const getDashboardTemplates = async (req: express.Request, res: express.Response) => {
+const getDashboardTemplates =  (req: express.Request, res: express.Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors)
+        console.error(errors)
+
         return res.status(400).json({
             msg: "Bad request body"
         });
     }
 
-    await dashboardService.getDashboardTemplates(req, res)
+    return dashboardService.getDashboardTemplates(req, res)
 }
 
 export default {

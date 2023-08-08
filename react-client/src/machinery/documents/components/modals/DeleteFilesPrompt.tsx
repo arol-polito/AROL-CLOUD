@@ -1,46 +1,50 @@
-import React, {Fragment, useRef} from "react";
+import React, { Fragment, useRef } from 'react'
 import {
-    AlertDialog,
-    AlertDialogBody,
-    AlertDialogContent, AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogOverlay, Button, HStack, Text, VStack
-} from "@chakra-ui/react";
-import {FiAlertTriangle} from "react-icons/fi";
-import {FileData} from "chonky";
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  Button,
+  HStack,
+  Text,
+  VStack
+} from '@chakra-ui/react'
+import { FiAlertTriangle } from 'react-icons/fi'
+import { type FileData } from 'chonky'
 
 interface DeleteFiles {
-    promptOpen: boolean
-    filesToDelete: FileData[]
-    doDelete: boolean
+  promptOpen: boolean
+  filesToDelete: FileData[]
+  doDelete: boolean
 }
 
 interface DeleteFilesPromptProps {
-    deleteFiles: DeleteFiles
-    setDeleteFiles: React.Dispatch<React.SetStateAction<DeleteFiles>>
+  deleteFiles: DeleteFiles
+  setDeleteFiles: React.Dispatch<React.SetStateAction<DeleteFiles>>
 }
 
-export default function DeleteFilesPrompt(props: DeleteFilesPromptProps) {
+export default function DeleteFilesPrompt (props: DeleteFilesPromptProps) {
+  const cancelRef = useRef<HTMLButtonElement>(null)
 
-    const cancelRef = useRef<HTMLButtonElement>(null)
+  function handleCancel () {
+    props.setDeleteFiles({
+      promptOpen: false,
+      filesToDelete: [],
+      doDelete: false
+    })
+  }
 
-    function handleCancel() {
-        props.setDeleteFiles({
-            promptOpen: false,
-            filesToDelete: [],
-            doDelete: false
-        })
-    }
+  function handleDeleteClicked () {
+    props.setDeleteFiles((val) => ({
+      promptOpen: false,
+      filesToDelete: val.filesToDelete,
+      doDelete: true
+    }))
+  }
 
-    function handleDeleteClicked() {
-        props.setDeleteFiles((val) => ({
-            promptOpen: false,
-            filesToDelete: val.filesToDelete,
-            doDelete: true
-        }))
-    }
-
-    return (
+  return (
         <AlertDialog
             isOpen={props.deleteFiles.promptOpen}
             leastDestructiveRef={cancelRef}
@@ -55,25 +59,25 @@ export default function DeleteFilesPrompt(props: DeleteFilesPromptProps) {
                     <AlertDialogBody>
                         The following files and folders will be deleted:
                         <VStack
-                            w={"full"}
-                            alignItems={"left"}
+                            w="full"
+                            alignItems="left"
                             mt={2}
                             mb={6}
                         >
                             {
                                 props.deleteFiles.filesToDelete.map((fileToDelete) => (
                                     <Fragment key={fileToDelete.id}>
-                                        <Text fontSize={"md"} fontWeight={600}>• {fileToDelete.name}</Text>
+                                        <Text fontSize="md" fontWeight={600}>• {fileToDelete.name}</Text>
                                         {
                                             fileToDelete.isDir &&
                                             <HStack
-                                                w={"full"}
-                                                justifyContent={"left"}
-                                                alignItems={"center"}
-                                                mt={"0!important"}
+                                                w="full"
+                                                justifyContent="left"
+                                                alignItems="center"
+                                                mt="0!important"
                                             >
-                                                <FiAlertTriangle color={"red"}/>
-                                                <Text fontSize={"sm"} color={"red"} mt={"0!important"}>All files under
+                                                <FiAlertTriangle color="red"/>
+                                                <Text fontSize="sm" color="red" mt="0!important">All files under
                                                     this directory will be deleted too</Text>
                                             </HStack>
                                         }
@@ -95,7 +99,5 @@ export default function DeleteFilesPrompt(props: DeleteFilesPromptProps) {
                 </AlertDialogContent>
             </AlertDialogOverlay>
         </AlertDialog>
-    )
-
+  )
 }
-

@@ -1,28 +1,22 @@
-import {Box, Heading, HStack, useColorModeValue} from "@chakra-ui/react";
-import MachineryDocumentsPanel from "../components/MachineryDocumentsPanel";
+import { Box, Heading, HStack } from '@chakra-ui/react'
+import MachineryDocumentsPanel from '../components/MachineryDocumentsPanel'
+import React from 'react';
 
-interface DashboardsPageProps{
+export default function DocumentsPage () {
+  return (
 
-}
-
-export default function DocumentsPage(props: DashboardsPageProps){
-
-
-    return(
-
-        <Box w={"full"}>
+        <Box w="full">
             <Heading mb={6}>Dashboards</Heading>
             <HStack
-                w={"full"}
+                w="full"
                 // bg={useColorModeValue('white', 'gray.900')}
                 // boxShadow={'2xl'}
                 // rounded={'lg'}
                 // p={6}
             >
-                <MachineryDocumentsPanel />
+                <MachineryDocumentsPanel/>
             </HStack>
         </Box>
 
-    )
-
+  )
 }

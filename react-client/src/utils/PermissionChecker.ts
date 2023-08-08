@@ -1,87 +1,82 @@
-import UserDetails from "../authentication/interfaces/UserDetails";
+import type UserDetails from '../authentication/interfaces/UserDetails'
 
-const ROLE_WORKER=1
-const ROLE_MANAGER=2
-const ROLE_ADMIN=3
+const ROLE_WORKER = 1
+const ROLE_MANAGER = 2
+const ROLE_ADMIN = 3
 
-function hasMachineryPermission(principal: UserDetails | null | undefined, machineryUID: string, requiredPermission: string){
-    return principal && ((principal.permissions.hasOwnProperty(machineryUID) && principal.permissions[machineryUID][requiredPermission]) || isAdmin(principal))
-}
+const hasMachineryPermission = (principal: UserDetails | null | undefined, machineryUID: string, requiredPermission: string) => (principal != null) && ((principal.permissions.hasOwnProperty(machineryUID) && principal.permissions[machineryUID][requiredPermission]) || isAdmin(principal));
 
-function hasAnyMachineryAccess(principal: UserDetails | null | undefined){
-    return principal && (Object.keys(principal.permissions).length>0 || isAdmin(principal))
-}
+const hasAnyMachineryAccess = (principal: UserDetails | null | undefined) => (principal != null) && (Object.keys(principal.permissions).length > 0 || isAdmin(principal));
 
-function hasAnyDashboardAccess(principal: UserDetails | null | undefined){
-    if(!principal) return false
+function hasAnyDashboardAccess(principal: UserDetails | null | undefined) {
+    if (principal == null) return false
 
-    if(isAdmin(principal)) return true
+    if (isAdmin(principal)) return true
 
-    for(const permission of Object.values(principal.permissions)){
-        if(permission["dashboardsRead"]) return true
-    }
+    for (const permission of Object.values(principal.permissions))
+        if ((permission as any).dashboardsRead) return true
+
     return false
 }
 
-function hasAnyDocumentsAccess(principal: UserDetails | null | undefined){
-    if(!principal) return false
+function hasAnyDocumentsAccess(principal: UserDetails | null | undefined) {
+    if (principal == null) return false
 
-    if(isAdmin(principal)) return true
+    if (isAdmin(principal)) return true
 
-    for(const permission of Object.values(principal.permissions)){
-        if(permission["documentsRead"]) return true
-    }
+    for (const permission of Object.values(principal.permissions))
+        if ((permission as any).documentsRead) return true
+
     return false
 }
 
-function hasSidebarItemAccess(principal: UserDetails | null, sidebarItemName: string){
-    if(!principal) return false
-    if(isAdmin(principal)) return true
+function hasSidebarItemAccess(principal: UserDetails | null, sidebarItemName: string) {
+    if (principal == null) return false
+    if (isAdmin(principal)) return true
 
     switch (sidebarItemName) {
-        case "Home":{
+        case 'Home': {
             return true
         }
-        case "Machineries": {
+        case 'Machineries': {
             return true
         }
-        case "Dashboards": {
+        case 'Dashboards': {
             return hasAnyDashboardAccess(principal)
         }
-        case "Documents": {
+        case 'Documents': {
             return hasAnyDocumentsAccess(principal)
         }
-        case "Users management": {
+        case 'Users management': {
             return isAdmin(principal)
-
         }
-        case "Machinery permissions": {
+        case 'Machinery permissions': {
             return isManagerOrAbove(principal)
         }
         default: {
-            console.error("Unknown sidebar item name"+ sidebarItemName)
+            console.error(`Unknown sidebar item name${sidebarItemName}`)
+
             return false
         }
     }
-
 }
 
-function getRoleRank(roles: string[] | undefined){
-    if(!roles) return 0
+function getRoleRank(roles: string[] | undefined) {
+    if (roles == null) return 0
 
     let maxRank = 0
-    roles.forEach((role)=>{
-        switch (role){
-            case "COMPANY_ROLE_WORKER": {
-                if(maxRank<1) maxRank=1
+    roles.forEach((role) => {
+        switch (role) {
+            case 'COMPANY_ROLE_WORKER': {
+                if (maxRank < 1) maxRank = 1
                 break
             }
-            case "COMPANY_ROLE_MANAGER": {
-                if(maxRank<2) maxRank=2
+            case 'COMPANY_ROLE_MANAGER': {
+                if (maxRank < 2) maxRank = 2
                 break
             }
-            case "COMPANY_ROLE_ADMIN": {
-                if(maxRank<3) maxRank=3
+            case 'COMPANY_ROLE_ADMIN': {
+                if (maxRank < 3) maxRank = 3
                 break
             }
             default: {
@@ -91,16 +86,11 @@ function getRoleRank(roles: string[] | undefined){
     })
 
     return maxRank
-
 }
 
-function isAdmin(principal: UserDetails | null | undefined){
-    return principal && getRoleRank(principal.roles)===ROLE_ADMIN
-}
+const isAdmin = (principal: UserDetails | null | undefined) => (principal != null) && getRoleRank(principal.roles) === ROLE_ADMIN;
 
-function isManagerOrAbove(principal: UserDetails | null | undefined){
-    return principal && getRoleRank(principal.roles)>=ROLE_MANAGER
-}
+const isManagerOrAbove = (principal: UserDetails | null | undefined) => (principal != null) && getRoleRank(principal.roles) >= ROLE_MANAGER;
 
 export default {
     ROLE_WORKER,

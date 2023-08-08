@@ -1,7 +1,7 @@
-import MachinerySortingAndFilters from "./MachinerySortingAndFilters";
+import type MachinerySortingAndFilters from './MachinerySortingAndFilters'
 
 export default interface FilteringBarProps {
-    machinerySortingAndFilters: MachinerySortingAndFilters
-    setMachinerySortingAndFilters: Function
-    setNumFiltersSelected: Function
+  machinerySortingAndFilters: MachinerySortingAndFilters
+  setMachinerySortingAndFilters: Function
+  setNumFiltersSelected: Function
 }

@@ -4,18 +4,19 @@ import Company from "../entities/Company";
 async function getCompanyByID(companyID: number): Promise<Company | null> {
 
     try {
-        let result = await pgClient.oneOrNone(
+        const result = await pgClient.oneOrNone(
             "SELECT * FROM public.companies_catalogue WHERE id=$1",
             companyID
         )
 
-        if (result) {
+        if (result) 
             return new Company(
                 result.id,
                 result.name,
             )
-        }
-        return null
+        
+        
+return null
     } catch (e) {
         return null
     }

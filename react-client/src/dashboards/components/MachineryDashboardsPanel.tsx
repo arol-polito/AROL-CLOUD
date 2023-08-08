@@ -10,60 +10,57 @@ import {
     Spinner,
     Text,
     VStack
-} from "@chakra-ui/react";
-import React, {useContext, useEffect, useState} from "react";
-import MachineryWithDashboards from "../interfaces/MachineryWithDashboards"
-import machineryService from "../../services/MachineryService";
-import Machinery from "../../machineries-map/components/Machinery";
-import dashboardService from "../../services/DashboardService";
-import ToastContext from "../../utils/contexts/ToastContext";
-import {FiSearch, FiX} from "react-icons/fi";
-import MachineryWithDashboardsCard from "./MachineryWithDashboardsCard";
-import SavedDashboard from "../../machinery/dashboard/interfaces/SavedDashboard";
-import permissionChecker from "../../utils/PermissionChecker";
-import PrincipalContext from "../../utils/contexts/PrincipalContext";
-import axiosExceptionHandler from "../../utils/AxiosExceptionHandler";
-import toastHelper from "../../utils/ToastHelper";
+} from '@chakra-ui/react'
+import React, {useContext, useEffect, useState} from 'react'
+import type MachineryWithDashboards from '../interfaces/MachineryWithDashboards'
+import machineryService from '../../services/MachineryService'
+import type Machinery from '../../machineries-map/components/Machinery'
+import dashboardService from '../../services/DashboardService'
+import ToastContext from '../../utils/contexts/ToastContext'
+import {FiSearch, FiX} from 'react-icons/fi'
+import MachineryWithDashboardsCard from './MachineryWithDashboardsCard'
+import type SavedDashboard from '../../machinery/dashboard/interfaces/SavedDashboard'
+import permissionChecker from '../../utils/PermissionChecker'
+import PrincipalContext from '../../utils/contexts/PrincipalContext'
+import axiosExceptionHandler from '../../utils/AxiosExceptionHandler'
+import toastHelper from '../../utils/ToastHelper'
 
-interface MachineryDashboardsPanelProps {
-
-}
-
-export default function MachineryDashboardsPanel(props: MachineryDashboardsPanelProps) {
-
+export default function MachineryDashboardsPanel() {
     const {principal} = useContext(PrincipalContext)
     const toast = useContext(ToastContext)
 
     const [machineriesWithDashboards, setMachineriesWithDashboards] = useState<MachineryWithDashboards[]>([])
-    const [machinerySearch, setMachinerySearch] = useState<{ searchTerm: string, highlightTerm: string, doSearch: boolean }>({
-        searchTerm: "",
-        highlightTerm: "",
+    const [machinerySearch, setMachinerySearch] = useState<{
+        searchTerm: string
+        highlightTerm: string
+        doSearch: boolean
+    }>({
+        searchTerm: '',
+        highlightTerm: '',
         doSearch: false
     })
-    const [machinerySort, setMachinerySort] = useState("none")
+    const [machinerySort, setMachinerySort] = useState('none')
 
     const [loadingMachineries, setLoadingMachineries] = useState(true)
 
-    //LOAD MACHINERIES & CORRESPONDING DASHBOARDS
+    // LOAD MACHINERIES & CORRESPONDING DASHBOARDS
     useEffect(() => {
-
-        if(machinerySort!=="none") return
+        if (machinerySort !== 'none') return
 
         async function getMachineriesAndDashboards() {
-
             setLoadingMachineries(true)
 
             try {
-                let machineriesMap = await machineryService.getMachineryByCompany()
-                let machineriesArray: Machinery[] = []
+                const machineriesMap = await machineryService.getMachineryByCompany()
+                const machineriesArray: Machinery[] = []
                 machineriesMap.forEach((val) => {
                     machineriesArray.push(...val)
                 })
 
-                let machineriesWithDashboardsArray: MachineryWithDashboards[] = []
+                const machineriesWithDashboardsArray: MachineryWithDashboards[] = []
 
-                for (const machinery of machineriesArray) {
-                    if(permissionChecker.hasMachineryPermission(principal, machinery.uid, "dashboardsRead")) {
+                for (const machinery of machineriesArray)
+                    if (permissionChecker.hasMachineryPermission(principal, machinery.uid, 'dashboardsRead')) {
                         let dashboards: SavedDashboard[]
                         try {
                             dashboards = await dashboardService.getSavedDashboards(machinery.uid)
@@ -74,23 +71,23 @@ export default function MachineryDashboardsPanel(props: MachineryDashboardsPanel
                         machineriesWithDashboardsArray.push({
                             ...machinery,
                             active: true,
-                            dashboards: dashboards
+                            dashboards
                         })
                     }
-                }
 
-                if(machineriesWithDashboards.length>0){
+                if (machineriesWithDashboards.length > 0) {
                     setMachineriesWithDashboards(machineriesWithDashboardsArray)
 
-                    setMachinerySearch((val)=>{
+                    setMachinerySearch((val) => {
                         val.doSearch = true
+
                         return {...val}
                     })
 
                     toastHelper.makeToast(
                         toast,
-                        "Sorting applied",
-                        "info"
+                        'Sorting applied',
+                        'info'
                     )
 
                     setLoadingMachineries(false)
@@ -99,86 +96,79 @@ export default function MachineryDashboardsPanel(props: MachineryDashboardsPanel
                 }
 
                 setMachineriesWithDashboards(machineriesWithDashboardsArray)
-
             } catch (e) {
-                console.log(e)
+                console.error(e)
                 axiosExceptionHandler.handleAxiosExceptionWithToast(
                     e,
                     toast,
-                    "Dashboards could not be fetched"
+                    'Dashboards could not be fetched'
                 )
             }
 
             setLoadingMachineries(false)
-
         }
 
         getMachineriesAndDashboards()
+    }, [machinerySort, machineriesWithDashboards.length, principal, toast])
 
-    }, [machinerySort])
-
-    //HANDLE SEARCH
+    // HANDLE SEARCH
     useEffect(() => {
-
         if (!machinerySearch.doSearch) return
 
-        let searchTerm = machinerySearch.searchTerm.toLowerCase()
+        const searchTerm = machinerySearch.searchTerm.toLowerCase()
         setMachineriesWithDashboards((val) => {
-
             val.forEach((el) => {
                 if (!searchTerm ||
                     el.uid.toLowerCase().includes(searchTerm) ||
                     el.modelName.toLowerCase().includes(searchTerm) ||
                     el.modelType.toLowerCase().includes(searchTerm) ||
                     el.locationCluster.toLowerCase().includes(searchTerm) ||
-                    el.dashboards.find((dash) => (dash.name.toLowerCase().includes(searchTerm)))
-                ) {
+                    (el.dashboards.find((dash) => (dash.name.toLowerCase().includes(searchTerm))) != null)
+                )
                     el.active = true
-                } else {
+                else
                     el.active = false
-                }
             })
+
             return [...val]
         })
 
         setMachinerySearch((val) => {
             val.doSearch = false
             val.highlightTerm = val.searchTerm
+
             return {...val}
         })
-
     }, [machinerySearch])
 
-    //HANDLE SORT
+    // HANDLE SORT
     useEffect(() => {
-
-        if (machinerySort === "none") return
+        if (machinerySort === 'none') return
 
         setMachineriesWithDashboards((val) => {
             val.sort((a, b) => {
-
                 switch (machinerySort) {
-                    case "uid": {
+                    case 'uid': {
                         return a.uid > b.uid ? 1 : -1
                     }
-                    case "modelName": {
+                    case 'modelName': {
                         return a.modelName > b.modelName ? 1 : -1
                     }
-                    case "type": {
+                    case 'type': {
                         return a.modelType > b.modelType ? 1 : -1
                     }
-                    case "location": {
+                    case 'location': {
                         return a.locationCluster > b.locationCluster ? 1 : -1
                     }
-                    case "num-dashboards": {
+                    case 'num-dashboards': {
                         return b.dashboards.length - a.dashboards.length
                     }
                     default: {
-                        console.error("Unknown sort term")
+                        console.error('Unknown sort term')
+
                         return 0
                     }
                 }
-
             })
 
             return [...val]
@@ -186,52 +176,53 @@ export default function MachineryDashboardsPanel(props: MachineryDashboardsPanel
 
         toastHelper.makeToast(
             toast,
-            "Sorting applied",
-            "info"
+            'Sorting applied',
+            'info'
         )
+    }, [machinerySort, toast])
 
-    }, [machinerySort])
-
-
-    //SEARCH TERM CHANGED EVENT
+    // SEARCH TERM CHANGED EVENT
     function handleSearchTermChanged(e) {
         setMachinerySearch((val) => {
             val.searchTerm = e.target.value
+
             return {...val}
         })
     }
 
-    //HANDLE SEARCH BUTTON CLICKED
+    // HANDLE SEARCH BUTTON CLICKED
     function handleSearchButtonClicked() {
         setMachinerySearch((val) => {
             val.doSearch = true
+
             return {...val}
         })
     }
 
     return (
         <VStack
-            w={"full"}
-            h={"full"}
+            w="full"
+            h="full"
         >
             <HStack
                 p={6}
-                w={"full"}
+                w="full"
                 borderWidth={1}
-                borderColor={"gray.200"}
-                bgColor={"white"}
-                rounded={'md'}
+                borderColor="gray.200"
+                bgColor="white"
+                rounded="md"
             >
                 <InputGroup size='md'>
                     <InputLeftElement
                         pointerEvents='none'
                         color='gray.300'
                         fontSize='1.2em'
-                        children={<FiSearch/>}
-                    />
+                    >
+                        <FiSearch/>
+                    </InputLeftElement>
                     <Input
                         pr='4.5rem'
-                        type={'text'}
+                        type="text"
                         placeholder='Search machinery or dashboard'
                         value={machinerySearch.searchTerm}
                         onChange={handleSearchTermChanged}
@@ -240,22 +231,22 @@ export default function MachineryDashboardsPanel(props: MachineryDashboardsPanel
                         <Box
                             pr={1}
                             _hover={{
-                                cursor: "pointer"
+                                cursor: 'pointer'
                             }}
-                            onClick={()=>{
+                            onClick={() => {
                                 setMachinerySearch({
-                                    searchTerm: "",
+                                    searchTerm: '',
                                     doSearch: true,
-                                    highlightTerm: ""
+                                    highlightTerm: ''
                                 })
                             }}
                         >
-                            <FiX size={18} color={"gray"}/>
+                            <FiX size={18} color="gray"/>
                         </Box>
                         <Button
                             h='1.75rem'
                             size='sm'
-                            colorScheme={"blue"}
+                            colorScheme="blue"
                             onClick={handleSearchButtonClicked}
                         >
                             Search
@@ -263,9 +254,11 @@ export default function MachineryDashboardsPanel(props: MachineryDashboardsPanel
                     </InputRightElement>
                 </InputGroup>
                 <Select
-                    w={"350px"}
+                    w="350px"
                     value={machinerySort}
-                    onChange={(e) => (setMachinerySort(e.target.value))}
+                    onChange={(e) => {
+                        setMachinerySort(e.target.value)
+                    }}
                 >
                     <option value='none'>Sort by default order</option>
                     <option value='uid'>Sort by machinery ID</option>
@@ -294,10 +287,10 @@ export default function MachineryDashboardsPanel(props: MachineryDashboardsPanel
                     .filter((machineryWithDashboards) => (machineryWithDashboards.active))
                     .length === 0 &&
                 <HStack
-                    w={"full"}
-                    h={"200px"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
+                    w="full"
+                    h="200px"
+                    justifyContent="center"
+                    alignItems="center"
                 >
                     {
                         machinerySearch.highlightTerm &&
@@ -312,16 +305,15 @@ export default function MachineryDashboardsPanel(props: MachineryDashboardsPanel
             {
                 loadingMachineries &&
                 <VStack
-                    w={"full"}
-                    h={"300px"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
+                    w="full"
+                    h="300px"
+                    justifyContent="center"
+                    alignItems="center"
                 >
-                    <Spinner size={"xl"}/>
+                    <Spinner size="xl"/>
                 </VStack>
             }
 
         </VStack>
     )
-
 }

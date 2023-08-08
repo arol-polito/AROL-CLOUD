@@ -1,5 +1,1 @@
-export default interface UserPermissions{
-    [key: string]: {
-        [key: string]: boolean
-    }
-}
+export type UserPermissions = Record<string, Record<string, boolean>>

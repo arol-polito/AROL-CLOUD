@@ -17,16 +17,16 @@ import {
     Tabs,
     Text,
     VStack
-} from "@chakra-ui/react";
-import React, {Fragment, useContext, useEffect, useState} from "react";
-import dashboardService from "../../../../services/DashboardService";
-import dayjs from "dayjs";
-import utc from 'dayjs/plugin/utc';
-import Dashboard from "../../models/Dashboard";
-import SavedDashboard from "../../interfaces/SavedDashboard";
-import LoadDashboardAction from "../../../machinery/interfaces/LoadDashboardAction";
-import ToastContext from "../../../../utils/contexts/ToastContext";
-import axiosExceptionHandler from "../../../../utils/AxiosExceptionHandler";
+} from '@chakra-ui/react'
+import React, {Fragment, useContext, useEffect, useState} from 'react'
+import dashboardService from '../../../../services/DashboardService'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import type Dashboard from '../../models/Dashboard'
+import type SavedDashboard from '../../interfaces/SavedDashboard'
+import type LoadDashboardAction from '../../../machinery/interfaces/LoadDashboardAction'
+import ToastContext from '../../../../utils/contexts/ToastContext'
+import axiosExceptionHandler from '../../../../utils/AxiosExceptionHandler'
 
 dayjs.extend(utc)
 
@@ -41,7 +41,6 @@ interface LoadDashboardModalProps {
 }
 
 export default function LoadDashboardModal(props: LoadDashboardModalProps) {
-
     const toast = useContext(ToastContext)
 
     const [tabIndex, setTabIndex] = useState(0)
@@ -50,26 +49,22 @@ export default function LoadDashboardModal(props: LoadDashboardModalProps) {
     const [templateDashboards, setTemplateDashboards] = useState<SavedDashboard[]>([])
     const [loading, setLoading] = useState(true)
 
-    //FETCH SAVED DASHBOARDS for this machinery
+    // FETCH SAVED DASHBOARDS for this machinery
     useEffect(() => {
-
-        if(tabIndex!==0) return
+        if (tabIndex !== 0) return
 
         async function getData() {
-
             setLoading(true)
 
             try {
-
-                let result = await dashboardService.getSavedDashboards(props.machineryUID)
+                const result = await dashboardService.getSavedDashboards(props.machineryUID)
                 setSavedDashboards(result)
-
             } catch (e) {
-                console.log(e)
+                console.error(e)
                 axiosExceptionHandler.handleAxiosExceptionWithToast(
                     e,
                     toast,
-                    "Dashboards could not be loaded"
+                    'Dashboards could not be loaded'
                 )
             }
 
@@ -77,27 +72,24 @@ export default function LoadDashboardModal(props: LoadDashboardModalProps) {
         }
 
         getData()
+    }, [tabIndex, props.machineryUID, toast])
 
-    }, [tabIndex])
-
-    //FETCH TEMPLATE DASHBOARDS for machineries of this model
+    // FETCH TEMPLATE DASHBOARDS for machineries of this model
     useEffect(() => {
-
-        if(tabIndex!==1) return
+        if (tabIndex !== 1) return
 
         async function getData() {
-
             setLoading(true)
 
             try {
-                let result = await dashboardService.getDashboardTemplates(props.machineryUID)
+                const result = await dashboardService.getDashboardTemplates(props.machineryUID)
                 setTemplateDashboards(result)
             } catch (e) {
-                console.log(e)
+                console.error(e)
                 axiosExceptionHandler.handleAxiosExceptionWithToast(
                     e,
                     toast,
-                    "Dashboard templates could not be loaded"
+                    'Dashboard templates could not be loaded'
                 )
             }
 
@@ -105,25 +97,28 @@ export default function LoadDashboardModal(props: LoadDashboardModalProps) {
         }
 
         getData()
+    }, [tabIndex, props.machineryUID, toast])
 
-    }, [tabIndex])
-
-    function closeModal(){
+    function closeModal() {
         props.setLoadDashboardModalOpen(false)
     }
 
     return (
         <Modal
-            size={"lg"}
+            size="lg"
             isOpen={props.loadDashboardModalOpen}
             onClose={closeModal}
-            scrollBehavior={"inside"}
+            scrollBehavior="inside"
         >
             <ModalOverlay
-                onMouseDown={(e) => (e.stopPropagation())}
+                onMouseDown={(e) => {
+                    e.stopPropagation()
+                }}
             />
             <ModalContent
-                onMouseDown={(e) => (e.stopPropagation())}
+                onMouseDown={(e) => {
+                    e.stopPropagation()
+                }}
             >
                 <ModalHeader>Choose the dashboard to load</ModalHeader>
                 <ModalCloseButton/>
@@ -131,17 +126,19 @@ export default function LoadDashboardModal(props: LoadDashboardModalProps) {
                     pb={12}
                 >
                     <Tabs
-                        isFitted={true}
                         index={tabIndex}
                         variant='soft-rounded'
                         colorScheme='green'
-                        onChange={(index) => setTabIndex(index)}
+                        onChange={(index) => {
+                            setTabIndex(index)
+                        }}
+                        isFitted
                     >
                         <TabList>
                             <Tab>Dashboards</Tab>
                             <Tab
                                 isDisabled={!props.dashboardPermissions.write}
-                                title={!props.dashboardPermissions.write ? "Operation not permitted" : ""}
+                                title={!props.dashboardPermissions.write ? 'Operation not permitted' : ''}
                             >
                                 Templates
                             </Tab>
@@ -149,10 +146,10 @@ export default function LoadDashboardModal(props: LoadDashboardModalProps) {
                         <TabPanels>
                             <TabPanel>
                                 <Text
-                                    fontSize={"md"}
+                                    fontSize="md"
                                     fontWeight={400}
-                                    color={"gray.500"}
-                                    textAlign={"center"}
+                                    color="gray.500"
+                                    textAlign="center"
                                     mb={5}
                                 >
                                     Below you can find the saved dashboards for this machinery
@@ -177,9 +174,9 @@ export default function LoadDashboardModal(props: LoadDashboardModalProps) {
                                 {
                                     !loading && savedDashboards.length === 0 &&
                                     <Box
-                                        w={"full"}
-                                        textAlign={"center"}
-                                        my={"4"}
+                                        w="full"
+                                        textAlign="center"
+                                        my="4"
                                     >
                                         There are no saved dashboards for this machinery
                                     </Box>
@@ -187,21 +184,21 @@ export default function LoadDashboardModal(props: LoadDashboardModalProps) {
                                 {
                                     loading &&
                                     <VStack
-                                        w={"full"}
-                                        h={"150px"}
-                                        justifyContent={"center"}
-                                        alignItems={"center"}
+                                        w="full"
+                                        h="150px"
+                                        justifyContent="center"
+                                        alignItems="center"
                                     >
-                                        <Spinner size={"md"}/>
+                                        <Spinner size="md"/>
                                     </VStack>
                                 }
                             </TabPanel>
                             <TabPanel>
                                 <Text
-                                    fontSize={"md"}
+                                    fontSize="md"
                                     fontWeight={400}
-                                    color={"gray.500"}
-                                    textAlign={"center"}
+                                    color="gray.500"
+                                    textAlign="center"
                                     mb={5}
                                 >
                                     Below you can find dashboard templates from machineries of the same model
@@ -210,7 +207,7 @@ export default function LoadDashboardModal(props: LoadDashboardModalProps) {
                                     !loading &&
                                     templateDashboards.length > 0 &&
                                     templateDashboards.map((templateDashboard) => (
-                                        <Fragment key={templateDashboard.machineryUID+"-"+templateDashboard.name}>
+                                        <Fragment key={`${templateDashboard.machineryUID}-${templateDashboard.name}`}>
                                             <Divider/>
                                             <DashboardTemplateEntry
                                                 dashboard={props.dashboard}
@@ -227,9 +224,9 @@ export default function LoadDashboardModal(props: LoadDashboardModalProps) {
                                 {
                                     !loading && templateDashboards.length === 0 &&
                                     <Box
-                                        w={"full"}
-                                        textAlign={"center"}
-                                        my={"4"}
+                                        w="full"
+                                        textAlign="center"
+                                        my="4"
                                     >
                                         There are no dashboard templates for this machinery model
                                     </Box>
@@ -237,12 +234,12 @@ export default function LoadDashboardModal(props: LoadDashboardModalProps) {
                                 {
                                     loading &&
                                     <VStack
-                                        w={"full"}
-                                        h={"150px"}
-                                        justifyContent={"center"}
-                                        alignItems={"center"}
+                                        w="full"
+                                        h="150px"
+                                        justifyContent="center"
+                                        alignItems="center"
                                     >
-                                        <Spinner size={"md"}/>
+                                        <Spinner size="md"/>
                                     </VStack>
                                 }
                             </TabPanel>
@@ -265,95 +262,88 @@ interface SavedDashboardEntryProps {
 }
 
 function SavedDashboardEntry(props: SavedDashboardEntryProps) {
+    const [dashboardToDelete, setDashboardToDelete] = useState('')
 
-    const [dashboardToDelete, setDashboardToDelete] = useState("")
-
-    //LOAD DASHBOARD
+    // LOAD DASHBOARD
     function handleLoadDashboardButton() {
         props.setLoadDashboard({
             doLoad: true,
             isTemplate: false,
-            machineryUID: "",
+            machineryUID: '',
             name: props.savedDashboard.name
         })
         props.setLoadDashboardModalOpen(false)
     }
 
-    //DELETE DASHBOARD
+    // DELETE DASHBOARD
     useEffect(() => {
-
-        if (dashboardToDelete === "") return
+        if (dashboardToDelete === '') return
 
         async function deleteDash() {
-
             try {
-
-                if (props.dashboard.name === dashboardToDelete) {
+                if (props.dashboard.name === dashboardToDelete)
                     props.setDashboard((val) => {
                         val.numUnsavedChanges++
                         val.lastSave = 0
+
                         return {...val}
                     })
-                }
 
-                let result = await dashboardService.deleteDashboard(props.machineryUID, props.savedDashboard.name)
+                const result = await dashboardService.deleteDashboard(props.machineryUID, props.savedDashboard.name)
 
                 if (!result) {
-                    console.log("Dashboard not deleted")
+                    console.error('Dashboard not deleted')
+
                     return
                 }
 
-                setDashboardToDelete("")
+                setDashboardToDelete('')
 
-                props.setSavedDashboards((val) => {
-                    return val.filter((el) => (el.name !== dashboardToDelete))
-                })
-
+                props.setSavedDashboards((val) => val.filter((el) => (el.name !== dashboardToDelete)))
             } catch (e) {
-                console.log(e)
+                console.error(e)
             }
         }
 
         deleteDash()
-
-    }, [dashboardToDelete])
+    }, [dashboardToDelete, props])
 
     return (
         <VStack
-            w={"full"}
-            justifyContent={"left"}
+            w="full"
+            justifyContent="left"
         >
             <HStack
-                w={"full"}
+                w="full"
                 mt={2}
-                justifyContent={"space-between"}
+                justifyContent="space-between"
             >
                 <VStack
-                    w={"full"}
-                    alignItems={"left"}
+                    w="full"
+                    alignItems="left"
                 >
                     {
                         props.savedDashboard.isDefault &&
-                        <Text fontSize={"xs"} fontWeight={600} color={"green"}>
+                        <Text fontSize="xs" fontWeight={600} color="green">
                             Default dashboard
                         </Text>
                     }
-                    <Text fontSize={"md"} mt={props.savedDashboard.isDefault ? "0!important" : ""}>
+                    <Text fontSize="md" mt={props.savedDashboard.isDefault ? '0!important' : ''}>
                         {props.savedDashboard.name}
                     </Text>
-                    <Text fontSize={"xs"} color={"gray.500"} fontWeight={500} mt={"0!important"}>
-                        Saved on {dayjs(props.savedDashboard.timestamp).format("ddd, MMM D, YYYY H:mm")}
+                    <Text fontSize="xs" color="gray.500" fontWeight={500} mt="0!important">
+                        Saved on {dayjs(props.savedDashboard.timestamp).format('ddd, MMM D, YYYY H:mm')}
                     </Text>
-                    <Text fontSize={"xs"} color={"gray.500"} mt={"0!important"}>
+                    <Text fontSize="xs" color="gray.500" mt="0!important">
                         {props.savedDashboard.numSensorsMonitored} sensors monitored
                     </Text>
-                    <Text fontSize={"xs"} color={"gray.500"} mt={"0!important"}>
+                    <Text fontSize="xs" color="gray.500" mt="0!important">
                         {props.savedDashboard.numWidgets} widgets
                     </Text>
                 </VStack>
                 <VStack>
                     <Button
-                        w={"full"}
+                        w="full"
                         colorScheme='teal'
                         variant='solid'
                         onClick={handleLoadDashboardButton}
@@ -361,19 +351,21 @@ function SavedDashboardEntry(props: SavedDashboardEntryProps) {
                         Load
                     </Button>
                     <Button
-                        w={"full"}
+                        w="full"
                         colorScheme='red'
                         variant='outline'
-                        isLoading={dashboardToDelete !== ""}
-                        loadingText={"Deleting"}
-                        onClick={() => (setDashboardToDelete(props.savedDashboard.name))}
+                        isLoading={dashboardToDelete !== ''}
+                        loadingText="Deleting"
+                        onClick={() => {
+                            setDashboardToDelete(props.savedDashboard.name)
+                        }}
                     >
                         Delete
                     </Button>
 
                 </VStack>
             </HStack>
-            <Divider orientation={"horizontal"}/>
+            <Divider orientation="horizontal"/>
         </VStack>
     )
 }
@@ -389,8 +381,7 @@ interface DashboardTemplateEntryProps {
 }
 
 function DashboardTemplateEntry(props: DashboardTemplateEntryProps) {
-
-    //LOAD DASHBOARD TEMPLATE
+    // LOAD DASHBOARD TEMPLATE
     function handleLoadDashboardButton() {
         props.setLoadDashboard({
             doLoad: true,
@@ -403,34 +394,34 @@ function DashboardTemplateEntry(props: DashboardTemplateEntryProps) {
 
     return (
         <VStack
-            w={"full"}
-            justifyContent={"left"}
+            w="full"
+            justifyContent="left"
         >
             <HStack
-                w={"full"}
+                w="full"
                 mt={2}
-                justifyContent={"space-between"}
+                justifyContent="space-between"
             >
                 <VStack
-                    w={"full"}
-                    alignItems={"left"}
+                    w="full"
+                    alignItems="left"
                 >
-                    <Text fontSize={"md"} mt={props.savedDashboard.isDefault ? "0!important" : ""}>
+                    <Text fontSize="md" mt={props.savedDashboard.isDefault ? '0!important' : ''}>
                         {props.savedDashboard.name}
                     </Text>
-                    <Text fontSize={"xs"} mt={props.savedDashboard.isDefault ? "0!important" : ""}>
+                    <Text fontSize="xs" mt={props.savedDashboard.isDefault ? '0!important' : ''}>
                         Machinery {props.savedDashboard.machineryUID}
                     </Text>
-                    <Text fontSize={"xs"} color={"gray.500"} fontWeight={500} mt={"0!important"}>
-                        Saved on {dayjs(props.savedDashboard.timestamp).format("ddd, MMM D, YYYY H:mm")}
+                    <Text fontSize="xs" color="gray.500" fontWeight={500} mt="0!important">
+                        Saved on {dayjs(props.savedDashboard.timestamp).format('ddd, MMM D, YYYY H:mm')}
                     </Text>
-                    <Text fontSize={"xs"} color={"gray.500"} mt={"0!important"}>
+                    <Text fontSize="xs" color="gray.500" mt="0!important">
                         {props.savedDashboard.numWidgets} widgets
                     </Text>
                 </VStack>
                 <VStack>
                     <Button
-                        w={"full"}
+                        w="full"
                         colorScheme='teal'
                         variant='solid'
                         onClick={handleLoadDashboardButton}
@@ -439,7 +430,7 @@ function DashboardTemplateEntry(props: DashboardTemplateEntryProps) {
                     </Button>
                 </VStack>
             </HStack>
-            <Divider orientation={"horizontal"}/>
+            <Divider orientation="horizontal"/>
         </VStack>
     )
 }

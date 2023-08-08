@@ -1,6 +1,7 @@
 import {
     Alert,
-    AlertIcon, Box,
+    AlertIcon,
+    Box,
     Button,
     Checkbox,
     CloseButton,
@@ -13,61 +14,57 @@ import {
     InputGroup,
     InputRightElement,
     Stack,
-    useColorModeValue,
-} from '@chakra-ui/react';
-import {FiEye, FiEyeOff} from "react-icons/fi";
-import {useContext, useEffect, useState} from "react";
-import PrincipalContext from "../../utils/contexts/PrincipalContext";
-import authService from "../../services/AuthService";
-import {useNavigate} from "react-router-dom";
-import ToastContext from "../../utils/contexts/ToastContext";
-import axios, {AxiosError} from 'axios';
-import axiosExceptionHandler from "../../utils/AxiosExceptionHandler";
-import toastHelper from "../../utils/ToastHelper";
+    useColorModeValue
+} from '@chakra-ui/react'
+import {FiEye, FiEyeOff} from 'react-icons/fi'
+import React, {useContext, useEffect, useState} from 'react'
+import PrincipalContext from '../../utils/contexts/PrincipalContext'
+import authService from '../../services/AuthService'
+import {useNavigate} from 'react-router-dom'
+import ToastContext from '../../utils/contexts/ToastContext'
+import axiosExceptionHandler from '../../utils/AxiosExceptionHandler'
+import toastHelper from '../../utils/ToastHelper'
 
 export default function LoginPage() {
-
     const navigate = useNavigate()
 
     const {dispatchPrincipal} = useContext(PrincipalContext)
     const toast = useContext(ToastContext)
 
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
     const [rememberMe, setRememberMe] = useState(true)
     const [submit, setSubmit] = useState(false)
 
-    const [authError, setAuthError] = useState("")
+    const [authError, setAuthError] = useState('')
 
     useEffect(() => {
-
         if (!submit) return
 
         async function doLogin() {
             try {
-                let result = await authService.login(
+                const result = await authService.login(
                     {
-                        email: email,
-                        password: password
+                        email,
+                        password
                     }
                 )
 
                 dispatchPrincipal({
-                    type: rememberMe ? "login-remember" : "login-no-remember",
+                    type: rememberMe ? 'login-remember' : 'login-no-remember',
                     principal: result
                 })
-                setAuthError("")
+                setAuthError('')
 
                 toastHelper.makeToast(
                     toast,
-                    "Login successful",
-                    "success"
+                    'Login successful',
+                    'success'
                 )
 
-                navigate("/")
-            }
-            catch (e){
-                console.log(e)
+                navigate('/')
+            } catch (e) {
+                console.error(e)
                 axiosExceptionHandler.handleAxiosExceptionForLoginWithSetState(
                     e,
                     setAuthError
@@ -75,37 +72,35 @@ export default function LoginPage() {
             }
 
             setSubmit(false)
-
         }
 
         doLogin()
-
-    }, [submit])
+    }, [submit, dispatchPrincipal, email, password, rememberMe, toast, navigate])
 
     const [showPassword, setShowPassword] = useState<boolean>(false)
 
     return (
         <Stack
             w={1000}
-            mx={"auto"}
-            minH={'full'}
+            mx="auto"
+            minH="full"
             direction={{base: 'column', md: 'row'}}
             bg={useColorModeValue('white', 'gray.900')}
-            boxShadow={'2xl'}
-            rounded={'lg'}
+            boxShadow="2xl"
+            rounded="lg"
             p={6}
         >
-            <Flex p={6} flex={1} align={'center'} justify={'center'}>
-                <Stack spacing={8} >
-                    {/*<Heading fontSize={'2xl'}>Sign in to your account</Heading>*/}
-                    <Heading fontSize={'4xl'} textAlign={'center'}>
+            <Flex p={6} flex={1} align="center" justify="center">
+                <Stack spacing={8}>
+                    {/* <Heading fontSize={'2xl'}>Sign in to your account</Heading> */}
+                    <Heading fontSize="4xl" textAlign="center">
                         Sign in to your account
                     </Heading>
                     {
                         authError &&
-                        <Alert status='error' rounded={"md"}>
-                            <AlertIcon />
-                            <Box w={"full"}>
+                        <Alert status='error' rounded="md">
+                            <AlertIcon/>
+                            <Box w="full">
                                 {authError}
                             </Box>
                             <CloseButton
@@ -113,7 +108,9 @@ export default function LoginPage() {
                                 position='relative'
                                 right={-1}
                                 top={-1}
-                                onClick={()=>(setAuthError(""))}
+                                onClick={() => {
+                                    setAuthError('')
+                                }}
                             />
                         </Alert>
                     }
@@ -122,7 +119,9 @@ export default function LoginPage() {
                         <Input
                             type="email"
                             value={email}
-                            onChange={(e) => (setEmail(e.target.value))}
+                            onChange={(e) => {
+                                setEmail(e.target.value)
+                            }}
                         />
                     </FormControl>
                     <FormControl id="password" isRequired>
@@ -131,13 +130,16 @@ export default function LoginPage() {
                             <Input
                                 type={showPassword ? 'text' : 'password'}
                                 value={password}
-                                onChange={(e) => (setPassword(e.target.value))}
+                                onChange={(e) => {
+                                    setPassword(e.target.value)
+                                }}
                             />
-                            <InputRightElement h={'full'}>
+                            <InputRightElement h="full">
                                 <Button
-                                    variant={'ghost'}
-                                    onClick={() =>
+                                    variant="ghost"
+                                    onClick={() => {
                                         setShowPassword((showPassword) => !showPassword)
+                                    }
                                     }>
                                     {showPassword ? <FiEye size={48}/> : <FiEyeOff size={48}/>}
                                 </Button>
@@ -147,22 +149,26 @@ export default function LoginPage() {
                     <Stack spacing={6}>
                         <Stack
                             direction={{base: 'column', sm: 'row'}}
-                            align={'start'}
-                            justify={'space-between'}>
+                            align="start"
+                            justify="space-between">
                             <Checkbox
                                 isChecked={rememberMe}
-                                onChange={(e) => (setRememberMe(e.target.checked))}
+                                onChange={(e) => {
+                                    setRememberMe(e.target.checked)
+                                }}
                             >
                                 Remember me
                             </Checkbox>
-                            {/*<Link color={'blue.500'}>Forgot password?</Link>*/}
+                            {/* <Link color={'blue.500'}>Forgot password?</Link> */}
                         </Stack>
                         <Button
                             isLoading={submit}
                             loadingText='Signing in'
-                            colorScheme={'blue'}
-                            variant={'solid'}
-                            onClick={()=>(setSubmit(true))}
+                            colorScheme="blue"
+                            variant="solid"
+                            onClick={() => {
+                                setSubmit(true)
+                            }}
                         >
                             Sign in
                         </Button>
@@ -171,11 +177,11 @@ export default function LoginPage() {
             </Flex>
             <Flex flex={1}>
                 <Image
-                    alt={'Login Image'}
-                    objectFit={'contain'}
-                    src={require("./../../assets/arol-logo.png")}
+                    alt="Login Image"
+                    objectFit="contain"
+                    src={require('./../../assets/arol-logo.png')}
                 />
             </Flex>
         </Stack>
-    );
+    )
 }

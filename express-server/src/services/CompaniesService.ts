@@ -3,18 +3,19 @@ import companyRepository from "../repositories/CompanyRepository";
 
 async function getCompanyByPrincipal(req: express.Request, res: express.Response) {
 
-    let companyID = req.principal.companyID
-    if (!companyID) {
+    const companyID = req.principal.companyID
+    if (!companyID) 
         return res.status(404).json({
             msg: "User is system user and has no company associated"
         })
-    }
+    
 
-    let result = await companyRepository.getCompanyByID(companyID)
-    if (result) {
+    const result = await companyRepository.getCompanyByID(companyID)
+    if (result) 
         return res.status(200).json(result)
-    }
-    return res.status(404).json()
+    
+    
+return res.status(404).json()
 }
 
 export default {

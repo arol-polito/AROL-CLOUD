@@ -1,24 +1,25 @@
 import {
     Box,
-    BoxProps,
+    type BoxProps,
     CloseButton,
     Divider,
     Drawer,
     DrawerContent,
-    Flex, FlexProps,
+    Flex,
+    type FlexProps,
     Heading,
     HStack,
     Icon,
     Image,
     Text,
     useColorModeValue,
-    VStack,
+    VStack
 } from '@chakra-ui/react'
-import {FiChevronLeft, FiChevronRight, FiCodesandbox, FiFolder, FiGrid, FiHome, FiLock, FiUsers} from "react-icons/fi";
-import ArolLogo from "./../assets/arol-logo.png"
-import {Link as RouterLink, useLocation, useNavigate} from "react-router-dom"
-import React, {Fragment, memo, useContext, useEffect, useMemo, useState} from "react";
-import SidebarStatusContext from "../utils/contexts/SidebarStatusContext";
+import {FiChevronLeft, FiChevronRight, FiCodesandbox, FiFolder, FiGrid, FiHome, FiLock, FiUsers} from 'react-icons/fi'
+import ArolLogo from './../assets/arol-logo.png'
+import {Link as RouterLink, useLocation, useNavigate} from 'react-router-dom'
+import React, {Fragment, memo, useContext, useEffect, useMemo, useState} from 'react'
+import SidebarStatusContext from '../utils/contexts/SidebarStatusContext'
 import {
     Area,
     AreaChart,
@@ -35,59 +36,55 @@ import {
     XAxis,
     YAxis,
     ZAxis
-} from "recharts";
+} from 'recharts'
 import Thermometer from 'react-thermometer-ecotropy'
-import GaugeChart from 'react-gauge-chart';
-import permissionChecker from "../utils/PermissionChecker";
-import PrincipalContext from "../utils/contexts/PrincipalContext";
-import {IconType} from "react-icons";
+import GaugeChart from 'react-gauge-chart'
+import permissionChecker from '../utils/PermissionChecker'
+import PrincipalContext from '../utils/contexts/PrincipalContext'
+import {type IconType} from 'react-icons'
 
 const sidebarItems = [
-    {name: "Home", icon: FiHome, link: "/", selectedMatcher: "/"},
-    {name: "Machineries", icon: FiCodesandbox, link: "/machineries", selectedMatcher: "/machiner"},
-    {name: "Dashboards", icon: FiGrid, link: "/dashboards", selectedMatcher: "/dashboards"},
-    {name: "Documents", icon: FiFolder, link: "/documents", selectedMatcher: "/documents"},
-    {name: "Users management", icon: FiUsers, link: "/users", selectedMatcher: "/users", },
-    {name: "Machinery permissions", icon: FiLock, link: "/permissions", selectedMatcher: "/permissions"},
+    {name: 'Home', icon: FiHome, link: '/', selectedMatcher: '/'},
+    {name: 'Machineries', icon: FiCodesandbox, link: '/machineries', selectedMatcher: '/machiner'},
+    {name: 'Dashboards', icon: FiGrid, link: '/dashboards', selectedMatcher: '/dashboards'},
+    {name: 'Documents', icon: FiFolder, link: '/documents', selectedMatcher: '/documents'},
+    {name: 'Users management', icon: FiUsers, link: '/users', selectedMatcher: '/users'},
+    {name: 'Machinery permissions', icon: FiLock, link: '/permissions', selectedMatcher: '/permissions'}
 ]
 
 const widgetSelectorItems = [
-    {name: "Current value", category: "single-value", type: "current-value", maxSensors: 1, w: 4, h: 2},
-    {name: "Thermostat", category: "single-value", type: "thermostat", maxSensors: 1, w: 2, h: 4},
-    {name: "Tachometer", category: "single-value", type: "tachometer", maxSensors: 1, w: 4, h: 3},
-    {name: "Area chart", category: "multi-value", type: "area-chart", maxSensors: 24, w: 8, h: 4},
-    {name: "Line chart", category: "multi-value", type: "line-chart", maxSensors: 24, w: 8, h: 4},
-    {name: "Bar chart", category: "multi-value", type: "bar-chart", maxSensors: 24, w: 8, h: 4},
-    {name: "Pie chart", category: "multi-value", type: "pie-chart", maxSensors: 5, w: 4, h: 4},
+    {name: 'Current value', category: 'single-value', type: 'current-value', maxSensors: 1, w: 4, h: 2},
+    {name: 'Thermostat', category: 'single-value', type: 'thermostat', maxSensors: 1, w: 2, h: 4},
+    {name: 'Tachometer', category: 'single-value', type: 'tachometer', maxSensors: 1, w: 4, h: 3},
+    {name: 'Area chart', category: 'multi-value', type: 'area-chart', maxSensors: 24, w: 8, h: 4},
+    {name: 'Line chart', category: 'multi-value', type: 'line-chart', maxSensors: 24, w: 8, h: 4},
+    {name: 'Bar chart', category: 'multi-value', type: 'bar-chart', maxSensors: 24, w: 8, h: 4},
+    {name: 'Pie chart', category: 'multi-value', type: 'pie-chart', maxSensors: 5, w: 4, h: 4}
     // {name: "Scatter chart", category: "multi-value", type: "scatter-chart", maxSensors: 1, w: 4, h: 4},
 
 ]
 
 interface SidebarProps extends BoxProps {
-    onClose: () => void;
+    onClose: () => void
 }
 
 export default function Sidebar(props: any) {
-
     const location = useLocation()
     const {sidebarStatus, dispatchSidebar} = useContext(SidebarStatusContext)
 
-    //SIDEBAR STATUS consistency checker
+    // SIDEBAR STATUS consistency checker
     useEffect(() => {
-
-        if (sidebarStatus.type === "widget-selector" && !location.pathname.endsWith("/dashboard")) {
-            dispatchSidebar({type: "widget-selector-close"})
-        }
-
-    }, [location.pathname, sidebarStatus.type])
+        if (sidebarStatus.type === 'widget-selector' && !location.pathname.endsWith('/dashboard'))
+            dispatchSidebar({type: 'widget-selector-close'})
+    }, [dispatchSidebar, location.pathname, sidebarStatus.type])
 
     const displaySidebar = useMemo(
-        ()=>(sidebarStatus.type === "sidebar"),
+        () => (sidebarStatus.type === 'sidebar'),
         [sidebarStatus.type]
     )
 
     const displayWidgetSelector = useMemo(
-        ()=>(sidebarStatus.type === "widget-selector"),
+        () => (sidebarStatus.type === 'widget-selector'),
         [sidebarStatus.type]
     )
 
@@ -96,13 +93,13 @@ export default function Sidebar(props: any) {
             {displaySidebar &&
                 <SidebarContent
                     onClose={() => props.onClose}
-                    display={'block'}
+                    display="block"
                 />
             }
             {displayWidgetSelector &&
                 <WidgetSelectorContent
                     onClose={() => props.onClose}
-                    display={'flex'}
+                    display="flex"
                 />
             }
             <Drawer
@@ -121,22 +118,18 @@ export default function Sidebar(props: any) {
             </Drawer>
         </>
     )
-
 }
 
-const SidebarContent = memo(({onClose, ...rest}: SidebarProps) => {
-
+const SidebarContent = memo(({...rest}: SidebarProps) => {
     const navigate = useNavigate()
     const {sidebarStatus, dispatchSidebar} = useContext(SidebarStatusContext)
 
-    //SIDEBAR EXPAND/COLLAPSE HANDLER
+    // SIDEBAR EXPAND/COLLAPSE HANDLER
     function handleSidebarExpandCollapse() {
-        if (sidebarStatus.status === "open") {
-            dispatchSidebar({type: "sidebar-close"})
-        } else {
-            dispatchSidebar({type: "sidebar-open"})
-        }
-
+        if (sidebarStatus.status === 'open')
+            dispatchSidebar({type: 'sidebar-close'})
+        else
+            dispatchSidebar({type: 'sidebar-open'})
     }
 
     return (
@@ -145,7 +138,7 @@ const SidebarContent = memo(({onClose, ...rest}: SidebarProps) => {
             bg="white"
             borderRight="1px"
             borderRightColor="gray.200"
-            w={sidebarStatus.status === "open" ? "279px" : "65px"}
+            w={sidebarStatus.status === 'open' ? '279px' : '65px'}
             pos="fixed"
             h="full"
             {...rest}
@@ -153,36 +146,38 @@ const SidebarContent = memo(({onClose, ...rest}: SidebarProps) => {
             <Flex
                 h="20"
                 alignItems="center"
-                mx={sidebarStatus.status === "open" ? 8 : 0}
+                mx={sidebarStatus.status === 'open' ? 8 : 0}
                 my={8}
                 justifyContent="space-between"
                 _hover={{
-                    cursor: "pointer"
+                    cursor: 'pointer'
                 }}
-                onClick={()=>(navigate("/"))}
+                onClick={() => {
+                    navigate('/')
+                }}
             >
                 <Image
                     objectFit='cover'
                     src={ArolLogo}
                     alt='Arol logo'
-                    transform={sidebarStatus.status === "open" ? "" : "rotate(90deg)"}
+                    transform={sidebarStatus.status === 'open' ? '' : 'rotate(90deg)'}
                 />
             </Flex>
             <Box
-                position={"absolute"}
-                top={"20px"}
-                right={"-17px"}
-                bgColor={"white"}
-                borderWidth={"1px 1px 1px 0px"}
-                borderColor={"gray.200"}
+                position="absolute"
+                top="20px"
+                right="-17px"
+                bgColor="white"
+                borderWidth="1px 1px 1px 0px"
+                borderColor="gray.200"
                 py={2}
                 _hover={{
-                    cursor: "pointer"
+                    cursor: 'pointer'
                 }}
                 onClick={handleSidebarExpandCollapse}
             >
-                {sidebarStatus.status === "open" && <FiChevronLeft/>}
-                {sidebarStatus.status === "closed" && <FiChevronRight/>}
+                {sidebarStatus.status === 'open' && <FiChevronLeft/>}
+                {sidebarStatus.status === 'closed' && <FiChevronRight/>}
             </Box>
             {sidebarItems.map((sidebarItem) => (
                 <SidebarItem
@@ -194,7 +189,7 @@ const SidebarContent = memo(({onClose, ...rest}: SidebarProps) => {
                 />
             ))}
         </Box>
-    );
+    )
 })
 
 interface NavItemProps extends FlexProps {
@@ -205,7 +200,6 @@ interface NavItemProps extends FlexProps {
 }
 
 const SidebarItem = (props: NavItemProps) => {
-
     const location = useLocation()
 
     const {principal} = useContext(PrincipalContext)
@@ -214,37 +208,33 @@ const SidebarItem = (props: NavItemProps) => {
     const [isSelected, setIsSelected] = useState(false)
     const [showItem, setShowItem] = useState(true)
 
-    //CHECK IF SIDEBAR ITEM IS TO DISPLAYED
-    useEffect(()=>{
-        if(!principal){
-            setShowItem(false)
-            return
-        }
-
-        if(permissionChecker.hasSidebarItemAccess(principal, props.name)){
-            setShowItem(true)
-        }
-        else{
-            setShowItem(false)
-        }
-
-    },[principal, props.name])
-
-    //CHECK IF SIDEBAR ITEM IS TO BE SELECTED
+    // CHECK IF SIDEBAR ITEM IS TO DISPLAYED
     useEffect(() => {
-        if(!principal){
-            setIsSelected(false)
+        if (principal == null) {
+            setShowItem(false)
+
             return
         }
 
-        if (props.selectedMatcher === "/") {
-            setIsSelected(location.pathname === props.selectedMatcher)
-        }
-        else {
-            setIsSelected(location.pathname.startsWith(props.selectedMatcher))
+        if (permissionChecker.hasSidebarItemAccess(principal, props.name))
+            setShowItem(true)
+        else
+            setShowItem(false)
+    }, [principal, props.name])
+
+    // CHECK IF SIDEBAR ITEM IS TO BE SELECTED
+    useEffect(() => {
+        if (principal == null) {
+            setIsSelected(false)
+
+            return
         }
 
-    },[principal, location.pathname, props.selectedMatcher])
+        if (props.selectedMatcher === '/')
+            setIsSelected(location.pathname === props.selectedMatcher)
+        else
+            setIsSelected(location.pathname.startsWith(props.selectedMatcher))
+    }, [principal, location.pathname, props.selectedMatcher])
 
     return (
         <RouterLink to={props.link} hidden={!showItem}>
@@ -258,35 +248,34 @@ const SidebarItem = (props: NavItemProps) => {
                     cursor="pointer"
                     _hover={{
                         bg: 'cyan.400',
-                        color: 'white',
+                        color: 'white'
                     }}
-                    bg={isSelected ? "gray.400" : ""}
-                    color={isSelected ? "white" : ""}
+                    bg={isSelected ? 'gray.400' : ''}
+                    color={isSelected ? 'white' : ''}
                 >
                     <Icon
                         mr="4"
                         fontSize="16"
                         _groupHover={{
-                            color: 'white',
+                            color: 'white'
                         }}
                         as={props.icon}
                     />
-                    {sidebarStatus.status === "open" && props.name}
+                    {sidebarStatus.status === 'open' && props.name}
                 </Flex>
             </Box>
         </RouterLink>
-    );
-};
+    )
+}
 
 const WidgetSelectorContent = memo(({onClose, ...rest}: SidebarProps) => {
-
     const navigate = useNavigate()
 
     const {dispatchSidebar} = useContext(SidebarStatusContext)
 
     function handleWidgetSelectorCloseButtonClicked() {
         dispatchSidebar({
-            type: "widget-selector-close"
+            type: 'widget-selector-close'
         })
     }
 
@@ -296,9 +285,9 @@ const WidgetSelectorContent = memo(({onClose, ...rest}: SidebarProps) => {
             bg={useColorModeValue('white', 'gray.900')}
             borderRight="1px"
             borderRightColor={useColorModeValue('gray.200', 'gray.700')}
-            w={{base: 'full', md: "279px"}}
+            w={{base: 'full', md: '279px'}}
             pos="fixed"
-            h={"100vh"}
+            h="100vh"
             {...rest}
         >
             <Box
@@ -308,9 +297,11 @@ const WidgetSelectorContent = memo(({onClose, ...rest}: SidebarProps) => {
                 my={8}
                 justifyContent="space-between"
                 _hover={{
-                    cursor: "pointer"
+                    cursor: 'pointer'
                 }}
-                onClick={()=>(navigate("/"))}
+                onClick={() => {
+                    navigate('/')
+                }}
             >
                 <Image
                     objectFit='cover'
@@ -320,41 +311,41 @@ const WidgetSelectorContent = memo(({onClose, ...rest}: SidebarProps) => {
                 <CloseButton display={{base: 'flex', md: 'none'}} onClick={onClose}/>
             </Box>
             <Divider
-                orientation={"horizontal"}
-                my={"0!important"}
+                orientation="horizontal"
+                my="0!important"
             />
-            {/*<Divider orientation={"horizontal"} />*/}
-            <Box position={"relative"} w={"full"} pt={4} mt={"0!important"} flexGrow={4} overflowY={"auto"}
-                 style={{direction: "rtl"}}>
-                <Box style={{direction: "ltr"}}>
+            {/* <Divider orientation={"horizontal"} /> */}
+            <Box position="relative" w="full" pt={4} mt="0!important" flexGrow={4} overflowY="auto"
+                 style={{direction: 'rtl'}}>
+                <Box style={{direction: 'ltr'}}>
                     <CloseButton
-                        position={"absolute"}
-                        size={"lg"}
+                        position="absolute"
+                        size="lg"
                         right={0}
                         top={0}
                         onClick={handleWidgetSelectorCloseButtonClicked}
                     />
-                    <Heading size={"md"} textAlign={"center"} mb={2}>Available widgets</Heading>
+                    <Heading size="md" textAlign="center" mb={2}>Available widgets</Heading>
                     <Text
-                        fontSize={"sm"}
+                        fontSize="sm"
                         fontWeight={400}
-                        color={"gray.500"}
-                        textAlign={"center"}
+                        color="gray.500"
+                        textAlign="center"
                         mb={3}
                     >
                         Drag & drop any of the following widgets on the dashboard on the right.
                     </Text>
-                    {/*<Divider orientation={"horizontal"} borderColor={"gray.300"} />*/}
+                    {/* <Divider orientation={"horizontal"} borderColor={"gray.300"} /> */}
                     {widgetSelectorItems.map((widgetSelectorItem) => (
                         <Fragment key={widgetSelectorItem.name}>
                             <WidgetSelectorItem widget={widgetSelectorItem}/>
-                            {/*<Divider orientation={"horizontal"} borderColor={"gray.300"}/>*/}
+                            {/* <Divider orientation={"horizontal"} borderColor={"gray.300"}/> */}
                         </Fragment>
                     ))}
                 </Box>
             </Box>
         </VStack>
-    );
+    )
 })
 
 interface WidgetSelectorItemProps {
@@ -368,97 +359,95 @@ interface WidgetSelectorItemProps {
 }
 
 const WidgetSelectorItem = memo((props: WidgetSelectorItemProps) => {
-
-
-    function handleDragStart(event: React.DragEvent<HTMLDivElement>, widget: WidgetSelectorItemProps["widget"]) {
-        //Set format like this to be able to retrieve w&h in the onDragOver event (via .types)
-        event.dataTransfer.setData(widget.w + "," + widget.h, JSON.stringify(widget))
+    function handleDragStart(event: React.DragEvent<HTMLDivElement>, widget: WidgetSelectorItemProps['widget']) {
+        // Set format like this to be able to retrieve w&h in the onDragOver event (via .types)
+        event.dataTransfer.setData(`${widget.w},${widget.h}`, JSON.stringify(widget))
     }
 
     const WidgetPreviewComponent = useMemo(
-        ()=>(WidgetPreview(props.widget.type)),
+        () => (WidgetPreview(props.widget.type)),
         [props.widget.type]
     )
 
     return (
         <VStack
             // bg={useColorModeValue('white', 'gray.900')}
-            boxShadow={'xl'}
-            rounded={'xl'}
+            boxShadow="xl"
+            rounded="xl"
             borderWidth={1}
-            borderColor={"gray.400"}
+            borderColor="gray.400"
             m={2}
             p={3}
-            justifyContent={"stretch"}
-            draggable={true}
-            onDragStart={(e) => (handleDragStart(e, props.widget))}
-            // unselectable="on"
+            justifyContent="stretch"
+            onDragStart={(e) => {
+                handleDragStart(e, props.widget)
+            }}
+            draggable
         >
-            <Text fontSize={"md"} fontWeight={"600"}>{props.widget.name} widget</Text>
+            <Text fontSize="md" fontWeight="600">{props.widget.name} widget</Text>
             {WidgetPreviewComponent}
         </VStack>
-    );
+    )
 })
 
 function WidgetPreview(type: string) {
-
     const data = [
         {
             name: 'Page A',
             uv: 2000,
             pv: 2400,
-            amt: 2400,
+            amt: 2400
         },
         {
             name: 'Page B',
             uv: 3000,
             pv: 1398,
-            amt: 2210,
+            amt: 2210
         },
         {
             name: 'Page C',
             uv: 2000,
             pv: 9800,
-            amt: 2290,
+            amt: 2290
         },
         {
             name: 'Page D',
             uv: 2780,
             pv: 3908,
-            amt: 2000,
+            amt: 2000
         },
         {
             name: 'Page E',
             uv: 1890,
             pv: 4800,
-            amt: 2181,
+            amt: 2181
         },
         {
             name: 'Page F',
             uv: 2390,
             pv: 3800,
-            amt: 2500,
+            amt: 2500
         },
         {
             name: 'Page G',
             uv: 1490,
             pv: 4300,
-            amt: 2100,
-        },
-    ];
+            amt: 2100
+        }
+    ]
 
     switch (type) {
-        case "current-value": {
+        case 'current-value': {
             return (
-                <HStack w={"full"} alignItems={"baseline"} justifyContent={"center"}>
+                <HStack w="full" alignItems="baseline" justifyContent="center">
                     <Text fontSize={40}>24.5</Text>
-                    <Text fontSize={"md"}>Units</Text>
+                    <Text fontSize="md">Units</Text>
                 </HStack>
             )
         }
-        case "thermostat": {
+        case 'thermostat': {
             return (
-                <HStack w={"full"} alignItems={"baseline"} justifyContent={"center"} pb={3}>
+                <HStack w="full" alignItems="baseline" justifyContent="center" pb={3}>
                     <Thermometer
                         theme="light"
                         value="18"
@@ -471,24 +460,23 @@ function WidgetPreview(type: string) {
                 </HStack>
             )
         }
-        case "tachometer": {
+        case 'tachometer': {
             return (
-                <HStack w={"full"} alignItems={"baseline"} justifyContent={"center"} pb={3}>
+                <HStack w="full" alignItems="baseline" justifyContent="center" pb={3}>
                     <GaugeChart
                         id="gauge-chart3"
                         nrOfLevels={1}
-                        colors={["#8884d8"]}
-                        hideText={true}
-                        // needleColor={"#8884d8"}
-                        arcWidth={0.3}
+                        colors={['#8884d8']}
                         percent={0.37}
+                        arcWidth={0.3}
+                        hideText
                     />
                 </HStack>
             )
         }
-        case "area-chart": {
+        case 'area-chart': {
             return (
-                <Box display={"block"} minW={"full"} h={100} textAlign={"center"}>
+                <Box display="block" minW="full" h={100} textAlign="center">
                     <ResponsiveContainer width="99%" height="100%">
                         <AreaChart
                             data={data}
@@ -498,11 +486,11 @@ function WidgetPreview(type: string) {
                         </AreaChart>
                     </ResponsiveContainer>
                 </Box>
-            );
+            )
         }
-        case "line-chart": {
+        case 'line-chart': {
             return (
-                <Box display={"block"} minW={"full"} h={100} textAlign={"center"}>
+                <Box display="block" minW="full" h={100} textAlign="center">
                     <ResponsiveContainer width="99%" height="100%">
                         <LineChart
                             data={data}
@@ -512,11 +500,11 @@ function WidgetPreview(type: string) {
                         </LineChart>
                     </ResponsiveContainer>
                 </Box>
-            );
+            )
         }
-        case "bar-chart": {
+        case 'bar-chart': {
             return (
-                <Box display={"block"} minW={"full"} h={100} textAlign={"center"}>
+                <Box display="block" minW="full" h={100} textAlign="center">
                     <ResponsiveContainer width="99%" height="100%">
                         <BarChart
                             data={data}
@@ -526,11 +514,11 @@ function WidgetPreview(type: string) {
                         </BarChart>
                     </ResponsiveContainer>
                 </Box>
-            );
+            )
         }
-        case "pie-chart": {
+        case 'pie-chart': {
             return (
-                <Box display={"block"} minW={"full"} h={100} textAlign={"center"}>
+                <Box display="block" minW="full" h={100} textAlign="center">
                     <ResponsiveContainer width="99%" height="100%">
                         <PieChart>
                             <Pie data={data} dataKey="uv" nameKey="name" cx="50%" cy="50%" outerRadius={50}
@@ -538,23 +526,22 @@ function WidgetPreview(type: string) {
                         </PieChart>
                     </ResponsiveContainer>
                 </Box>
-            );
+            )
         }
-        case "scatter-chart": {
+        case 'scatter-chart': {
             return (
-                <Box display={"block"} minW={"full"} h={100} textAlign={"center"}>
+                <Box display="block" minW="full" h={100} textAlign="center">
                     <ResponsiveContainer width="99%" height="100%">
                         <ScatterChart>
                             <CartesianGrid strokeDasharray="3 3"/>
-                            <XAxis dataKey="uv" hide={true}/>
-                            <YAxis dataKey="pv" hide={true}/>
+                            <XAxis dataKey="uv" hide/>
+                            <YAxis dataKey="pv" hide/>
                             <ZAxis dataKey="amt"/>
                             <Scatter data={data} fill="#8884d8"/>
                         </ScatterChart>
                     </ResponsiveContainer>
                 </Box>
-            );
+            )
         }
     }
-
 }

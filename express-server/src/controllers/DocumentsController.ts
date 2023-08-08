@@ -2,76 +2,82 @@ import express from "express"
 import documentsService from "../services/DocumentsService";
 import {validationResult} from "express-validator";
 
-const getDocument = async (req: express.Request, res: express.Response) => {
+const getDocument =  (req: express.Request, res: express.Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors)
-        return res.status(400).json({
+        console.error(errors)
+        
+return res.status(400).json({
             msg: "Bad request body"
         });
     }
 
-    await documentsService.getDocument(req, res)
+    return  documentsService.getDocument(req, res)
 }
 
-const getMachineryDocuments = async (req: express.Request, res: express.Response) => {
+const getMachineryDocuments =  (req: express.Request, res: express.Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors)
-        return res.status(400).json({
+        console.error(errors)
+        
+return res.status(400).json({
             msg: "Bad request body"
         });
     }
 
-    await documentsService.getMachineryDocuments(req, res)
+    return  documentsService.getMachineryDocuments(req, res)
 }
 
-const deleteMachineryDocuments = async (req: express.Request, res: express.Response) => {
+const deleteMachineryDocuments =  (req: express.Request, res: express.Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors)
-        return res.status(400).json({
+        console.error(errors)
+        
+return res.status(400).json({
             msg: "Bad request body"
         });
     }
 
-    await documentsService.deleteMachineryDocuments(req, res)
+    return documentsService.deleteMachineryDocuments(req, res)
 }
 
-const createMachineryFolder = async (req: express.Request, res: express.Response) => {
+const createMachineryFolder =  (req: express.Request, res: express.Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors)
-        return res.status(400).json({
+        console.error(errors)
+        
+return res.status(400).json({
             msg: "Bad request body"
         });
     }
 
-    await documentsService.createMachineryFolder(req, res)
+    return documentsService.createMachineryFolder(req, res)
 }
 
-const uploadMachineryDocuments = async (req: express.Request, res: express.Response) => {
+const uploadMachineryDocuments =  (req: express.Request, res: express.Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors)
-        return res.status(400).json({
+        console.error(errors)
+        
+return res.status(400).json({
             msg: "Bad request body"
         });
     }
 
-    await documentsService.uploadMachineryDocuments(req, res)
+    return documentsService.uploadMachineryDocuments(req, res)
 }
 
-const renameMachineryFileOrFolder = async (req: express.Request, res: express.Response) => {
+const renameMachineryFileOrFolder =  (req: express.Request, res: express.Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors)
-        return res.status(400).json({
+        console.error(errors)
+        
+return res.status(400).json({
             msg: "Bad request body"
         });
     }
 
-    await documentsService.renameMachineryFileOrFolder(req, res)
+    return documentsService.renameMachineryFileOrFolder(req, res)
 }
 
 export default {
