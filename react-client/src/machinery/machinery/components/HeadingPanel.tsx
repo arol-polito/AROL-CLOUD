@@ -1,86 +1,86 @@
 import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
-  Box,
-  Button,
-  Divider,
-  Flex,
-  Heading,
-  HStack,
-  Image,
-  Stack,
-  Text,
-  VStack
+    AlertDialog,
+    AlertDialogBody,
+    AlertDialogContent,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogOverlay,
+    Box,
+    Button,
+    Divider,
+    Flex,
+    Heading,
+    HStack,
+    Image,
+    Stack,
+    Text,
+    VStack
 } from '@chakra-ui/react'
 import type Machinery from '../../../machineries-map/components/Machinery'
-import React, { useRef, useState } from 'react'
+import React, {useRef, useState} from 'react'
 import LoadDashboardModal from '../../dashboard/components/modals/LoadDashboardModal'
-import { FiChevronDown, FiChevronUp, FiFolder, FiFolderPlus } from 'react-icons/fi'
+import {FiChevronDown, FiChevronUp, FiFolder, FiFolderPlus} from 'react-icons/fi'
 import Dashboard from '../../dashboard/models/Dashboard'
 import type TooltipData from '../../dashboard/interfaces/TooltipData'
 import type LoadDashboardAction from '../interfaces/LoadDashboardAction'
 
 interface HeadingPanelProps {
-  type: string
-  machinery: Machinery
-  dashboard: Dashboard
-  setDashboard: React.Dispatch<React.SetStateAction<Dashboard>>
-  setLoadDashboard: React.Dispatch<React.SetStateAction<LoadDashboardAction>>
-  dashboardPermissions: { read: boolean, modify: boolean, write: boolean }
-  documentsPermissions: { read: boolean, modify: boolean, write: boolean }
-  setChartTooltip: React.Dispatch<React.SetStateAction<TooltipData>>
+    type: string
+    machinery: Machinery
+    dashboard: Dashboard
+    setDashboard: React.Dispatch<React.SetStateAction<Dashboard>>
+    loadDashboard: (machineryUID, loadDashboard?: LoadDashboardAction) => Promise<void>
+    dashboardPermissions: { read: boolean, modify: boolean, write: boolean }
+    documentsPermissions: { read: boolean, modify: boolean, write: boolean }
+    setChartTooltip: React.Dispatch<React.SetStateAction<TooltipData>>
 }
 
-export default function HeadingPanel (props: HeadingPanelProps) {
-  const [expanded, setExpanded] = useState(true)
-  const [loadDashboardModalOpen, setLoadDashboardModalOpen] = useState(false)
+export default function HeadingPanel(props: HeadingPanelProps) {
+    const [expanded, setExpanded] = useState(true)
+    const [loadDashboardModalOpen, setLoadDashboardModalOpen] = useState(false)
 
-  const [dashboardNotSavedPromptObject, setDashboardNotSavedPromptObject] = useState<{
-    open: boolean
-    type: string
-  }>({
-    open: false,
-    type: ''
-  })
-
-  // NEW DASHBOARD BUTTON CLICKED
-  function handleNewDashboardButtonClicked () {
-    if (props.dashboard.numUnsavedChanges)
-      setDashboardNotSavedPromptObject({
-        open: true,
-        type: 'new-dashboard'
-      })
-    else
-      props.setDashboard(
-        new Dashboard()
-      )
-  }
-
-  // LOAD DASHBOARD BUTTON CLICKED
-  function handleLoadDashboardButtonClicked () {
-    if (props.dashboard.numUnsavedChanges)
-      setDashboardNotSavedPromptObject({
-        open: true,
-        type: 'load-dashboard'
-      })
-    else
-      setLoadDashboardModalOpen(true)
-  }
-
-  // CLOSE TOOLTIP on mouse down over dashboard container
-  function closeTooltip () {
-    props.setChartTooltip((val) => {
-      val.active = false
-
-      return { ...val }
+    const [dashboardNotSavedPromptObject, setDashboardNotSavedPromptObject] = useState<{
+        open: boolean
+        type: string
+    }>({
+        open: false,
+        type: ''
     })
-  }
 
-  return (
+    // NEW DASHBOARD BUTTON CLICKED
+    function handleNewDashboardButtonClicked() {
+        if (props.dashboard.numUnsavedChanges)
+            setDashboardNotSavedPromptObject({
+                open: true,
+                type: 'new-dashboard'
+            })
+        else
+            props.setDashboard(
+                new Dashboard()
+            )
+    }
+
+    // LOAD DASHBOARD BUTTON CLICKED
+    function handleLoadDashboardButtonClicked() {
+        if (props.dashboard.numUnsavedChanges)
+            setDashboardNotSavedPromptObject({
+                open: true,
+                type: 'load-dashboard'
+            })
+        else
+            setLoadDashboardModalOpen(true)
+    }
+
+    // CLOSE TOOLTIP on mouse down over dashboard container
+    function closeTooltip() {
+        props.setChartTooltip((val) => {
+            val.active = false
+
+            return {...val}
+        })
+    }
+
+    return (
         <>
             <Stack
                 borderWidth="1px"
@@ -132,7 +132,7 @@ export default function HeadingPanel (props: HeadingPanelProps) {
                     setDashboard={props.setDashboard}
                     loadDashboardModalOpen={loadDashboardModalOpen}
                     setLoadDashboardModalOpen={setLoadDashboardModalOpen}
-                    setLoadDashboard={props.setLoadDashboard}
+                    loadDashboard={props.loadDashboard}
                     dashboardPermissions={props.dashboardPermissions}
                 />
             }
@@ -146,26 +146,26 @@ export default function HeadingPanel (props: HeadingPanelProps) {
                 />
             }
         </>
-  )
+    )
 }
 
 interface ExpandedCollapsedHeadingPanelProps {
-  type: string
-  machinery: Machinery
-  setLoadDashboardModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-  setExpanded: React.Dispatch<React.SetStateAction<boolean>>
-  handleNewDashboardButtonClicked: Function
-  handleLoadDashboardButtonClicked: Function
-  dashboardPermissions: { read: boolean, modify: boolean, write: boolean }
-  documentsPermissions: { read: boolean, modify: boolean, write: boolean }
+    type: string
+    machinery: Machinery
+    setLoadDashboardModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setExpanded: React.Dispatch<React.SetStateAction<boolean>>
+    handleNewDashboardButtonClicked: Function
+    handleLoadDashboardButtonClicked: Function
+    dashboardPermissions: { read: boolean, modify: boolean, write: boolean }
+    documentsPermissions: { read: boolean, modify: boolean, write: boolean }
 }
 
-function ExpandedHeadingPanel (props: ExpandedCollapsedHeadingPanelProps) {
-  function handleHeadingPanelCollapse () {
-    props.setExpanded(false)
-  }
+function ExpandedHeadingPanel(props: ExpandedCollapsedHeadingPanelProps) {
+    function handleHeadingPanelCollapse() {
+        props.setExpanded(false)
+    }
 
-  return <>
+    return <>
         <Flex>
             <Box boxSize="200px">
                 <Image
@@ -287,7 +287,7 @@ function ExpandedHeadingPanel (props: ExpandedCollapsedHeadingPanelProps) {
                     px="2"
                     mr="225px"
                     _hover={{
-                      cursor: 'pointer'
+                        cursor: 'pointer'
                     }}
                     onClick={handleHeadingPanelCollapse}
                 >
@@ -298,12 +298,12 @@ function ExpandedHeadingPanel (props: ExpandedCollapsedHeadingPanelProps) {
     </>
 }
 
-function CollapsedHeadingPanel (props: ExpandedCollapsedHeadingPanelProps) {
-  function handleHeadingPanelExpand () {
-    props.setExpanded(true)
-  }
+function CollapsedHeadingPanel(props: ExpandedCollapsedHeadingPanelProps) {
+    function handleHeadingPanelExpand() {
+        props.setExpanded(true)
+    }
 
-  return <>
+    return <>
         <Flex>
             <Box boxSize="85px">
                 <Image
@@ -398,7 +398,7 @@ function CollapsedHeadingPanel (props: ExpandedCollapsedHeadingPanelProps) {
                     px="2"
                     mr="110px"
                     _hover={{
-                      cursor: 'pointer'
+                        cursor: 'pointer'
                     }}
                     onClick={handleHeadingPanelExpand}
                 >
@@ -410,42 +410,42 @@ function CollapsedHeadingPanel (props: ExpandedCollapsedHeadingPanelProps) {
 }
 
 interface DashboardNotSavedPromptProps {
-  dashboardNotSavePromptObject: { open: boolean, type: string }
-  setDashboardNotSavePromptObject: React.Dispatch<React.SetStateAction<{ open: boolean, type: string }>>
-  setDashboard: React.Dispatch<React.SetStateAction<Dashboard>>
-  setLoadDashboardModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    dashboardNotSavePromptObject: { open: boolean, type: string }
+    setDashboardNotSavePromptObject: React.Dispatch<React.SetStateAction<{ open: boolean, type: string }>>
+    setDashboard: React.Dispatch<React.SetStateAction<Dashboard>>
+    setLoadDashboardModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-function DashboardNotSavedPrompt (props: DashboardNotSavedPromptProps) {
-  const cancelRef = useRef<HTMLButtonElement>(null)
+function DashboardNotSavedPrompt(props: DashboardNotSavedPromptProps) {
+    const cancelRef = useRef<HTMLButtonElement>(null)
 
-  function closePrompt () {
-    props.setDashboardNotSavePromptObject({
-      open: false,
-      type: ''
-    })
-  }
-
-  function handleContinueButtonClicked () {
-    if (props.dashboardNotSavePromptObject.type === 'new-dashboard')
-      createNewDashboard()
-    else {
-      props.setLoadDashboardModalOpen(true)
-      closePrompt()
+    function closePrompt() {
+        props.setDashboardNotSavePromptObject({
+            open: false,
+            type: ''
+        })
     }
-  }
 
-  function createNewDashboard () {
-    const newDash = new Dashboard()
+    function handleContinueButtonClicked() {
+        if (props.dashboardNotSavePromptObject.type === 'new-dashboard')
+            createNewDashboard()
+        else {
+            props.setLoadDashboardModalOpen(true)
+            closePrompt()
+        }
+    }
 
-    props.setDashboard(
-      newDash
-    )
+    function createNewDashboard() {
+        const newDash = new Dashboard()
 
-    closePrompt()
-  }
+        props.setDashboard(
+            newDash
+        )
 
-  return (
+        closePrompt()
+    }
+
+    return (
         <AlertDialog
             isOpen={props.dashboardNotSavePromptObject.open}
             leastDestructiveRef={cancelRef}
@@ -473,5 +473,5 @@ function DashboardNotSavedPrompt (props: DashboardNotSavedPromptProps) {
                 </AlertDialogContent>
             </AlertDialogOverlay>
         </AlertDialog>
-  )
+    )
 }

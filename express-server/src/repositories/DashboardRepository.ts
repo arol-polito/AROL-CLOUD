@@ -202,10 +202,10 @@ async function getDashboards(machineryUID: string): Promise<SavedDashboard[] | n
 
             //Count distinct sensors monitored in the given dashboard
             const sensorsMonitored: string[] = []
-            dashboard.grid.widgets.forEach((widget) => {
-                Object.values(widget.sensorsMonitoring.sensors).forEach((value) => {
-                    value.forEach((sensorMonitoringHead) => {
-                        sensorMonitoringHead.sensorNames.forEach((sensorEntry) => {
+            dashboard.widgets.forEach((widget) => {
+                Object.values(widget.sensorsMonitoring.sensors).forEach((value: any) => {
+                    value.forEach((sensorMonitoringHead: any) => {
+                        sensorMonitoringHead.sensorNames.forEach((sensorEntry: any) => {
                             let sensorName = ""
                             if (sensorMonitoringHead.headNumber)
                                 sensorName = `H${String(sensorMonitoringHead.headNumber).padStart(2, "0")}_${sensorEntry.name}`
@@ -227,7 +227,7 @@ async function getDashboards(machineryUID: string): Promise<SavedDashboard[] | n
                 machineryUID: dashboard.machineryUID,
                 timestamp: dashboard.timestamp,
                 numSensorsMonitored: sensorsMonitored.length,
-                numWidgets: dashboard.grid.widgets.length
+                numWidgets: dashboard.widgets.length
             })
         })
 
@@ -315,7 +315,7 @@ async function getDashboardTemplates(machineryUID: string, companyID: number, us
                 machineryUID: dashboard.machineryUID,
                 timestamp: dashboard.timestamp,
                 numSensorsMonitored: 0/*sensorsMonitored.length*/,
-                numWidgets: dashboard.grid.widgets.length
+                numWidgets: dashboard.widgets.length
             })
         })
 

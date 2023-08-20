@@ -1,139 +1,163 @@
-import type SensorDataFilters from '../../interfaces/SensorDataFilters'
 import {
-  HStack,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-  Spinner,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
-  Text,
-  Th,
-  Thead,
-  Tr,
-  VStack
+    HStack,
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalHeader,
+    ModalOverlay,
+    Spinner,
+    Table,
+    TableContainer,
+    Tbody,
+    Td,
+    Text,
+    Th,
+    Thead,
+    Tr,
+    useToast,
+    VStack
 } from '@chakra-ui/react'
-import React, { Fragment, useEffect, useState } from 'react'
+import React, {Fragment, useEffect, useState} from 'react'
 import type SensorData from '../../models/SensorData'
 import type Sensor from '../../models/Sensor'
-import { FiArrowDown, FiArrowUp, FiPlus } from 'react-icons/fi'
-import type SlidingSensorData from '../../interfaces/SlidingSensorData'
+import {FiArrowDown, FiArrowUp, FiPlus} from 'react-icons/fi'
+import Dashboard from "../../models/Dashboard";
+import GridWidget from "../../interfaces/GridWidget";
+import Machinery from "../../../../machineries-map/components/Machinery";
+import {calculateChartProps, loadSensorData, setNewWidgetSensorData} from "../../utils";
+import axiosExceptionHandler from "../../../../utils/AxiosExceptionHandler";
 
 interface HistoryModalProps {
-  historyModalOpen: boolean
-  setHistoryModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-  sensorData: SlidingSensorData
-  sensorsMonitoring: SensorDataFilters
-  setSensorsMonitoring: React.Dispatch<React.SetStateAction<SensorDataFilters>>
-  availableSensors: Sensor[]
+    machinery: Machinery
+    widget: GridWidget
+    widgetIndex: number
+    setDashboard: React.Dispatch<React.SetStateAction<Dashboard>>
+    historyModalOpen: boolean
+    setHistoryModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    availableSensors: Sensor[]
 }
 
-export default function HistoryModal (props: HistoryModalProps) {
-  const [sensorToDisplay, setSensorToDisplay] = useState<Sensor | null>(null)
-  const [sensorToDisplayNotFound, setSensorToDisplayNotFound] = useState(false)
-  const [sensorDataToDisplay, setSensorDataToDisplay] = useState<SensorData[]>([])
+export default function HistoryModal(props: HistoryModalProps) {
 
-  const [loadingMoreSensorData, setLoadingMoreSensorData] = useState(false)
+    const {widget, widgetIndex, setDashboard, machinery} = props;
+    const {availableSensors, historyModalOpen, setHistoryModalOpen} = props;
 
-  // FIND SENSOR MONITORING AND FIND SENSOR DETAILS
-  useEffect(() => {
-    let sensorMonitoring: string | null = null
-    let headMonitoring = 0
-    // let mechMonitoring = 0
-    for (const entry of Object.values(props.sensorsMonitoring.sensors)) {
-      for (const headMechEntry of entry)
-        if (headMechEntry.sensorNames.length > 0) {
-          sensorMonitoring = headMechEntry.sensorNames[0].name
-          headMonitoring = headMechEntry.headNumber
-          // mechMonitoring = headMechEntry.mechNumber
-          break
+    const {sensorData, sensorsMonitoring} = widget;
+
+    const toast = useToast();
+
+
+    const [sensorToDisplay, setSensorToDisplay] = useState<Sensor | null>(null)
+    const [sensorToDisplayNotFound, setSensorToDisplayNotFound] = useState(false)
+    const [sensorDataToDisplay, setSensorDataToDisplay] = useState<SensorData[]>([])
+
+    const [loadingMoreSensorData, setLoadingMoreSensorData] = useState(false)
+
+    // FIND SENSOR MONITORING AND FIND SENSOR DETAILS
+    useEffect(() => {
+        let sensorMonitoring: string | null = null
+        let headMonitoring = 0
+        // let mechMonitoring = 0
+        for (const entry of Object.values(sensorsMonitoring.sensors)) {
+            for (const headMechEntry of entry)
+                if (headMechEntry.sensorNames.length > 0) {
+                    sensorMonitoring = headMechEntry.sensorNames[0].name
+                    headMonitoring = headMechEntry.headNumber
+                    // mechMonitoring = headMechEntry.mechNumber
+                    break
+                }
+
+            if (sensorMonitoring)
+                break
         }
 
-      if (sensorMonitoring)
-        break
+        if (!sensorMonitoring) {
+            setSensorToDisplayNotFound(true)
+
+            return
+        }
+
+        const sensorFound = availableSensors.find((val) => (val.internalName === sensorMonitoring))
+
+        if (sensorFound == null) {
+            setSensorToDisplayNotFound(true)
+
+            return
+        }
+
+        const sensor = {...sensorFound}
+
+        if (headMonitoring > 0) {
+            sensor.internalName = `H${String(headMonitoring).padStart(2, '0')}_${sensor.internalName}`
+            sensor.name = `${sensor.name} - H${String(headMonitoring).padStart(2, '0')}`
+        }
+
+        setSensorToDisplay(sensor)
+        setSensorToDisplayNotFound(false)
+    }, [sensorsMonitoring, availableSensors])
+
+    // SET SENSOR DATA TO BE DISPLAYED
+    useEffect(() => {
+        if (sensorToDisplay == null) return
+
+        // console.log(sensorData.leftData.map((el)=>(el.formattedTime)))
+
+        // Display data added to the end
+        const sensorDataConfig = [...sensorData.displayData, ...[...sensorData.leftData].reverse()]
+
+        setSensorDataToDisplay(sensorDataConfig.filter((val) => {
+                if (Object.entries(val.aggregationData).length > 0) return false
+
+                return val.allData.hasOwnProperty(sensorToDisplay.internalName)
+            })
+        )
+
+        setLoadingMoreSensorData(false)
+    }, [sensorData, sensorToDisplay])
+
+    function handleClose() {
+        setHistoryModalOpen(false)
     }
 
-    if (!sensorMonitoring) {
-      setSensorToDisplayNotFound(true)
+    // LOAD MORE SENSOR DATA
+    async function handleLoadMoreSensorDataClicked() {
+        setLoadingMoreSensorData(true)
 
-      return
+        const requestType = 'cache-only'
+        const cacheDataRequestMaxTime = sensorDataToDisplay.slice(-1)[0].time
+
+        try {
+            const sensorDataResult = await loadSensorData(widget.sensorsMonitoring, requestType, cacheDataRequestMaxTime, 0, machinery, widget)
+            const chartPropsResult = calculateChartProps(sensorDataResult, widget.chartProps);
+            setNewWidgetSensorData(setDashboard, widgetIndex, sensorDataResult, chartPropsResult);
+        } catch (e) {
+            console.error(e)
+            axiosExceptionHandler.handleAxiosExceptionWithToast(
+                e,
+                toast,
+                'Sensor data could not be loaded'
+            )
+        }
+
     }
 
-    const sensorFound = props.availableSensors.find((val) => (val.internalName === sensorMonitoring))
-
-    if (sensorFound == null) {
-      setSensorToDisplayNotFound(true)
-
-      return
-    }
-
-    const sensor = { ...sensorFound }
-
-    if (headMonitoring > 0) {
-      sensor.internalName = `H${String(headMonitoring).padStart(2, '0')}_${sensor.internalName}`
-      sensor.name = `${sensor.name} - H${String(headMonitoring).padStart(2, '0')}`
-    }
-
-    setSensorToDisplay(sensor)
-    setSensorToDisplayNotFound(false)
-  }, [props.sensorsMonitoring, props.availableSensors])
-
-  // SET SENSOR DATA TO BE DISPLAYED
-  useEffect(() => {
-    if (sensorToDisplay == null) return
-
-    // console.log(props.sensorData.leftData.map((el)=>(el.formattedTime)))
-
-    // Display data added to the end
-    const sensorData = [...props.sensorData.displayData, ...[...props.sensorData.leftData].reverse()]
-
-    setSensorDataToDisplay(sensorData.filter((val) => {
-      if (Object.entries(val.aggregationData).length > 0) return false
-
-      return val.allData.hasOwnProperty(sensorToDisplay.internalName)
-    })
-    )
-
-    setLoadingMoreSensorData(false)
-  }, [props.sensorData, sensorToDisplay])
-
-  function handleClose () {
-    props.setHistoryModalOpen(false)
-  }
-
-  // LOAD MORE SENSOR DATA
-  function handleLoadMoreSensorDataClicked () {
-    setLoadingMoreSensorData(true)
-
-    props.setSensorsMonitoring((val) => {
-      val.requestType = 'cache-only'
-      val.cacheDataRequestMaxTime = sensorDataToDisplay.slice(-1)[0].time
-
-      return { ...val }
-    })
-  }
-
-  return (
+    return (
 
         <Modal
-            isOpen={props.historyModalOpen}
+            isOpen={historyModalOpen}
             onClose={handleClose}
             size="5xl"
             scrollBehavior="inside"
         >
             <ModalOverlay
                 onMouseDown={(e) => {
-                  e.stopPropagation()
+                    e.stopPropagation()
                 }}
             />
             <ModalContent
                 onMouseDown={(e) => {
-                  e.stopPropagation()
+                    e.stopPropagation()
                 }}
             >
                 <ModalHeader>Sensor history</ModalHeader>
@@ -157,33 +181,32 @@ export default function HistoryModal (props: HistoryModalProps) {
                                     </Thead>
                                     <Tbody>
                                         {
-                                            sensorDataToDisplay.map((sensorData, index) => {
-                                              let currValue = 'N/A'
-                                              if (sensorData.allData[sensorToDisplay.internalName])
-                                                currValue = `${sensorData.allData[sensorToDisplay.internalName]} ${sensorToDisplay.unit}`
+                                            sensorDataToDisplay.map((sensorDataItem, index) => {
+                                                let currValue = 'N/A'
+                                                if (sensorDataItem.allData[sensorToDisplay.internalName])
+                                                    currValue = `${sensorDataItem.allData[sensorToDisplay.internalName]} ${sensorToDisplay.unit}`
 
-                                              let diffValue = ''
-                                              if (currValue && index + 1 < sensorDataToDisplay.length) {
-                                                const prevValue = sensorDataToDisplay[index + 1].allData[sensorToDisplay.internalName]
-                                                if (prevValue)
-                                                  diffValue = `${(parseFloat(currValue) - prevValue).toFixed(2)} ${sensorToDisplay.unit}`
-                                              }
+                                                let diffValue = ''
+                                                if (currValue && index + 1 < sensorDataToDisplay.length) {
+                                                    const prevValue = sensorDataToDisplay[index + 1].allData[sensorToDisplay.internalName]
+                                                    if (prevValue)
+                                                        diffValue = `${(parseFloat(currValue) - prevValue).toFixed(2)} ${sensorToDisplay.unit}`
+                                                }
 
-                                              let aggregateDataSetEnded = false
-                                              if (props.sensorsMonitoring.aggregations.length > 0)
-                                                if (props.sensorsMonitoring.dataRange.unit === 'sample') {
-                                                  if (index + 1 === props.sensorsMonitoring.dataRange.amount)
-                                                    aggregateDataSetEnded = true
-                                                } else
-                                                  if (index + 1 >= sensorDataToDisplay.length || sensorDataToDisplay[index + 1].time < props.sensorData.minDisplayTime)
-                                                    aggregateDataSetEnded = true
+                                                let aggregateDataSetEnded = false
+                                                if (sensorsMonitoring.aggregations.length > 0)
+                                                    if (sensorsMonitoring.dataRange.unit === 'sample') {
+                                                        if (index + 1 === sensorsMonitoring.dataRange.amount)
+                                                            aggregateDataSetEnded = true
+                                                    } else if (index + 1 >= sensorDataToDisplay.length || sensorDataToDisplay[index + 1].time < sensorData.minDisplayTime)
+                                                        aggregateDataSetEnded = true
 
-                                              return (
+                                                return (
                                                     <Fragment key={index}>
                                                         <Tr>
                                                             <Td px="4!important">{index + 1}</Td>
                                                             <Td textAlign="center">{sensorToDisplay.name}</Td>
-                                                            <Td textAlign="center">{sensorData.formattedTime}</Td>
+                                                            <Td textAlign="center">{sensorDataItem.formattedTime}</Td>
                                                             <Td textAlign="center">{currValue}</Td>
                                                             <Td textAlign="center">
                                                                 <HStack flexWrap="nowrap" justifyContent="center">
@@ -191,9 +214,9 @@ export default function HistoryModal (props: HistoryModalProps) {
                                                                     {
                                                                         diffValue &&
                                                                         (
-                                                                          parseFloat(diffValue) >= 0
-                                                                            ? <FiArrowUp/>
-                                                                            : <FiArrowDown/>
+                                                                            parseFloat(diffValue) >= 0
+                                                                                ? <FiArrowUp/>
+                                                                                : <FiArrowDown/>
                                                                         )
                                                                     }
                                                                 </HStack>
@@ -207,11 +230,11 @@ export default function HistoryModal (props: HistoryModalProps) {
                                                             </Tr>
                                                         }
                                                     </Fragment>
-                                              )
+                                                )
                                             })
                                         }
                                         {
-                                            props.sensorData.endOfData &&
+                                            sensorData.endOfData &&
                                             <Tr>
                                                 <Td colSpan={5} textAlign="center" fontWeight={500}>End
                                                     of sensor data</Td>
@@ -222,14 +245,14 @@ export default function HistoryModal (props: HistoryModalProps) {
                             </TableContainer>
 
                             {
-                                !props.sensorData.endOfData &&
+                                !sensorData.endOfData &&
                                 <HStack
                                     w="full"
                                     h="100px"
                                     justifyContent="center"
                                     alignItems="center"
                                     _hover={{
-                                      cursor: 'pointer'
+                                        cursor: 'pointer'
                                     }}
                                     onClick={handleLoadMoreSensorDataClicked}
                                 >
@@ -269,5 +292,5 @@ export default function HistoryModal (props: HistoryModalProps) {
             </ModalContent>
         </Modal>
 
-  )
+    )
 }

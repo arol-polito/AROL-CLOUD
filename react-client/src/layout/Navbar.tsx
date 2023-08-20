@@ -78,10 +78,6 @@ export default function Navbar() {
         navigate('/login')
     }
 
-    // function handleSignupButtonClick () {
-    //   navigate('/signup')
-    // }
-
     return (
         <Flex
             px={4}

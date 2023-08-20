@@ -22,6 +22,7 @@ import {
     TabPanels,
     Tabs,
     Text,
+    useToast,
     VStack
 } from '@chakra-ui/react'
 import React, {useEffect, useState} from 'react'
@@ -29,13 +30,22 @@ import {FiAlertTriangle, FiChevronDown, FiChevronUp, FiInfo} from 'react-icons/f
 import type SensorDataFilters from '../../interfaces/SensorDataFilters'
 import type SensorDataFilter from '../../interfaces/SensorDataFilter'
 import type SensorDataRange from '../../interfaces/SensorDataRange'
+import Dashboard from "../../models/Dashboard";
+import GridWidget from "../../interfaces/GridWidget";
+import {calculateChartProps, loadSensorData, setNewWidgetSensorData, setNewWidgetSensorsMonitoring} from "../../utils";
+import Machinery from "../../../../machineries-map/components/Machinery";
+import axiosExceptionHandler from "../../../../utils/AxiosExceptionHandler";
 
 interface SensorsModalProps {
+    machinery: Machinery
+    widget: GridWidget
+    widgetIndex: number
+    setDashboard: React.Dispatch<React.SetStateAction<Dashboard>>
     modalOpen: boolean
     setModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-    availableSensors: Map<string, Sensor[]>
+    availableSensors: Sensor[]
+    availableSensorsMap: Map<string, Sensor[]>
     sensorsMonitoring: SensorDataFilters
-    setSensorsMonitoring: React.Dispatch<React.SetStateAction<SensorDataFilters>>
     numHeads: number
     maxSelectableSensors: number
 }
@@ -57,6 +67,12 @@ const rangeUnits = [
 
 // Need to use "any" otherwise ts will complain when dynamically indexing object
 export default function SensorsModal(props: SensorsModalProps) {
+
+    const {widget, widgetIndex, setDashboard, availableSensors} = props;
+    const {machinery} = props;
+
+    const toast = useToast();
+
     const [numSensorsSelected, setNumSensorsSelected] = useState(0)
     const [selectedSensors, setSelectedSensors] = useState<SensorDataFilters['sensors']>({
         drive: [],
@@ -83,77 +99,92 @@ export default function SensorsModal(props: SensorsModalProps) {
         setNumSensorsSelected(numSensorsAlreadyMonitoring)
     }, [props.sensorsMonitoring])
 
-    function handleMonitorSensorsClicked() {
-        props.setSensorsMonitoring((val) => {
-            val.requestType = 'first-time'
+    async function handleMonitorSensorsClicked() {
+        const sensorsMonitoring = widget.sensorsMonitoring;
 
-            if (props.maxSelectableSensors === 1)
-                val.widgetCategory = 'single-value'
-            else
-                val.widgetCategory = 'multi-value'
+        const requestType = 'first-time';
 
-            const aggregations = sensorAggregations.filter((aggregation) => (aggregation !== 'none'))
+        sensorsMonitoring.widgetCategory = widget.maxSensors === 1 ? 'single-value' : 'multi-value';
 
-            if (aggregations.length === 0 && props.maxSelectableSensors === 1) {
-                val.dataRange.unit = 'sample'
-                val.dataRange.amount = 1
-            } else
-                val.dataRange = sensorDataRange
+        const aggregations = sensorAggregations.filter((aggregation) => (aggregation !== 'none'))
 
-            // Insert selected sensors and if aggregate selected, change color to gray
-            for (const [key, value] of Object.entries(selectedSensors))
-                value.forEach((entry) => {
-                    const headNum = entry.headNumber
-                    const foundEntry = val.sensors[key].find((el) => (el.headNumber === headNum))
-                    if (foundEntry != null)
-                        entry.sensorNames.forEach((sensorName) => {
-                            const foundSensorEntry = foundEntry.sensorNames.find((el) => (el.name === sensorName.name))
+        if (aggregations.length === 0 && props.maxSelectableSensors === 1) {
+            sensorsMonitoring.dataRange.unit = 'sample'
+            sensorsMonitoring.dataRange.amount = 1
+        } else
+            sensorsMonitoring.dataRange = sensorDataRange
 
-                            if (foundSensorEntry == null) {
-                                if (aggregations.length > 0)
-                                    sensorName.color = '#E2E8F0'
+        // Insert selected sensors and if aggregate selected, change color to gray
+        for (const [key, value] of Object.entries(selectedSensors))
+            value.forEach((entry) => {
+                const headNum = entry.headNumber
+                const foundEntry = sensorsMonitoring.sensors[key].find((el) => (el.headNumber === headNum))
+                if (foundEntry != null)
+                    entry.sensorNames.forEach((sensorName) => {
+                        const foundSensorEntry = foundEntry.sensorNames.find((el) => (el.name === sensorName.name))
 
-                                foundEntry.sensorNames.push(sensorName)
-                            } else if (aggregations.length > 0)
-                                foundSensorEntry.color = '#E2E8F0'
-                        })
-                    else
-                        val.sensors[key].push({...entry})
-                })
-
-            // If no sensor selected (sensors are already monitored) but aggregate selected, change color to gray
-            let areSensorsSelected = false
-            for (const key of Object.keys(selectedSensors)) {
-                for (const headMechEntry of selectedSensors[key])
-                    if (headMechEntry.sensorNames.length > 0) {
-                        areSensorsSelected = true
-                        break
-                    }
-
-                if (areSensorsSelected) break
-            }
-
-            if (!areSensorsSelected) {
-                let colorIndex = 0
-                Object.keys(val.sensors).forEach((key) => {
-                    val.sensors[key].forEach((headMechEntry) => {
-                        headMechEntry.sensorNames.forEach((sensorName) => {
+                        if (foundSensorEntry == null) {
                             if (aggregations.length > 0)
                                 sensorName.color = '#E2E8F0'
-                            else if (sensorName.color === '#E2E8F0') {
-                                sensorName.color = colors[colorIndex]
-                                colorIndex++
-                            }
-                        })
+
+                            foundEntry.sensorNames.push(sensorName)
+                        } else if (aggregations.length > 0)
+                            foundSensorEntry.color = '#E2E8F0'
+                    })
+                else
+                    sensorsMonitoring.sensors[key].push({...entry})
+            })
+
+        // If no sensor selected (sensors are already monitored) but aggregate selected, change color to gray
+        let areSensorsSelected = false
+        for (const key of Object.keys(selectedSensors)) {
+            for (const headMechEntry of selectedSensors[key])
+                if (headMechEntry.sensorNames.length > 0) {
+                    areSensorsSelected = true
+                    break
+                }
+
+            if (areSensorsSelected) break
+        }
+
+        if (!areSensorsSelected) {
+            let colorIndex = 0
+            Object.keys(sensorsMonitoring.sensors).forEach((key) => {
+                sensorsMonitoring.sensors[key].forEach((headMechEntry) => {
+                    headMechEntry.sensorNames.forEach((sensorName) => {
+                        if (aggregations.length > 0)
+                            sensorName.color = '#E2E8F0'
+                        else if (sensorName.color === '#E2E8F0') {
+                            sensorName.color = colors[colorIndex]
+                            colorIndex++
+                        }
                     })
                 })
-            }
+            })
+        }
 
-            val.aggregations = aggregations
-                .map((aggregation, index) => ({name: aggregation, color: colors[index]}))
+        sensorsMonitoring.aggregations = aggregations
+            .map((aggregation, index) => ({name: aggregation, color: colors[index]}))
 
-            return {...val}
-        })
+        setNewWidgetSensorsMonitoring(
+            setDashboard,
+            widgetIndex,
+            sensorsMonitoring,
+            availableSensors
+        )
+
+        try {
+            const sensorDataResult = await loadSensorData(sensorsMonitoring, requestType, 0, 0, machinery, widget)
+            const chartPropsResult = calculateChartProps(sensorDataResult, widget.chartProps);
+            setNewWidgetSensorData(setDashboard, widgetIndex, sensorDataResult, chartPropsResult);
+        } catch (e) {
+            console.error(e)
+            axiosExceptionHandler.handleAxiosExceptionWithToast(
+                e,
+                toast,
+                'Sensor data could not be loaded'
+            )
+        }
 
         props.setModalOpen(false)
     }
@@ -230,12 +261,12 @@ export default function SensorsModal(props: SensorsModalProps) {
                 <ModalBody
                     pb={12}
                 >
-                    {props.availableSensors.size > 0 &&
+                    {props.availableSensorsMap.size > 0 &&
                         <>
                             <Text fontSize="lg" fontWeight={600}>Select sensors</Text>
                             <Tabs variant='soft-rounded' colorScheme='green'>
                                 <TabList>
-                                    {Array.from(props.availableSensors.keys()).map((keyEntry) => (
+                                    {Array.from(props.availableSensorsMap.keys()).map((keyEntry) => (
                                         <Tab key={keyEntry}>
                                             {keyEntry.toUpperCase()}
                                         </Tab>
@@ -244,7 +275,7 @@ export default function SensorsModal(props: SensorsModalProps) {
                                 <TabPanels>
                                     {
                                         // display each sensor category into its corresponding tab
-                                        Array.from(props.availableSensors.entries()).map((mapKeyAndValue) => (
+                                        Array.from(props.availableSensorsMap.entries()).map((mapKeyAndValue) => (
                                             <TabPanel key={mapKeyAndValue[0]}>
                                                 {
                                                     // If category contains sensors
@@ -284,7 +315,7 @@ export default function SensorsModal(props: SensorsModalProps) {
                         </>
                     }
                     {
-                        props.availableSensors.size === 0 &&
+                        props.availableSensorsMap.size === 0 &&
                         <>
                             <Text fontSize="lg" fontWeight={600}>Select sensors</Text>
                             <Box

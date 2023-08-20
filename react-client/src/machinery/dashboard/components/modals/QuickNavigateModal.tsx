@@ -1,128 +1,130 @@
 import {
-  Button,
-  Divider,
-  HStack,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Spinner,
-  Text,
-  VStack
+    Button,
+    Divider,
+    HStack,
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    ModalOverlay,
+    Spinner,
+    Text,
+    VStack
 } from '@chakra-ui/react'
-import React, { Fragment, useEffect, useState } from 'react'
+import React, {Fragment, useEffect, useState} from 'react'
 import type SensorData from '../../models/SensorData'
-import { FiPlus } from 'react-icons/fi'
+import {FiPlus} from 'react-icons/fi'
 import type SlidingSensorData from '../../interfaces/SlidingSensorData'
+import GridWidget from "../../interfaces/GridWidget";
+import _ from "lodash";
 
 interface QuickNavigateModalProps {
-  quickNavigateModalOpen: boolean
-  setQuickNavigateModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-  sensorData: SlidingSensorData
-  loadingMoreSensorData: boolean
-  setLoadingMoreSensorData: React.Dispatch<React.SetStateAction<boolean>>
-  setChartQuickNavigate: React.Dispatch<React.SetStateAction<number>>
+    widget: GridWidget
+    quickNavigateModalOpen: boolean
+    setQuickNavigateModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    loadingMoreSensorData: boolean
+    loadMoreSensorData: () => void
+    quickNavigateChart: (chartQuickNavigate: number) => void
 }
 
-export default function QuickNavigateModal (props: QuickNavigateModalProps) {
-  const [dataToDisplay, setDataToDisplay] = useState<Array<{
-    time: number
-    formattedTime: string
-    numValues: number
-    machineryOff: boolean
-    machineryOffFrom: number
-    machineryOffTo: number
-    show: boolean
-  }>>([])
+export default function QuickNavigateModal(props: QuickNavigateModalProps) {
+    const {widget, quickNavigateModalOpen, setQuickNavigateModalOpen} = props;
+    const {loadingMoreSensorData, loadMoreSensorData, quickNavigateChart} = props;
 
-  const [selectedIndex, setSelectedIndex] = useState(-1)
+    const {sensorData} = widget;
 
-  // FIND SENSOR MONITORING AND FIND SENSOR DETAILS
-  useEffect(() => {
-    const sensorData: SlidingSensorData = JSON.parse(JSON.stringify(props.sensorData))
+    const [dataToDisplay, setDataToDisplay] = useState<Array<{
+        time: number
+        formattedTime: string
+        numValues: number
+        machineryOff: boolean
+        machineryOffFrom: number
+        machineryOffTo: number
+        show: boolean
+    }>>([])
 
-    const allSensorData: SensorData[] = [...sensorData.rightData, ...sensorData.displayData.reverse(), ...sensorData.leftData.reverse()]
+    const [selectedIndex, setSelectedIndex] = useState(-1)
 
-    const dataToDisplayArray: Array<{
-      time: number
-      formattedTime: string
-      numValues: number
-      machineryOff: boolean
-      machineryOffFrom: number
-      machineryOffTo: number
-      show: boolean
-    }> = []
+    // FIND SENSOR MONITORING AND FIND SENSOR DETAILS
+    useEffect(() => {
+        const sensorDataConfig: SlidingSensorData = _.cloneDeep(sensorData);
 
-    allSensorData.forEach((sensorData) => {
-      let showEntry = true
-      if (sensorData.machineryOff && dataToDisplayArray.length > 0 && dataToDisplayArray.slice(-1)[0].machineryOff)
-        showEntry = false
+        const allSensorData: SensorData[] = [...sensorDataConfig.rightData, ...sensorDataConfig.displayData.reverse(), ...sensorDataConfig.leftData.reverse()]
 
-      dataToDisplayArray.push({
-        time: sensorData.time,
-        formattedTime: sensorData.formattedTime,
-        numValues: Object.values(sensorData.allData).filter((el) => (el !== null)).length,
-        machineryOff: sensorData.machineryOff,
-        machineryOffFrom: sensorData.machineryOffFrom,
-        machineryOffTo: sensorData.machineryOffTo,
-        show: showEntry
-      })
-    })
+        const dataToDisplayArray: Array<{
+            time: number
+            formattedTime: string
+            numValues: number
+            machineryOff: boolean
+            machineryOffFrom: number
+            machineryOffTo: number
+            show: boolean
+        }> = []
 
-    setDataToDisplay(dataToDisplayArray)
-  }, [props.sensorData])
+        allSensorData.forEach((sensorData) => {
+            let showEntry = true
+            if (sensorData.machineryOff && dataToDisplayArray.length > 0 && dataToDisplayArray.slice(-1)[0].machineryOff)
+                showEntry = false
 
-  function handleClose () {
-    props.setQuickNavigateModalOpen(false)
-  }
+            dataToDisplayArray.push({
+                time: sensorData.time,
+                formattedTime: sensorData.formattedTime,
+                numValues: Object.values(sensorData.allData).filter((el) => (el !== null)).length,
+                machineryOff: sensorData.machineryOff,
+                machineryOffFrom: sensorData.machineryOffFrom,
+                machineryOffTo: sensorData.machineryOffTo,
+                show: showEntry
+            })
+        })
 
-  // LOAD MORE SENSOR DATA
-  function handleLoadMoreSensorDataClicked () {
-    props.setLoadingMoreSensorData(true)
-  }
+        setDataToDisplay(dataToDisplayArray)
+    }, [sensorData])
 
-  // HANDLE TIME ENTRY CLICKED
-  function handleEntryClicked (index: number) {
-    setSelectedIndex(index)
-  }
+    function handleClose() {
+        setQuickNavigateModalOpen(false)
+    }
 
-  // NAVIGATE BUTTON CLICKED
-  function handleNavigateButtonClicked () {
-    if (selectedIndex < 0) return
+    // HANDLE TIME ENTRY CLICKED
+    function handleEntryClicked(index: number) {
+        setSelectedIndex(index)
+    }
 
-    props.setChartQuickNavigate(selectedIndex)
-    handleClose()
-  }
+    // NAVIGATE BUTTON CLICKED
+    function handleNavigateButtonClicked() {
+        if (selectedIndex < 0) return
 
-  // CALCULATE TIME THE MACHINERY WAS OFF - if it was off at this time
-  function getHoursMachineryOff (from: number, to: number) {
-    const diff = ~~((to - from) / 3600000)
+        quickNavigateChart(selectedIndex);
+        handleClose();
+    }
 
-    if (diff < 24)
-      return `${diff} hours`
+    // CALCULATE TIME THE MACHINERY WAS OFF - if it was off at this time
+    function getHoursMachineryOff(from: number, to: number) {
+        const diff = ~~((to - from) / 3600000)
 
-    return `${~~(diff / 24)} days`
-  }
+        if (diff < 24)
+            return `${diff} hours`
 
-  return (
+        return `${~~(diff / 24)} days`
+    }
+
+    return (
 
         <Modal
-            isOpen={props.quickNavigateModalOpen}
+            isOpen={quickNavigateModalOpen}
             onClose={handleClose}
             size="md"
             scrollBehavior="inside"
         >
             <ModalOverlay
                 onMouseDown={(e) => {
-                  e.stopPropagation()
+                    e.stopPropagation()
                 }}
             />
             <ModalContent
                 onMouseDown={(e) => {
-                  e.stopPropagation()
+                    e.stopPropagation()
                 }}
             >
                 <ModalHeader>Sensor history</ModalHeader>
@@ -149,11 +151,11 @@ export default function QuickNavigateModal (props: QuickNavigateModalProps) {
                                                 px={3}
                                                 bgColor={selectedIndex === index ? 'blue.400' : 'white'}
                                                 _hover={{
-                                                  cursor: 'pointer',
-                                                  bgColor: selectedIndex === index ? 'blue.400' : 'gray.100'
+                                                    cursor: 'pointer',
+                                                    bgColor: selectedIndex === index ? 'blue.400' : 'gray.100'
                                                 }}
                                                 onClick={() => {
-                                                  handleEntryClicked(index)
+                                                    handleEntryClicked(index)
                                                 }}
                                             >
                                                 {
@@ -192,7 +194,7 @@ export default function QuickNavigateModal (props: QuickNavigateModalProps) {
                             ))
                         }
                         {
-                            props.sensorData.endOfData &&
+                            sensorData.endOfData &&
                             <HStack
                                 w="full"
                                 p={3}
@@ -204,7 +206,7 @@ export default function QuickNavigateModal (props: QuickNavigateModalProps) {
                         }
 
                         {
-                            !props.sensorData.endOfData &&
+                            !sensorData.endOfData &&
                             <HStack
                                 w="full"
                                 h="100px"
@@ -212,12 +214,12 @@ export default function QuickNavigateModal (props: QuickNavigateModalProps) {
                                 justifyContent="center"
                                 alignItems="center"
                                 _hover={{
-                                  cursor: 'pointer'
+                                    cursor: 'pointer'
                                 }}
-                                onClick={handleLoadMoreSensorDataClicked}
+                                onClick={loadMoreSensorData}
                             >
                                 {
-                                    !props.loadingMoreSensorData &&
+                                    !loadingMoreSensorData &&
                                     <HStack
                                         w="full"
                                         p={3}
@@ -229,7 +231,7 @@ export default function QuickNavigateModal (props: QuickNavigateModalProps) {
                                     </HStack>
                                 }
                                 {
-                                    props.loadingMoreSensorData &&
+                                    loadingMoreSensorData &&
                                     <HStack
                                         w="full"
                                         justifyContent="center"
@@ -259,5 +261,5 @@ export default function QuickNavigateModal (props: QuickNavigateModalProps) {
             </ModalContent>
         </Modal>
 
-  )
+    )
 }

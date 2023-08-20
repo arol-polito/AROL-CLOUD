@@ -36,8 +36,28 @@ interface LoadDashboardModalProps {
     setDashboard: React.Dispatch<React.SetStateAction<Dashboard>>
     loadDashboardModalOpen: boolean
     setLoadDashboardModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-    setLoadDashboard: React.Dispatch<React.SetStateAction<LoadDashboardAction>>
+    loadDashboard: (machineryUID, loadDashboard?: LoadDashboardAction) => Promise<void>
     dashboardPermissions: { read: boolean, modify: boolean, write: boolean }
+}
+
+interface DashboardTemplateEntryProps {
+    dashboard: Dashboard
+    setDashboard: React.Dispatch<React.SetStateAction<Dashboard>>
+    savedDashboard: SavedDashboard
+    setSavedDashboards: React.Dispatch<React.SetStateAction<SavedDashboard[]>>
+    machineryUID: string
+    setLoadDashboardModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    loadDashboard: (machineryUID, loadDashboard?: LoadDashboardAction) => Promise<void>
+}
+
+interface SavedDashboardEntryProps {
+    dashboard: Dashboard
+    setDashboard: React.Dispatch<React.SetStateAction<Dashboard>>
+    savedDashboard: SavedDashboard
+    setSavedDashboards: React.Dispatch<React.SetStateAction<SavedDashboard[]>>
+    machineryUID: string
+    setLoadDashboardModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    loadDashboard: (machineryUID, loadDashboard?: LoadDashboardAction) => Promise<void>
 }
 
 export default function LoadDashboardModal(props: LoadDashboardModalProps) {
@@ -166,7 +186,7 @@ export default function LoadDashboardModal(props: LoadDashboardModalProps) {
                                                 setSavedDashboards={setSavedDashboards}
                                                 machineryUID={props.machineryUID}
                                                 setLoadDashboardModalOpen={props.setLoadDashboardModalOpen}
-                                                setLoadDashboard={props.setLoadDashboard}
+                                                loadDashboard={props.loadDashboard}
                                             />
                                         </Fragment>
                                     ))
@@ -216,7 +236,7 @@ export default function LoadDashboardModal(props: LoadDashboardModalProps) {
                                                 setSavedDashboards={setSavedDashboards}
                                                 machineryUID={props.machineryUID}
                                                 setLoadDashboardModalOpen={props.setLoadDashboardModalOpen}
-                                                setLoadDashboard={props.setLoadDashboard}
+                                                loadDashboard={props.loadDashboard}
                                             />
                                         </Fragment>
                                     ))
@@ -251,27 +271,16 @@ export default function LoadDashboardModal(props: LoadDashboardModalProps) {
     )
 }
 
-interface SavedDashboardEntryProps {
-    dashboard: Dashboard
-    setDashboard: React.Dispatch<React.SetStateAction<Dashboard>>
-    savedDashboard: SavedDashboard
-    setSavedDashboards: React.Dispatch<React.SetStateAction<SavedDashboard[]>>
-    machineryUID: string
-    setLoadDashboardModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-    setLoadDashboard: React.Dispatch<React.SetStateAction<LoadDashboardAction>>
-}
-
 function SavedDashboardEntry(props: SavedDashboardEntryProps) {
     const [dashboardToDelete, setDashboardToDelete] = useState('')
 
     // LOAD DASHBOARD
     function handleLoadDashboardButton() {
-        props.setLoadDashboard({
-            doLoad: true,
+        props.loadDashboard({
             isTemplate: false,
             machineryUID: '',
             name: props.savedDashboard.name
-        })
+        });
         props.setLoadDashboardModalOpen(false)
     }
 
@@ -370,21 +379,10 @@ function SavedDashboardEntry(props: SavedDashboardEntryProps) {
     )
 }
 
-interface DashboardTemplateEntryProps {
-    dashboard: Dashboard
-    setDashboard: React.Dispatch<React.SetStateAction<Dashboard>>
-    savedDashboard: SavedDashboard
-    setSavedDashboards: React.Dispatch<React.SetStateAction<SavedDashboard[]>>
-    machineryUID: string
-    setLoadDashboardModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-    setLoadDashboard: React.Dispatch<React.SetStateAction<LoadDashboardAction>>
-}
-
 function DashboardTemplateEntry(props: DashboardTemplateEntryProps) {
     // LOAD DASHBOARD TEMPLATE
     function handleLoadDashboardButton() {
-        props.setLoadDashboard({
-            doLoad: true,
+        props.loadDashboard({
             isTemplate: true,
             machineryUID: props.savedDashboard.machineryUID,
             name: props.savedDashboard.name

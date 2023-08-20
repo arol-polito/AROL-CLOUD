@@ -38,11 +38,11 @@
     "react-resize-detector": "^7.1.2",
     "react-responsive-carousel": "^3.2.23",
     "react-router-dom": "^6.4.1",
-    "react-scripts": "^2.1.3",
+    "react-scripts": "5.0.1",
     "react-thermometer-ecotropy": "^1.0.3",
     "recharts": "^2.1.14",
-    "run-p": "^0.0.0",
     "serve": "^14.1.2",
+    "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
   "proxy": "http://localhost:8080",
@@ -88,7 +88,6 @@
     "eslint-plugin-react": "^7.33.1",
     "eslint-plugin-react-hooks": "^4.6.0",
     "stylelint": "^15.10.2",
-    "stylelint-config-standard-scss": "^10.0.0",
-    "typescript": "^4.9.5"
+    "stylelint-config-standard-scss": "^10.0.0"
   }
 }
