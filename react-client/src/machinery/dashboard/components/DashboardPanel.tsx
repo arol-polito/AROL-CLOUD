@@ -7,14 +7,14 @@ import React, {Fragment, useMemo} from 'react'
 import {FiPlus} from 'react-icons/fi'
 import type Sensor from '../models/Sensor'
 import type Machinery from '../../../machineries-map/components/Machinery'
-import SaveDashboardPrompt from './modals/SaveDashboardPrompt'
+import SaveDashboardPrompt from './widget/components/modals/SaveDashboardPrompt'
 import Dashboard from '../models/Dashboard'
-import ChartTooltip from './data-visualization/chart-components/Tooltip'
+import ChartTooltip from './widget/components/data-visualization/multi-value/components/chart-components/Tooltip'
 import type TooltipData from '../interfaces/TooltipData'
 import type LoadDashboardAction from '../../machinery/interfaces/LoadDashboardAction'
-import DashboardControlPanel from './DashboardControlPanel'
+import DashboardControlPanel from './dashboard-components/DashboardControlPanel'
 import {useDashboardPanelLogic} from "./useDashboardPanelLogic";
-import {UnderlayDashboard} from "./rglDashboard/UnderlayDashboard";
+import {UnderlayDashboard} from "./dashboard-components/UnderlayDashboard";
 import {MemoizedWidget} from "./widget/MemoizedWidget";
 
 const ReactGridLayout = WidthProvider(RGL)
@@ -48,8 +48,6 @@ export default function DashboardPanel(props: DashboardPanelProps) {
         () => <UnderlayDashboard dashboardSize={dashboard.size}/>,
         [dashboard.size]
     )
-
-    console.log(dashboard);
 
     return (
         <Fragment>

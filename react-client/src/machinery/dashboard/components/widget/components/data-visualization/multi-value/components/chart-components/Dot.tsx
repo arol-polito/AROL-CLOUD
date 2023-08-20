@@ -1,4 +1,4 @@
-import type SensorData from '../../../models/SensorData'
+import type SensorData from '../../../../../../../models/SensorData'
 import React from 'react'
 
 export default function Dot (props: any) {

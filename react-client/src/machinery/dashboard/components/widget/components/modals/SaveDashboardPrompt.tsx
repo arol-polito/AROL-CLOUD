@@ -15,8 +15,8 @@ import {
 } from '@chakra-ui/react'
 import React, {useRef, useState} from 'react'
 import dayjs from 'dayjs'
-import type Dashboard from '../../models/Dashboard'
-import type SaveDashboard from '../../interfaces/SaveDashboard'
+import type Dashboard from '../../../../models/Dashboard'
+import type SaveDashboard from '../../../../interfaces/SaveDashboard'
 
 interface SaveDashboardPromptProps {
     dashboard: Dashboard

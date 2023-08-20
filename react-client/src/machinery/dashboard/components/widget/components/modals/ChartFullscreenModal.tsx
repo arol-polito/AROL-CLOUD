@@ -1,6 +1,6 @@
 import {Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay} from '@chakra-ui/react'
 import React, {useRef, useState} from 'react'
-import {MultiValueDataDisplay, MultiValueDataDisplayProps} from '../data-visualization/MultiValueDataDisplay'
+import {MultiValueDataDisplay, MultiValueDataDisplayProps} from '../data-visualization/multi-value/MultiValueDataDisplay'
 
 interface ChartFullscreenModalProps extends MultiValueDataDisplayProps {
     chartFullscreenModalOpen: boolean

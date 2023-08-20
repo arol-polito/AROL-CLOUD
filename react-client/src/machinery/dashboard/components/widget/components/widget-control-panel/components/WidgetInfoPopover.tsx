@@ -1,4 +1,4 @@
-import type Sensor from '../../models/Sensor'
+import type Sensor from '../../../../../models/Sensor'
 import {
   Box,
   Divider,
@@ -17,8 +17,8 @@ import {
 } from '@chakra-ui/react'
 import { FiInfo } from 'react-icons/fi'
 import React from 'react'
-import type SensorDataFilter from '../../interfaces/SensorDataFilter'
-import type SensorDataRange from '../../interfaces/SensorDataRange'
+import type SensorDataFilter from '../../../../../interfaces/SensorDataFilter'
+import type SensorDataRange from '../../../../../interfaces/SensorDataRange'
 
 interface WidgetInfoPopoverProps {
   sensorsMonitoringSensors: Record<string, SensorDataFilter[]>

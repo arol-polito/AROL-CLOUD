@@ -1,40 +1,25 @@
-import React, {memo, useContext, useState} from 'react'
-import ToastContext from '../../../../utils/contexts/ToastContext'
-import toastHelper from '../../../../utils/ToastHelper'
+import React, {memo} from 'react'
 import {HStack, IconButton, Input, Menu, MenuButton, MenuItem, MenuList, Portal} from '@chakra-ui/react'
 import {FiList, FiLock, FiMoreVertical, FiPlus, FiRefreshCw, FiSettings, FiTrash2, FiUnlock} from 'react-icons/fi'
-import WidgetInfoPopover from './WidgetInfoPopover'
-import type Sensor from '../../models/Sensor'
-import type SensorDataFilter from '../../interfaces/SensorDataFilter'
-import type SensorDataRange from '../../interfaces/SensorDataRange'
-import type SensorDataFilters from '../../interfaces/SensorDataFilters'
-import type TooltipData from '../../interfaces/TooltipData'
-import SlidingSensorData from "../../interfaces/SlidingSensorData";
-import GridWidget from "../../interfaces/GridWidget";
-import Machinery from "../../../../machineries-map/components/Machinery";
-import {calculateChartProps, loadSensorData, setNewWidgetSensorData} from "../../utils";
-import axiosExceptionHandler from "../../../../utils/AxiosExceptionHandler";
-import Dashboard from "../../models/Dashboard";
+import WidgetInfoPopover from './components/WidgetInfoPopover'
+import type Sensor from '../../../../models/Sensor'
+import type TooltipData from '../../../../interfaces/TooltipData'
+import GridWidget from "../../../../interfaces/GridWidget";
+import Machinery from "../../../../../../machineries-map/components/Machinery";
+import Dashboard from "../../../../models/Dashboard";
+import {useWidgetControlPanelLogic} from "./useWidgetControlPanelLogic";
 
-interface WidgetControlPanelProps {
+export interface WidgetControlPanelProps {
     machinery: Machinery
-    setDashboard: React.Dispatch<React.SetStateAction<Dashboard>>
     widget: GridWidget
     widgetIndex: number
-    widgetStatic: boolean
+    setDashboard: React.Dispatch<React.SetStateAction<Dashboard>>
     setWidgetStatic: React.Dispatch<React.SetStateAction<boolean>>
     sensorDataError: boolean
-    loadSensorData: (sensorsMonitoringConfig: SensorDataFilters, requestType: string, cacheDataRequestMaxTime: number, newDataRequestMinTime: number, machinery: Machinery, widget: GridWidget) => Promise<SlidingSensorData>
     setHistoryModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setSensorsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setSettingsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-    widgetID: string
-    widgetName: string
-    widgetMaxSensors: number
     availableSensors: Sensor[]
-    sensorsMonitoringSensors: Record<string, SensorDataFilter[]>
-    sensorsMonitoringAggregations: Array<{ name: string, color: string }>
-    sensorsMonitoringDataRange: SensorDataRange
     chartTooltipActive: boolean
     setChartTooltip: React.Dispatch<React.SetStateAction<TooltipData>>
     handleWidgetModified: Function
@@ -43,46 +28,20 @@ interface WidgetControlPanelProps {
 
 function WidgetControlPanel(props: WidgetControlPanelProps) {
 
-    const {setDashboard, widget, widgetIndex, machinery} = props;
+    const {widget, availableSensors, sensorDataError, handleWidgetModified} = props;
+    const {setSensorsModalOpen, setHistoryModalOpen, setSettingsModalOpen} = props;
+    const {dashboardPermissionsModify, setWidgetStatic} = props;
 
-    const toast = useContext(ToastContext)
+    const {id, maxSensors, sensorsMonitoring} = widget;
 
-    const [widgetName, setWidgetName] = useState(props.widgetName)
+    const sensorsMonitoringSensors = sensorsMonitoring.sensors
+    const sensorsMonitoringAggregations = sensorsMonitoring.aggregations
+    const sensorsMonitoringDataRange = sensorsMonitoring.dataRange
 
-    // RE-LOAD SENSOR DATA - as first time
-    async function refreshSensorData() {
+    const widgetControlPanelLogic = useWidgetControlPanelLogic(props);
 
-        try {
-            const sensorDataResult = await loadSensorData(widget.sensorsMonitoring, 'first-time', 0, 0, machinery, widget)
-            const chartPropsResult = calculateChartProps(sensorDataResult, widget.chartProps);
-
-            toastHelper.makeToast(
-                toast,
-                `${widget.name} sensor data refreshed`,
-                'info'
-            )
-
-            setNewWidgetSensorData(setDashboard, widgetIndex, sensorDataResult, chartPropsResult);
-        } catch (e) {
-            console.error(e)
-            axiosExceptionHandler.handleAxiosExceptionWithToast(
-                e,
-                toast,
-                'Sensor data could not be loaded'
-            )
-        }
-    }
-
-    function handleWidgetControlPanelMouseDown(e) {
-        e.stopPropagation()
-
-        if (props.chartTooltipActive)
-            props.setChartTooltip((val) => {
-                val.active = false
-
-                return {...val}
-            })
-    }
+    const {widgetName, setWidgetName, refreshSensorData} = widgetControlPanelLogic;
+    const {handleWidgetControlPanelMouseDown} = widgetControlPanelLogic;
 
     return (
         <HStack
@@ -98,8 +57,8 @@ function WidgetControlPanel(props: WidgetControlPanelProps) {
                 textOverflow="ellipsis"
                 variant='unstyled'
                 value={widgetName}
-                onBlur={(e) => (props.handleWidgetModified('rename', {
-                        id: props.widgetID,
+                onBlur={(e) => (handleWidgetModified('rename', {
+                        id: id,
                         name: e.target.value
                     }
                 ))}
@@ -127,18 +86,18 @@ function WidgetControlPanel(props: WidgetControlPanelProps) {
                             onClick={refreshSensorData}
                         />
                         {
-                            !props.sensorDataError &&
-                            props.widgetMaxSensors > 1 &&
+                            !sensorDataError &&
+                            maxSensors > 1 &&
                             <WidgetInfoPopover
-                                sensorsMonitoringSensors={props.sensorsMonitoringSensors}
-                                sensorsMonitoringAggregations={props.sensorsMonitoringAggregations}
-                                sensorsMonitoringDataRange={props.sensorsMonitoringDataRange}
-                                availableSensors={props.availableSensors}
+                                sensorsMonitoringSensors={sensorsMonitoringSensors}
+                                sensorsMonitoringAggregations={sensorsMonitoringAggregations}
+                                sensorsMonitoringDataRange={sensorsMonitoringDataRange}
+                                availableSensors={availableSensors}
                             />
                         }
                         {
-                            !props.sensorDataError &&
-                            props.widgetMaxSensors === 1 &&
+                            !sensorDataError &&
+                            maxSensors === 1 &&
                             <IconButton
                                 colorScheme="gray"
                                 variant="ghost"
@@ -146,7 +105,7 @@ function WidgetControlPanel(props: WidgetControlPanelProps) {
                                 px="0!important"
                                 aria-label="Sensor data history"
                                 onClick={() => {
-                                    props.setHistoryModalOpen(true)
+                                    setHistoryModalOpen(true)
                                 }}
                             />
                         }
@@ -154,7 +113,7 @@ function WidgetControlPanel(props: WidgetControlPanelProps) {
                     </HStack>
                 }
                 {
-                    props.dashboardPermissionsModify &&
+                    dashboardPermissionsModify &&
                     <Menu>
                         <MenuButton
                             as={IconButton}
@@ -169,7 +128,7 @@ function WidgetControlPanel(props: WidgetControlPanelProps) {
                                 <MenuItem
                                     icon={<FiPlus/>}
                                     onClick={() => {
-                                        props.setSensorsModalOpen(true)
+                                        setSensorsModalOpen(true)
                                     }}
                                 >
                                     Add sensors
@@ -177,34 +136,34 @@ function WidgetControlPanel(props: WidgetControlPanelProps) {
                                 <MenuItem
                                     icon={<FiSettings/>}
                                     onClick={() => {
-                                        props.setSettingsModalOpen(true)
+                                        setSettingsModalOpen(true)
                                     }}
                                 >
                                     Widget settings
                                 </MenuItem>
                                 <MenuItem
                                     icon={<FiTrash2/>}
-                                    onClick={() => (props.handleWidgetModified('delete', {id: props.widgetID}))}
+                                    onClick={() => (handleWidgetModified('delete', {id: id}))}
                                 >
                                     Delete widget
                                 </MenuItem>
                                 {
-                                    props.widgetStatic &&
+                                    widget.static &&
                                     <MenuItem
                                         icon={<FiUnlock/>}
                                         onClick={() => {
-                                            props.handleWidgetModified('static', {id: props.widgetID})
-                                            props.setWidgetStatic((val) => (!val))
+                                            handleWidgetModified('static', {id: id})
+                                            setWidgetStatic((val) => (!val))
                                         }}
                                     >
                                         Unlock widget
                                     </MenuItem>
                                 }
                                 {
-                                    !props.widgetStatic &&
+                                    !widget.static &&
                                     <MenuItem
                                         icon={<FiLock/>}
-                                        onClick={() => (props.handleWidgetModified('static', {id: props.widgetID}))}
+                                        onClick={() => (handleWidgetModified('static', {id: id}))}
                                     >
                                         Lock widget
                                     </MenuItem>

@@ -14,6 +14,8 @@ import SensorDataFilters from "../interfaces/SensorDataFilters";
 import SlidingSensorData from "../interfaces/SlidingSensorData";
 import {ChartProps} from "./widget/useWidgetLogic";
 import _ from "lodash";
+import {PolarChartSensorData} from "../interfaces/PolarChartSensorData";
+import {DataDisplaySize} from "../interfaces/DataDisplaySize";
 
 export const useDashboardPanelLogic = (props: DashboardPanelProps) => {
     const {machinery, dashboard, setDashboard} = props;
@@ -58,6 +60,7 @@ export const useDashboardPanelLogic = (props: DashboardPanelProps) => {
             widgetToSave.sensorsMonitoring.cacheDataRequestMaxTime = 0
             widgetToSave.sensorsMonitoring.newDataRequestMinTime = 0
             widgetToSave.numChange = 1
+            widgetToSave.chartNumChange = 1
             gridWidgets.push(widgetToSave)
         })
 
@@ -330,6 +333,18 @@ export const useDashboardPanelLogic = (props: DashboardPanelProps) => {
                 }
             }
 
+            const dataDisplaySize: DataDisplaySize = {
+                width: 0,
+                height: 0
+            }
+
+            const polarChartSensorData: PolarChartSensorData = {
+                allData: {},
+                aggregationData: {},
+                sectionSize: 0,
+                startingFromTime: ''
+            }
+
             val.widgets.push({
                 id: newID.toString(),
                 name: widgetData.name,
@@ -340,8 +355,14 @@ export const useDashboardPanelLogic = (props: DashboardPanelProps) => {
                 sensorsMonitoring,
                 ...processSensorsMonitoring(sensorsMonitoring, availableSensors),
                 sensorData,
+                sensorDataLoading: false,
+                sensorDataCacheLoading: false,
+                sensorDataError: false,
+                polarChartSensorData,
                 chartProps,
-                numChange: 1
+                dataDisplaySize,
+                numChange: 1,
+                chartNumChange: 1
             })
 
             val.layout = rglLayout

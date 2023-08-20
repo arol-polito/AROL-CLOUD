@@ -1,6 +1,6 @@
-import type GridWidget from '../../interfaces/GridWidget'
-import type SensorMonitoring from '../../interfaces/SensorMonitoring'
-import type SlidingSensorData from '../../interfaces/SlidingSensorData'
+import type GridWidget from '../../../../../interfaces/GridWidget'
+import type SensorMonitoring from '../../../../../interfaces/SensorMonitoring'
+import type SlidingSensorData from '../../../../../interfaces/SlidingSensorData'
 import React, {memo} from 'react'
 import {Divider, HStack, Text, VStack} from '@chakra-ui/react'
 import {FiArrowDown, FiArrowUp} from 'react-icons/fi'
@@ -12,14 +12,14 @@ export interface SingleValueDataDisplayProps {
     widget: GridWidget
     sensorMonitoring: SensorMonitoring
     sensorData: SlidingSensorData
-    dataDisplaySize: { height: number, width: number }
 }
 
 function SingleValueDataDisplay(props: SingleValueDataDisplayProps) {
 
-    const {widget, sensorMonitoring, dataDisplaySize} = props;
-
+    const {widget, sensorMonitoring} = props;
     const {sensorDataToDisplay, getSensorDataTimeOfSampling} = useSingleValueDataDisplayLogic(props);
+
+    const {dataDisplaySize} = widget;
 
     return (
         <VStack

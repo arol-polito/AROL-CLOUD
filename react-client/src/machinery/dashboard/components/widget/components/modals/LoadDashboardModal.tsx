@@ -19,14 +19,14 @@ import {
     VStack
 } from '@chakra-ui/react'
 import React, {Fragment, useContext, useEffect, useState} from 'react'
-import dashboardService from '../../../../services/DashboardService'
+import dashboardService from '../../../../../../services/DashboardService'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
-import type Dashboard from '../../models/Dashboard'
-import type SavedDashboard from '../../interfaces/SavedDashboard'
-import type LoadDashboardAction from '../../../machinery/interfaces/LoadDashboardAction'
-import ToastContext from '../../../../utils/contexts/ToastContext'
-import axiosExceptionHandler from '../../../../utils/AxiosExceptionHandler'
+import type Dashboard from '../../../../models/Dashboard'
+import type SavedDashboard from '../../../../interfaces/SavedDashboard'
+import type LoadDashboardAction from '../../../../../machinery/interfaces/LoadDashboardAction'
+import ToastContext from '../../../../../../utils/contexts/ToastContext'
+import axiosExceptionHandler from '../../../../../../utils/AxiosExceptionHandler'
 
 dayjs.extend(utc)
 

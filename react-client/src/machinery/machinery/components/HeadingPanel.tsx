@@ -18,7 +18,7 @@ import {
 } from '@chakra-ui/react'
 import type Machinery from '../../../machineries-map/components/Machinery'
 import React, {useRef, useState} from 'react'
-import LoadDashboardModal from '../../dashboard/components/modals/LoadDashboardModal'
+import LoadDashboardModal from '../../dashboard/components/widget/components/modals/LoadDashboardModal'
 import {FiChevronDown, FiChevronUp, FiFolder, FiFolderPlus} from 'react-icons/fi'
 import Dashboard from '../../dashboard/models/Dashboard'
 import type TooltipData from '../../dashboard/interfaces/TooltipData'

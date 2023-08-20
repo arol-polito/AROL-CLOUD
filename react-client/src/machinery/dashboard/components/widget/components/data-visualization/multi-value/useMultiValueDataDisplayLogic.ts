@@ -1,7 +1,6 @@
 import React, {useRef, useState} from "react";
 import {MultiValueDataDisplayProps} from "./MultiValueDataDisplay";
-import SlidingSensorData from "../../interfaces/SlidingSensorData";
-import {calculateChartProps, setNewWidgetSensorData} from "../../utils";
+import {calculateChartProps, setNewWidgetSensorData} from "../../../../../utils";
 
 interface ChartZoom {
     zoomAmount: number
@@ -23,11 +22,10 @@ interface ChartZoomSelector {
 export const useMultiValueDataDisplayLogic = (props: MultiValueDataDisplayProps) => {
 
     const {setDashboard, widget, widgetIndex, availableSensors} = props;
-    const {loadingMoreSensorData, loadMoreSensorData, setChartTooltip} = props;
-    const {dataDisplaySize} = props;
+    const {loadMoreSensorData, setChartTooltip} = props;
 
     const {sensorsMonitoringArray, aggregationsArray, sensorData} = widget;
-    const {sensorsMonitoringObject} = widget;
+    const {sensorsMonitoringObject, sensorDataCacheLoading} = widget;
 
     const chartContainerRef = useRef<HTMLDivElement>(null)
 
@@ -40,106 +38,6 @@ export const useMultiValueDataDisplayLogic = (props: MultiValueDataDisplayProps)
 
     const [chartFullscreenModalOpen, setChartFullscreenModalOpen] = useState(false)
     const [quickNavigateModalOpen, setQuickNavigateModalOpen] = useState(false)
-    const [polarChartSensorData, setPolarChartSensorData] = useState({
-        allData: {},
-        aggregationData: {},
-        sectionSize: 0,
-        startingFromTime: ''
-    })
-
-    // FORMAT DATA FOR POLAR CHART
-    const calculatePolarChartSensorData = (sensorData: SlidingSensorData) => {
-        // useEffect(() => {
-        if (!['pie-chart', 'scatter-chart'].includes(widget.type)) return
-
-        setPolarChartSensorData((val) => {
-            const bucketSize = 1
-            val = {
-                allData: {},
-                aggregationData: {},
-                sectionSize: val.sectionSize,
-                startingFromTime: val.startingFromTime
-            }
-
-            const allSensorData = [...sensorData.leftData, ...sensorData.displayData, ...sensorData.rightData]
-
-            val.startingFromTime = allSensorData.length > 0 ? allSensorData[0].formattedTime : ''
-
-            sensorsMonitoringArray.forEach((sensorMonitoring) => {
-                const allDataMap = new Map<string, number>()
-                allSensorData
-                    .forEach((el) => {
-                        if (!el.activeData.hasOwnProperty(sensorMonitoring.internalName) || el.activeData[sensorMonitoring.internalName] === null) return
-                        const key = (~~((el.activeData[sensorMonitoring.internalName] || 0) / bucketSize)).toString()
-                        if (allDataMap.has(key)) {
-                            const occurrences = allDataMap.get(key) || 0
-                            allDataMap.set(key, occurrences + 1)
-                        } else
-                            allDataMap.set(key, 1)
-                    })
-
-                const bucketArray: any[] = []
-                for (const [key, value] of Array.from(allDataMap.entries()))
-                    bucketArray.push({
-                        bucketStart: (~~key) * bucketSize,
-                        bucketEnd: ((~~key) + 1) * bucketSize,
-                        sensorUnit: sensorMonitoring.unit,
-                        sensorName: sensorMonitoring.name,
-                        occurrences: value
-                    })
-
-                val.allData[sensorMonitoring.internalName] = bucketArray
-            })
-            aggregationsArray.forEach((aggregation) => {
-                const allDataMap = new Map<string, number>()
-                allSensorData
-                    .forEach((el) => {
-                        if (!el.aggregationData.hasOwnProperty(aggregation.name) || el.aggregationData[aggregation.name].value === null) return
-                        const key = (~~(el.aggregationData[aggregation.name].value / bucketSize)).toString()
-                        if (allDataMap.has(key)) {
-                            const occurrences = allDataMap.get(key) || 0
-                            allDataMap.set(key, occurrences + 1)
-                        } else
-                            allDataMap.set(key, 1)
-                    })
-
-                const bucketArray: any[] = []
-                for (const [key, value] of Array.from(allDataMap.entries()))
-                    bucketArray.push({
-                        bucketStart: (~~key) * bucketSize,
-                        bucketEnd: ((~~key) + 1) * bucketSize,
-                        sensorUnit: aggregation.unit,
-                        sensorName: aggregation.name,
-                        occurrences: value
-                    })
-
-                val.aggregationData[aggregation.name] = bucketArray
-            })
-
-            return val
-        })
-    }
-    // }, [sensorsMonitoringArray, aggregationsArray, sensorData, widget.type])
-
-    // PIE CHART LEVEL SIZE
-    const calculatePieChartSensorData = () => {
-        if (widget.type !== 'pie-chart') return
-
-        setPolarChartSensorData((val) => {
-            const numSectionsNeeded = sensorsMonitoringArray.length + aggregationsArray.length
-            let shortestDimension = Math.min(dataDisplaySize.width, dataDisplaySize.height)
-            if (dataDisplaySize.height - shortestDimension < 40)
-                shortestDimension = dataDisplaySize.height - 40
-
-            const resultingSectionSize = ~~(shortestDimension / numSectionsNeeded)
-            if (resultingSectionSize < 30)
-                val.sectionSize = 30
-            else
-                val.sectionSize = resultingSectionSize
-
-            return {...val}
-        })
-    }
 
     const zoomChart = (chartZoom: ChartZoom) => {
 
@@ -248,7 +146,7 @@ export const useMultiValueDataDisplayLogic = (props: MultiValueDataDisplayProps)
             }
         }
 
-        if (sensorData.leftData.length < 5 && !loadingMoreSensorData && !sensorData.endOfData)
+        if (sensorData.leftData.length < 5 && !sensorDataCacheLoading && !sensorData.endOfData)
             loadMoreSensorData();
 
         if (sensorData.rightData.length === 0)
@@ -258,7 +156,8 @@ export const useMultiValueDataDisplayLogic = (props: MultiValueDataDisplayProps)
             setDashboard,
             widgetIndex,
             sensorData,
-            calculateChartProps(sensorData, widget.chartProps)
+            calculateChartProps(sensorData, widget.chartProps),
+            widget.polarChartSensorData
         )
 
         return {...sensorData}
@@ -278,7 +177,8 @@ export const useMultiValueDataDisplayLogic = (props: MultiValueDataDisplayProps)
             setDashboard,
             widgetIndex,
             sensorData,
-            calculateChartProps(sensorData, widget.chartProps)
+            calculateChartProps(sensorData, widget.chartProps),
+            widget.polarChartSensorData
         )
 
     }
@@ -316,7 +216,7 @@ export const useMultiValueDataDisplayLogic = (props: MultiValueDataDisplayProps)
             sensorData.leftData = sensorData.leftData.slice(0, leftDataLength - moveAmount)
         }
 
-        if (sensorData.leftData.length < 5 && !loadingMoreSensorData && !sensorData.endOfData)
+        if (sensorData.leftData.length < 5 && !sensorDataCacheLoading && !sensorData.endOfData)
             loadMoreSensorData();
 
         if (sensorData.rightData.length === 0)
@@ -326,7 +226,8 @@ export const useMultiValueDataDisplayLogic = (props: MultiValueDataDisplayProps)
             setDashboard,
             widgetIndex,
             sensorData,
-            calculateChartProps(sensorData, widget.chartProps)
+            calculateChartProps(sensorData, widget.chartProps),
+            widget.polarChartSensorData
         )
 
     }
@@ -374,7 +275,8 @@ export const useMultiValueDataDisplayLogic = (props: MultiValueDataDisplayProps)
             setDashboard,
             widgetIndex,
             sensorData,
-            calculateChartProps(sensorData, widget.chartProps)
+            calculateChartProps(sensorData, widget.chartProps),
+            widget.polarChartSensorData
         )
     }
 
@@ -663,7 +565,8 @@ export const useMultiValueDataDisplayLogic = (props: MultiValueDataDisplayProps)
             setDashboard,
             widgetIndex,
             sensorData,
-            calculateChartProps(sensorData, widget.chartProps)
+            calculateChartProps(sensorData, widget.chartProps),
+            widget.polarChartSensorData
         )
     }
 
@@ -675,7 +578,8 @@ export const useMultiValueDataDisplayLogic = (props: MultiValueDataDisplayProps)
             setDashboard,
             widgetIndex,
             sensorData,
-            widget.chartProps
+            widget.chartProps,
+            widget.polarChartSensorData
         )
     }
 
@@ -687,7 +591,6 @@ export const useMultiValueDataDisplayLogic = (props: MultiValueDataDisplayProps)
         setChartFullscreenModalOpen,
         quickNavigateModalOpen,
         setQuickNavigateModalOpen,
-        polarChartSensorData,
         quickNavigateChart,
         handleZoomChartButtonClicked,
         handlePanChartButtonClicked,

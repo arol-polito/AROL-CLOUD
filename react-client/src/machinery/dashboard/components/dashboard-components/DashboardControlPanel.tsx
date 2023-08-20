@@ -1,7 +1,7 @@
-import type Dashboard from '../models/Dashboard'
+import type Dashboard from '../../models/Dashboard'
 import React, {useContext} from 'react'
 import {type Layout} from 'react-grid-layout'
-import SidebarStatusContext from '../../../utils/contexts/SidebarStatusContext'
+import SidebarStatusContext from '../../../../utils/contexts/SidebarStatusContext'
 import {
     Box,
     Button,
@@ -31,7 +31,7 @@ import {
     FiPlus,
     FiSave
 } from 'react-icons/fi'
-import type SaveDashboard from '../interfaces/SaveDashboard'
+import type SaveDashboard from '../../interfaces/SaveDashboard'
 
 interface DashboardControlPanelProps {
     dashboard: Dashboard

@@ -1,4 +1,4 @@
-import type Sensor from '../../models/Sensor'
+import type Sensor from '../../../../models/Sensor'
 import {
     Box,
     Button,
@@ -27,14 +27,22 @@ import {
 } from '@chakra-ui/react'
 import React, {useEffect, useState} from 'react'
 import {FiAlertTriangle, FiChevronDown, FiChevronUp, FiInfo} from 'react-icons/fi'
-import type SensorDataFilters from '../../interfaces/SensorDataFilters'
-import type SensorDataFilter from '../../interfaces/SensorDataFilter'
-import type SensorDataRange from '../../interfaces/SensorDataRange'
-import Dashboard from "../../models/Dashboard";
-import GridWidget from "../../interfaces/GridWidget";
-import {calculateChartProps, loadSensorData, setNewWidgetSensorData, setNewWidgetSensorsMonitoring} from "../../utils";
-import Machinery from "../../../../machineries-map/components/Machinery";
-import axiosExceptionHandler from "../../../../utils/AxiosExceptionHandler";
+import type SensorDataFilters from '../../../../interfaces/SensorDataFilters'
+import type SensorDataFilter from '../../../../interfaces/SensorDataFilter'
+import type SensorDataRange from '../../../../interfaces/SensorDataRange'
+import Dashboard from "../../../../models/Dashboard";
+import GridWidget from "../../../../interfaces/GridWidget";
+import {
+    calculateChartProps,
+    calculatePolarChartSensorData,
+    loadSensorData,
+    setNewWidgetSensorData,
+    setNewWidgetSensorsMonitoring,
+    setWidgetSensorDataLoadingAndError
+} from "../../../../utils";
+import Machinery from "../../../../../../machineries-map/components/Machinery";
+import axiosExceptionHandler from "../../../../../../utils/AxiosExceptionHandler";
+import _ from "lodash";
 
 interface SensorsModalProps {
     machinery: Machinery
@@ -45,9 +53,7 @@ interface SensorsModalProps {
     setModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     availableSensors: Sensor[]
     availableSensorsMap: Map<string, Sensor[]>
-    sensorsMonitoring: SensorDataFilters
     numHeads: number
-    maxSelectableSensors: number
 }
 
 const colors = ['#b4ddd4', '#194f46', '#5ddcb2', '#528f7a', '#a0e85b', '#799d10', '#dada69', '#73482b', '#f48e9b', '#922d4c', '#fb2076', '#f97930', '#a93705', '#36f459', '#21a708', '#048ad1', '#3330b7', '#8872e4', '#e26df8', '#49406e', '#7220f6', '#ffb947', '#ed0e1c', '#a28b91']
@@ -71,6 +77,8 @@ export default function SensorsModal(props: SensorsModalProps) {
     const {widget, widgetIndex, setDashboard, availableSensors} = props;
     const {machinery} = props;
 
+    const {maxSensors, sensorsMonitoring, dataDisplaySize} = widget;
+
     const toast = useToast();
 
     const [numSensorsSelected, setNumSensorsSelected] = useState(0)
@@ -82,33 +90,31 @@ export default function SensorsModal(props: SensorsModalProps) {
     })
     const [sensorAggregations, setSensorAggregations] = useState<string[]>(['none'])
     const [sensorDataRange, setSensorDataRange] = useState<SensorDataRange>(
-        JSON.parse(JSON.stringify(props.sensorsMonitoring.dataRange))
+        _.cloneDeep(sensorsMonitoring.dataRange)
     )
 
     useEffect(() => {
         let numSensorsAlreadyMonitoring = 0
-        Object.keys(props.sensorsMonitoring.sensors).forEach((key) => {
-            props.sensorsMonitoring.sensors[key].forEach((headMechEntry) => {
+        Object.keys(sensorsMonitoring.sensors).forEach((key) => {
+            sensorsMonitoring.sensors[key].forEach((headMechEntry) => {
                 numSensorsAlreadyMonitoring += headMechEntry.sensorNames.length
             })
         })
 
-        if (props.sensorsMonitoring.aggregations.length > 0)
-            setSensorAggregations(props.sensorsMonitoring.aggregations.map((aggregation) => (aggregation.name)))
+        if (sensorsMonitoring.aggregations.length > 0)
+            setSensorAggregations(sensorsMonitoring.aggregations.map((aggregation) => (aggregation.name)))
 
         setNumSensorsSelected(numSensorsAlreadyMonitoring)
-    }, [props.sensorsMonitoring])
+    }, [sensorsMonitoring])
 
     async function handleMonitorSensorsClicked() {
         const sensorsMonitoring = widget.sensorsMonitoring;
-
-        const requestType = 'first-time';
 
         sensorsMonitoring.widgetCategory = widget.maxSensors === 1 ? 'single-value' : 'multi-value';
 
         const aggregations = sensorAggregations.filter((aggregation) => (aggregation !== 'none'))
 
-        if (aggregations.length === 0 && props.maxSelectableSensors === 1) {
+        if (aggregations.length === 0 && maxSensors === 1) {
             sensorsMonitoring.dataRange.unit = 'sample'
             sensorsMonitoring.dataRange.amount = 1
         } else
@@ -174,9 +180,12 @@ export default function SensorsModal(props: SensorsModalProps) {
         )
 
         try {
-            const sensorDataResult = await loadSensorData(sensorsMonitoring, requestType, 0, 0, machinery, widget)
+            setWidgetSensorDataLoadingAndError(setDashboard, widgetIndex, true, false, false);
+            const sensorDataResult = await loadSensorData(sensorsMonitoring, 'first-time', 0, 0, machinery, widget)
             const chartPropsResult = calculateChartProps(sensorDataResult, widget.chartProps);
-            setNewWidgetSensorData(setDashboard, widgetIndex, sensorDataResult, chartPropsResult);
+            const polarChartSensorDataResult = calculatePolarChartSensorData(widget.polarChartSensorData, sensorDataResult, widget.sensorsMonitoringArray, widget.type, widget.aggregationsArray, dataDisplaySize)
+
+            setNewWidgetSensorData(setDashboard, widgetIndex, sensorDataResult, chartPropsResult, polarChartSensorDataResult);
         } catch (e) {
             console.error(e)
             axiosExceptionHandler.handleAxiosExceptionWithToast(
@@ -184,6 +193,7 @@ export default function SensorsModal(props: SensorsModalProps) {
                 toast,
                 'Sensor data could not be loaded'
             )
+            setWidgetSensorDataLoadingAndError(setDashboard, widgetIndex, false, false, true);
         }
 
         props.setModalOpen(false)
@@ -245,9 +255,9 @@ export default function SensorsModal(props: SensorsModalProps) {
                 }}
             >
                 <ModalHeader>
-                    <Text fontSize="xl">Choose the sensors (up to {props.maxSelectableSensors}) to monitor</Text>
+                    <Text fontSize="xl">Choose the sensors (up to {maxSensors}) to monitor</Text>
                     {
-                        numSensorsSelected >= props.maxSelectableSensors &&
+                        numSensorsSelected >= maxSensors &&
                         <HStack
                             alignItems="center"
                         >
@@ -284,10 +294,10 @@ export default function SensorsModal(props: SensorsModalProps) {
                                                         <SensorEntry
                                                             key={sensor.name}
                                                             sensor={sensor}
-                                                            sensorsMonitoring={[...props.sensorsMonitoring.sensors[mapKeyAndValue[0]]]}
+                                                            sensorsMonitoring={[...sensorsMonitoring.sensors[mapKeyAndValue[0]]]}
                                                             selectedSensors={[...selectedSensors[mapKeyAndValue[0]]]}
                                                             numHeads={props.numHeads}
-                                                            maxSelectableSensors={props.maxSelectableSensors}
+                                                            maxSelectableSensors={maxSensors}
                                                             numSensorsSelected={numSensorsSelected}
                                                             setNumSensorsSelected={setNumSensorsSelected}
                                                             setModalOpen={props.setModalOpen}
@@ -343,7 +353,7 @@ export default function SensorsModal(props: SensorsModalProps) {
                                 >
                                     <HStack w="full">
                                         <Text fontSize="md"
-                                              whiteSpace="nowrap">Aggregation {props.maxSelectableSensors === 1 ? 'type' : index + 1}</Text>
+                                              whiteSpace="nowrap">Aggregation {maxSensors === 1 ? 'type' : index + 1}</Text>
                                         <Select value={value}
                                                 onChange={(e) => {
                                                     handleAggregationSelected(e.target.value, index)
@@ -368,7 +378,7 @@ export default function SensorsModal(props: SensorsModalProps) {
                                             }
                                         </Select>
                                         {
-                                            props.maxSelectableSensors > 1 &&
+                                            maxSensors > 1 &&
                                             value !== 'none' && // value should be selected
                                             index === sensorAggregations.length - 1 && // only last entry should have button displayed
                                             index < aggregationOptions.length - 1 && // show button only if not all aggregation entries are already applied (-2 since index starts from 0)
@@ -383,7 +393,7 @@ export default function SensorsModal(props: SensorsModalProps) {
 
                                     </HStack>
                                     {
-                                        props.maxSelectableSensors === 1 &&
+                                        maxSensors === 1 &&
                                         value !== 'none' &&
                                         <HStack w="full" mx={8} justifyContent="left">
 
@@ -405,7 +415,7 @@ export default function SensorsModal(props: SensorsModalProps) {
 
                         }
                         {
-                            props.maxSelectableSensors > 1 &&
+                            maxSensors > 1 &&
                             <VStack
                                 alignItems="left"
                                 pt={2}
@@ -557,16 +567,16 @@ function SensorEntry(props: SensorEntryProps) {
     function handleRemoveAllSensorsButtonClick() {
         const sensorCategory = props.sensor.category
         const sensorHeads = props.sensor.isHeadMounted ? props.numHeads : 0
-        const sensorMechs = 0// props.sensor.numMechs
+        // const sensorMechs = 0// props.sensor.numMechs
         let numSensorsRemoved = 0
 
         let numHeads = sensorHeads
-        let numMechs = sensorMechs
+        // let numMechs = sensorMechs
         if (sensorHeads === 0)
             numHeads = 1
 
-        if (numMechs === 0)
-            numMechs = 1
+        // if (numMechs === 0)
+        //     numMechs = 1
 
         let currHeadNum: number
 
@@ -736,7 +746,7 @@ const SensorDescription = (props: {
                 <Image
                     objectFit="cover"
                     boxSize="100%"
-                    src={require('../../../../assets/machineries/EQUA.png')}
+                    src={require('../../../../../../assets/machineries/EQUA.png')}
                 />
             </Box>
         </Flex>

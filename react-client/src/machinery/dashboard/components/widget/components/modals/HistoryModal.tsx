@@ -15,20 +15,17 @@ import {
     Th,
     Thead,
     Tr,
-    useToast,
     VStack
 } from '@chakra-ui/react'
-import React, {Fragment, useEffect, useState} from 'react'
-import type SensorData from '../../models/SensorData'
-import type Sensor from '../../models/Sensor'
+import React, {Fragment} from 'react'
+import type Sensor from '../../../../models/Sensor'
 import {FiArrowDown, FiArrowUp, FiPlus} from 'react-icons/fi'
-import Dashboard from "../../models/Dashboard";
-import GridWidget from "../../interfaces/GridWidget";
-import Machinery from "../../../../machineries-map/components/Machinery";
-import {calculateChartProps, loadSensorData, setNewWidgetSensorData} from "../../utils";
-import axiosExceptionHandler from "../../../../utils/AxiosExceptionHandler";
+import Dashboard from "../../../../models/Dashboard";
+import GridWidget from "../../../../interfaces/GridWidget";
+import Machinery from "../../../../../../machineries-map/components/Machinery";
+import {useHistoryModalLogic} from "./useHistoryModalLogic";
 
-interface HistoryModalProps {
+export interface HistoryModalProps {
     machinery: Machinery
     widget: GridWidget
     widgetIndex: number
@@ -40,107 +37,13 @@ interface HistoryModalProps {
 
 export default function HistoryModal(props: HistoryModalProps) {
 
-    const {widget, widgetIndex, setDashboard, machinery} = props;
-    const {availableSensors, historyModalOpen, setHistoryModalOpen} = props;
+    const {widget, historyModalOpen} = props;
 
     const {sensorData, sensorsMonitoring} = widget;
 
-    const toast = useToast();
-
-
-    const [sensorToDisplay, setSensorToDisplay] = useState<Sensor | null>(null)
-    const [sensorToDisplayNotFound, setSensorToDisplayNotFound] = useState(false)
-    const [sensorDataToDisplay, setSensorDataToDisplay] = useState<SensorData[]>([])
-
-    const [loadingMoreSensorData, setLoadingMoreSensorData] = useState(false)
-
-    // FIND SENSOR MONITORING AND FIND SENSOR DETAILS
-    useEffect(() => {
-        let sensorMonitoring: string | null = null
-        let headMonitoring = 0
-        // let mechMonitoring = 0
-        for (const entry of Object.values(sensorsMonitoring.sensors)) {
-            for (const headMechEntry of entry)
-                if (headMechEntry.sensorNames.length > 0) {
-                    sensorMonitoring = headMechEntry.sensorNames[0].name
-                    headMonitoring = headMechEntry.headNumber
-                    // mechMonitoring = headMechEntry.mechNumber
-                    break
-                }
-
-            if (sensorMonitoring)
-                break
-        }
-
-        if (!sensorMonitoring) {
-            setSensorToDisplayNotFound(true)
-
-            return
-        }
-
-        const sensorFound = availableSensors.find((val) => (val.internalName === sensorMonitoring))
-
-        if (sensorFound == null) {
-            setSensorToDisplayNotFound(true)
-
-            return
-        }
-
-        const sensor = {...sensorFound}
-
-        if (headMonitoring > 0) {
-            sensor.internalName = `H${String(headMonitoring).padStart(2, '0')}_${sensor.internalName}`
-            sensor.name = `${sensor.name} - H${String(headMonitoring).padStart(2, '0')}`
-        }
-
-        setSensorToDisplay(sensor)
-        setSensorToDisplayNotFound(false)
-    }, [sensorsMonitoring, availableSensors])
-
-    // SET SENSOR DATA TO BE DISPLAYED
-    useEffect(() => {
-        if (sensorToDisplay == null) return
-
-        // console.log(sensorData.leftData.map((el)=>(el.formattedTime)))
-
-        // Display data added to the end
-        const sensorDataConfig = [...sensorData.displayData, ...[...sensorData.leftData].reverse()]
-
-        setSensorDataToDisplay(sensorDataConfig.filter((val) => {
-                if (Object.entries(val.aggregationData).length > 0) return false
-
-                return val.allData.hasOwnProperty(sensorToDisplay.internalName)
-            })
-        )
-
-        setLoadingMoreSensorData(false)
-    }, [sensorData, sensorToDisplay])
-
-    function handleClose() {
-        setHistoryModalOpen(false)
-    }
-
-    // LOAD MORE SENSOR DATA
-    async function handleLoadMoreSensorDataClicked() {
-        setLoadingMoreSensorData(true)
-
-        const requestType = 'cache-only'
-        const cacheDataRequestMaxTime = sensorDataToDisplay.slice(-1)[0].time
-
-        try {
-            const sensorDataResult = await loadSensorData(widget.sensorsMonitoring, requestType, cacheDataRequestMaxTime, 0, machinery, widget)
-            const chartPropsResult = calculateChartProps(sensorDataResult, widget.chartProps);
-            setNewWidgetSensorData(setDashboard, widgetIndex, sensorDataResult, chartPropsResult);
-        } catch (e) {
-            console.error(e)
-            axiosExceptionHandler.handleAxiosExceptionWithToast(
-                e,
-                toast,
-                'Sensor data could not be loaded'
-            )
-        }
-
-    }
+    const historyModalLogic = useHistoryModalLogic(props);
+    const {sensorToDisplay, sensorToDisplayNotFound, sensorDataToDisplay, loadingMoreSensorData} = historyModalLogic;
+    const {handleClose, handleLoadMoreSensorDataClicked} = historyModalLogic;
 
     return (
 

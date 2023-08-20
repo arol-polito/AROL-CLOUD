@@ -1,10 +1,10 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react'
-import type SensorData from '../../../models/SensorData'
+import type SensorData from '../../../../../../../models/SensorData'
 import {Box, CloseButton, Divider, Heading, HStack, Text, VStack} from '@chakra-ui/react'
-import type SensorMonitoring from '../../../interfaces/SensorMonitoring'
-import type Aggregation from '../../../interfaces/Aggregation'
+import type SensorMonitoring from '../../../../../../../interfaces/SensorMonitoring'
+import type Aggregation from '../../../../../../../interfaces/Aggregation'
 import dayjs from 'dayjs'
-import type TooltipData from '../../../interfaces/TooltipData'
+import type TooltipData from '../../../../../../../interfaces/TooltipData'
 import {FiArrowDown, FiArrowUp} from 'react-icons/fi'
 
 interface ChartTooltipProps {

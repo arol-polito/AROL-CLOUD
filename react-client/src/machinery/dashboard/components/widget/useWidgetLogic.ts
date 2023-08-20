@@ -2,8 +2,17 @@ import React, {useContext, useEffect, useMemo, useState} from "react";
 import ToastContext from "../../../../utils/contexts/ToastContext";
 import Sensor from "../../models/Sensor";
 import {DashboardWidgetProps} from "./Widget";
-import {calculateChartProps, loadSensorData, setNewWidgetSensorData} from "../../utils"
+import {
+    calculateChartProps,
+    calculatePolarChartSensorData,
+    loadSensorData,
+    setNewWidgetSensorData,
+    setWidgetDataDisplaySize,
+    setWidgetSensorDataLoadingAndError
+} from "../../utils"
 import axiosExceptionHandler from "../../../../utils/AxiosExceptionHandler";
+import DashboardSize from "../../interfaces/DashboardSize";
+import {Layout} from "react-grid-layout";
 
 export interface ChartProps {
     yAxisDataMin: number,
@@ -28,33 +37,29 @@ export const useWidgetLogic = (props: DashboardWidgetProps) => {
 
     const [availableSensorsMap, setAvailableSensorsMap] = useState<Map<string, Sensor[]>>(new Map())
 
-    const [sensorsDataLoading, setSensorsDataLoading] = useState(false)
-    const [sensorDataError, setSensorDataError] = useState(false)
-    const [loadingMoreSensorData, setLoadingMoreSensorData] = useState(false)
     const [sensorsModalOpen, setSensorsModalOpen] = useState(false)
     const [settingsModalOpen, setSettingsModalOpen] = useState(false)
     const [historyModalOpen, setHistoryModalOpen] = useState(false)
 
-    const [dataDisplaySize, setDataDisplaySize] = useState<{ height: number, width: number }>({
-        height: 0,
-        width: 0
-    })
-
     const [widgetStatic, setWidgetStatic] = useState(widget.static)
 
-    // const setDataDisplaySize = () => {}
     // DATA DISPLAY ZONE HEIGHT & WIDTH in px
     useEffect(() => {
+        calculateDataDisplaySize(dashboardSize, layout);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dashboardSize, dashboardSize.rowHeight, dashboardSize.width, dashboardSize.numCols, layout.h, layout.w])
+
+    const calculateDataDisplaySize = (dashboardSize: DashboardSize, layout: Layout) => {
         const rowHeight = dashboardSize.rowHeight
         const gridMargin = 5
 
-        setDataDisplaySize({
+        setWidgetDataDisplaySize(setDashboard, widgetIndex, {
             // 74 = 18 bottom text height + 32 widget heading + 16 top&bottom padd
             height: Math.round(layout.h * rowHeight + (layout.h - 1) * gridMargin - 66),
             // 16 = 16 left&right padd
             width: Math.floor(rowHeight * layout.w + (layout.w - 1) * gridMargin - 16)
         })
-    }, [dashboardSize.rowHeight, dashboardSize.width, dashboardSize.numCols, layout.h, layout.w])
+    }
 
     // AVAILABLE SENSORS MAP - for use in Sensors Modal
     const generateAvailableSensorsMap = () => {
@@ -71,7 +76,6 @@ export const useWidgetLogic = (props: DashboardWidgetProps) => {
 
     // LOAD MORE SENSOR DATA
     const loadMoreSensorData = async () => {
-        setLoadingMoreSensorData(true);
 
         const requestType = 'cache-only'
         let cacheDataRequestMaxTime = 0;
@@ -81,9 +85,12 @@ export const useWidgetLogic = (props: DashboardWidgetProps) => {
             cacheDataRequestMaxTime = widget.sensorData.displayData[0].time
 
         try {
+            setWidgetSensorDataLoadingAndError(setDashboard, widgetIndex, false, true, false);
             const sensorDataResult = await loadSensorData(widget.sensorsMonitoring, requestType, cacheDataRequestMaxTime, 0, machinery, widget)
             const chartPropsResult = calculateChartProps(sensorDataResult, widget.chartProps);
-            setNewWidgetSensorData(setDashboard, widgetIndex, sensorDataResult, chartPropsResult);
+            const polarChartSensorDataResult = calculatePolarChartSensorData(widget.polarChartSensorData, sensorDataResult, widget.sensorsMonitoringArray, widget.type, widget.aggregationsArray, widget.dataDisplaySize)
+
+            setNewWidgetSensorData(setDashboard, widgetIndex, sensorDataResult, chartPropsResult, polarChartSensorDataResult);
         } catch (e) {
             console.error(e)
             axiosExceptionHandler.handleAxiosExceptionWithToast(
@@ -91,9 +98,8 @@ export const useWidgetLogic = (props: DashboardWidgetProps) => {
                 toast,
                 'Sensor data could not be loaded'
             )
+            setWidgetSensorDataLoadingAndError(setDashboard, widgetIndex, false, false, false);
         }
-
-        setLoadingMoreSensorData(false);
 
     }
 
@@ -141,14 +147,10 @@ export const useWidgetLogic = (props: DashboardWidgetProps) => {
 
     return {
         availableSensorsMap,
-        sensorsDataLoading,
-        sensorDataError,
-        loadingMoreSensorData,
         sensorsModalOpen,
         setSensorsModalOpen,
         settingsModalOpen,
         setSettingsModalOpen,
-        dataDisplaySize,
         widgetStatic,
         setWidgetStatic,
         historyModalOpen,

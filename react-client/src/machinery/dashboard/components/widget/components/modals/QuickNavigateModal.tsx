@@ -14,26 +14,25 @@ import {
     VStack
 } from '@chakra-ui/react'
 import React, {Fragment, useEffect, useState} from 'react'
-import type SensorData from '../../models/SensorData'
+import type SensorData from '../../../../models/SensorData'
 import {FiPlus} from 'react-icons/fi'
-import type SlidingSensorData from '../../interfaces/SlidingSensorData'
-import GridWidget from "../../interfaces/GridWidget";
+import type SlidingSensorData from '../../../../interfaces/SlidingSensorData'
+import GridWidget from "../../../../interfaces/GridWidget";
 import _ from "lodash";
 
 interface QuickNavigateModalProps {
     widget: GridWidget
     quickNavigateModalOpen: boolean
     setQuickNavigateModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-    loadingMoreSensorData: boolean
     loadMoreSensorData: () => void
     quickNavigateChart: (chartQuickNavigate: number) => void
 }
 
 export default function QuickNavigateModal(props: QuickNavigateModalProps) {
     const {widget, quickNavigateModalOpen, setQuickNavigateModalOpen} = props;
-    const {loadingMoreSensorData, loadMoreSensorData, quickNavigateChart} = props;
+    const {loadMoreSensorData, quickNavigateChart} = props;
 
-    const {sensorData} = widget;
+    const {sensorData, sensorDataCacheLoading} = widget;
 
     const [dataToDisplay, setDataToDisplay] = useState<Array<{
         time: number
@@ -219,7 +218,7 @@ export default function QuickNavigateModal(props: QuickNavigateModalProps) {
                                 onClick={loadMoreSensorData}
                             >
                                 {
-                                    !loadingMoreSensorData &&
+                                    !sensorDataCacheLoading &&
                                     <HStack
                                         w="full"
                                         p={3}
@@ -231,7 +230,7 @@ export default function QuickNavigateModal(props: QuickNavigateModalProps) {
                                     </HStack>
                                 }
                                 {
-                                    loadingMoreSensorData &&
+                                    sensorDataCacheLoading &&
                                     <HStack
                                         w="full"
                                         justifyContent="center"

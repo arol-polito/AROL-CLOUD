@@ -1,18 +1,18 @@
 import {Box, HStack, Spinner, Text, VStack} from '@chakra-ui/react'
 import type Sensor from '../../models/Sensor'
 import React, {Fragment, useRef} from 'react'
-import SensorsModal from '../modals/SensorsModal'
+import SensorsModal from './components/modals/SensorsModal'
 import type Machinery from '../../../../machineries-map/components/Machinery'
-import WidgetSettingsModal from '../modals/WidgetSettingsModal'
+import WidgetSettingsModal from './components/modals/WidgetSettingsModal'
 import {type Layout} from 'react-grid-layout'
 import type SensorDataFilters from '../../interfaces/SensorDataFilters'
 import type GridWidget from '../../interfaces/GridWidget'
 import type TooltipData from '../../interfaces/TooltipData'
-import HistoryModal from '../modals/HistoryModal'
+import HistoryModal from './components/modals/HistoryModal'
 import type DashboardSize from '../../interfaces/DashboardSize'
-import SingleValueDataDisplay from '../data-visualization/SingleValueDataDisplay'
-import {MultiValueDataDisplay} from '../data-visualization/MultiValueDataDisplay'
-import WidgetControlPanel from './WidgetControlPanel'
+import SingleValueDataDisplay from './components/data-visualization/single-value/SingleValueDataDisplay'
+import {MultiValueDataDisplay} from './components/data-visualization/multi-value/MultiValueDataDisplay'
+import WidgetControlPanel from './components/widget-control-panel/WidgetControlPanel'
 import {useWidgetLogic} from "./useWidgetLogic";
 import Dashboard from "../../models/Dashboard";
 
@@ -37,19 +37,17 @@ export function Widget(props: DashboardWidgetProps) {
     const {availableSensors, handleWidgetModified, chartTooltipActive} = props;
     const {setChartTooltip, dashboardPermissions} = props;
 
-    const {sensorsMonitoring, sensorsMonitoringArray} = widget
-    const {numSensorsMonitoring, sensorData, name} = widget
-    const {maxSensors, category} = widget
+    const {sensorsMonitoringArray, numSensorsMonitoring, sensorData, category} = widget
+    const {sensorDataLoading, sensorDataError} = widget;
 
     const ref = useRef<any>();
 
     const widgetLogic = useWidgetLogic(props);
     const {availableSensorsMap, widgetBottomText, handleWidgetMouseDown} = widgetLogic;
-    const {sensorsDataLoading, sensorDataError, loadingMoreSensorData} = widgetLogic;
     const {sensorsModalOpen, setSensorsModalOpen, settingsModalOpen, setSettingsModalOpen} = widgetLogic;
-    const {dataDisplaySize, widgetStatic, setWidgetStatic} = widgetLogic;
+    const {setWidgetStatic} = widgetLogic;
     const {historyModalOpen, setHistoryModalOpen, handleOpenSensorsModalButton} = widgetLogic;
-    const {loadSensorData, loadMoreSensorData} = widgetLogic;
+    const {loadMoreSensorData} = widgetLogic;
 
     return (
         <Fragment>
@@ -68,31 +66,23 @@ export function Widget(props: DashboardWidgetProps) {
                     setDashboard={setDashboard}
                     widget={widget}
                     widgetIndex={widgetIndex}
-                    widgetStatic={widgetStatic}
                     setWidgetStatic={setWidgetStatic}
                     sensorDataError={sensorDataError}
                     setHistoryModalOpen={setHistoryModalOpen}
                     setSensorsModalOpen={setSensorsModalOpen}
                     setSettingsModalOpen={setSettingsModalOpen}
-                    widgetID={widget.id}
-                    widgetName={name}
-                    widgetMaxSensors={maxSensors}
                     availableSensors={availableSensors}
-                    loadSensorData={loadSensorData}
-                    sensorsMonitoringSensors={sensorsMonitoring.sensors}
-                    sensorsMonitoringAggregations={sensorsMonitoring.aggregations}
-                    sensorsMonitoringDataRange={sensorsMonitoring.dataRange}
                     chartTooltipActive={chartTooltipActive}
                     setChartTooltip={setChartTooltip}
                     handleWidgetModified={handleWidgetModified}
                     dashboardPermissionsModify={dashboardPermissions.modify}
                 />
                 {
-                    !sensorsDataLoading &&
+                    !sensorDataLoading &&
                     numSensorsMonitoring === 0 &&
                     <VStack
                         w="full"
-                        h={dataDisplaySize.height}
+                        h={widget.dataDisplaySize.height}
                         justifyContent="center"
                         alignContent="center"
                     >
@@ -113,7 +103,7 @@ export function Widget(props: DashboardWidgetProps) {
                     </VStack>
                 }
                 {
-                    !sensorsDataLoading &&
+                    !sensorDataLoading &&
                     numSensorsMonitoring > 0 &&
                     <>
                         <VStack
@@ -126,8 +116,8 @@ export function Widget(props: DashboardWidgetProps) {
                                 (sensorsMonitoringArray.length > 0) &&
                                 <Box
                                     w="full"
-                                    h={dataDisplaySize.height}
-                                    maxH={dataDisplaySize.height}
+                                    h={widget.dataDisplaySize.height}
+                                    maxH={widget.dataDisplaySize.height}
                                 >
                                     {
                                         category === 'single-value' &&
@@ -135,7 +125,6 @@ export function Widget(props: DashboardWidgetProps) {
                                             widget={widget}
                                             sensorMonitoring={sensorsMonitoringArray[0]}
                                             sensorData={sensorData}
-                                            dataDisplaySize={dataDisplaySize}
                                         />
                                     }
                                     {
@@ -147,10 +136,8 @@ export function Widget(props: DashboardWidgetProps) {
                                             displayType="dashboard"
                                             availableSensors={availableSensors}
                                             loadMoreSensorData={loadMoreSensorData}
-                                            loadingMoreSensorData={loadingMoreSensorData}
                                             chartTooltipActive={chartTooltipActive}
                                             setChartTooltip={setChartTooltip}
-                                            dataDisplaySize={dataDisplaySize}
                                         />
                                     }
                                 </Box>
@@ -160,7 +147,7 @@ export function Widget(props: DashboardWidgetProps) {
                                 sensorData.numSensorData === 0 &&
                                 <VStack
                                     w="full"
-                                    h={dataDisplaySize.height}
+                                    h={widget.dataDisplaySize.height}
                                     justifyContent="center"
                                     alignContent="center"
                                 >
@@ -172,7 +159,7 @@ export function Widget(props: DashboardWidgetProps) {
                                 sensorDataError &&
                                 <VStack
                                     w="full"
-                                    h={dataDisplaySize.height}
+                                    h={widget.dataDisplaySize.height}
                                     justifyContent="center"
                                     alignContent="center"
                                 >
@@ -203,7 +190,7 @@ export function Widget(props: DashboardWidgetProps) {
                     </>
                 }
                 {
-                    sensorsDataLoading &&
+                    sensorDataLoading &&
                     <VStack
                         w="full"
                         h={`${(180 - 50) + ((layout.h - 1) * 180)}px`}
@@ -229,9 +216,7 @@ export function Widget(props: DashboardWidgetProps) {
                     setModalOpen={setSensorsModalOpen}
                     availableSensors={availableSensors}
                     availableSensorsMap={availableSensorsMap}
-                    sensorsMonitoring={sensorsMonitoring}
                     numHeads={machinery.numHeads}
-                    maxSelectableSensors={maxSensors}
                 />
             }
             {

@@ -20,17 +20,23 @@ import {
 } from '@chakra-ui/react'
 import React, {useContext, useEffect, useState} from 'react'
 import {FiInfo} from 'react-icons/fi'
-import type Sensor from '../../models/Sensor'
-import type SensorDataFilters from '../../interfaces/SensorDataFilters'
-import type SensorDataFilter from '../../interfaces/SensorDataFilter'
-import ToastContext from '../../../../utils/contexts/ToastContext'
-import toastHelper from '../../../../utils/ToastHelper'
-import Dashboard from "../../models/Dashboard";
-import GridWidget from "../../interfaces/GridWidget";
-import Machinery from "../../../../machineries-map/components/Machinery";
+import type Sensor from '../../../../models/Sensor'
+import type SensorDataFilters from '../../../../interfaces/SensorDataFilters'
+import type SensorDataFilter from '../../../../interfaces/SensorDataFilter'
+import ToastContext from '../../../../../../utils/contexts/ToastContext'
+import toastHelper from '../../../../../../utils/ToastHelper'
+import Dashboard from "../../../../models/Dashboard";
+import GridWidget from "../../../../interfaces/GridWidget";
+import Machinery from "../../../../../../machineries-map/components/Machinery";
 import _ from 'lodash'
-import {calculateChartProps, loadSensorData, setNewWidgetSensorData, setNewWidgetSensorsMonitoring} from "../../utils";
-import axiosExceptionHandler from "../../../../utils/AxiosExceptionHandler";
+import {
+    calculateChartProps,
+    calculatePolarChartSensorData,
+    loadSensorData,
+    setNewWidgetSensorData,
+    setNewWidgetSensorsMonitoring, setWidgetSensorDataLoadingAndError
+} from "../../../../utils";
+import axiosExceptionHandler from "../../../../../../utils/AxiosExceptionHandler";
 
 interface WidgetSettingsModalProps {
     machinery: Machinery
@@ -62,13 +68,12 @@ export default function WidgetSettingsModal(props: WidgetSettingsModalProps) {
     const {widget, widgetIndex, setDashboard, machinery} = props;
     const {availableSensors, settingsModalOpen, setSettingsModalOpen} = props;
 
-    const {maxSensors, chartProps, sensorsMonitoring} = widget;
+    const {maxSensors, chartProps, sensorsMonitoring, dataDisplaySize} = widget;
 
     const toast = useContext(ToastContext)
 
     const [modalSensorsMonitoring, setModalSensorsMonitoring] = useState<SensorDataFilters>(_.cloneDeep(sensorsMonitoring))
 
-    // SET SENSORS MONITORING (json stringify + parse for deep copy)
     useEffect(() => {
         setModalSensorsMonitoring((val) => {
             if (maxSensors === 1 && val.aggregations.length === 0)
@@ -162,8 +167,6 @@ export default function WidgetSettingsModal(props: WidgetSettingsModalProps) {
         if (!_.isEqual(modalSensorsMonitoring, sensorsMonitoring)) {
             const sensorsMonitoring = {...modalSensorsMonitoring};
 
-            const requestType = 'first-time'
-
             sensorsMonitoring.aggregations = sensorsMonitoring.aggregations.filter((aggregation) => (aggregation.name !== 'none'))
 
             if (sensorsMonitoring.aggregations.length === 0 && maxSensors === 1) {
@@ -179,9 +182,12 @@ export default function WidgetSettingsModal(props: WidgetSettingsModalProps) {
             )
 
             try {
-                const sensorDataResult = await loadSensorData(sensorsMonitoring, requestType, 0, 0, machinery, widget)
+                setWidgetSensorDataLoadingAndError(setDashboard, widgetIndex, true, false, false);
+                const sensorDataResult = await loadSensorData(sensorsMonitoring, 'first-time', 0, 0, machinery, widget)
                 const chartPropsResult = calculateChartProps(sensorDataResult, chartProps);
-                setNewWidgetSensorData(setDashboard, widgetIndex, sensorDataResult, chartPropsResult);
+                const polarChartSensorDataResult = calculatePolarChartSensorData(widget.polarChartSensorData, sensorDataResult, widget.sensorsMonitoringArray, widget.type, widget.aggregationsArray, dataDisplaySize)
+
+                setNewWidgetSensorData(setDashboard, widgetIndex, sensorDataResult, chartPropsResult, polarChartSensorDataResult);
             } catch (e) {
                 console.error(e)
                 axiosExceptionHandler.handleAxiosExceptionWithToast(
@@ -189,6 +195,7 @@ export default function WidgetSettingsModal(props: WidgetSettingsModalProps) {
                     toast,
                     'Sensor data could not be loaded'
                 )
+                setWidgetSensorDataLoadingAndError(setDashboard, widgetIndex, false, false, true);
             }
 
         }
@@ -524,7 +531,7 @@ const SensorDescription = (props: SensorDescriptionProps) => {
                         <Image
                             objectFit="cover"
                             boxSize="100%"
-                            src={require('../../../../assets/machineries/EQUA.png')}
+                            src={require('../../../../../../assets/machineries/EQUA.png')}
                         />
                     </Box>
                 </Flex>
