@@ -288,18 +288,11 @@ async function getMachinerySensorData(machineryUID: string, machineryModelID: st
 
             await queryResults.forEach((queryResultObject: Document) => {
 
-                let amount = sensorFilters.dataRange.unit === 'sample'
-                    ? sensorFilters.dataRange.amount
-                    : Number.MAX_SAFE_INTEGER;
-                amount -= sensorDataFiltered.length;
-                if (amount < 0) amount = 0;
-
                 if (queryResultObject.folder)
-                    sensorDataFiltered.push(...queryResultObject.samples.sort((a: any, b: any) => (b.time - a.time)).slice(0, amount))
+                    sensorDataFiltered.push(...queryResultObject.samples.sort((a: any, b: any) => (b.time - a.time)))
                 else if (queryResultObject.variable)
                     sensorDataFiltered.push(...queryResultObject.samples
                         .sort((a: any, b: any) => (b.time - a.time))
-                        .slice(0, amount)
                         .map((el: any) => ({
                             name: queryResultObject.variable,
                             value: el.value,

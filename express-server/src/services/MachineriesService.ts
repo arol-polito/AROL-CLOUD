@@ -189,9 +189,7 @@ async function getCompanyMachinerySensorData(req: express.Request, res: express.
 
         let lastBatchOfSensorData: boolean
         if (preliminaryCheckForEndOfData === "indefinite")
-
             lastBatchOfSensorData = await machineryRepository.getSingleSensorDataForMachineryBeforeTime(sensorFilters, minSampleTime)
-
         else
             lastBatchOfSensorData = preliminaryCheckForEndOfData === "true";
 
