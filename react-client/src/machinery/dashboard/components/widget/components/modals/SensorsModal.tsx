@@ -181,7 +181,7 @@ export default function SensorsModal(props: SensorsModalProps) {
 
         try {
             setWidgetSensorDataLoadingAndError(setDashboard, widgetIndex, true, false, false);
-            const sensorDataResult = await loadSensorData(sensorsMonitoring, 'first-time', 0, 0, machinery, widget)
+            const sensorDataResult = await loadSensorData(sensorsMonitoring, 'first-time', 0, 0, machinery.uid, widget)
             const chartPropsResult = calculateChartProps(sensorDataResult, widget.chartProps);
             const polarChartSensorDataResult = calculatePolarChartSensorData(widget.polarChartSensorData, sensorDataResult, widget.sensorsMonitoringArray, widget.type, widget.aggregationsArray, dataDisplaySize)
 

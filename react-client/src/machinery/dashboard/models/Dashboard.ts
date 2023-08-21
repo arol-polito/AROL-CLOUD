@@ -44,7 +44,7 @@ export default class Dashboard {
             numCols: 12,
             numRows: 4,
             rowHeight: 125,
-            compactType: null
+            compactType: 'vertical'
         };
         this.widgets = widgets || [];
         this.layout = layout || [];

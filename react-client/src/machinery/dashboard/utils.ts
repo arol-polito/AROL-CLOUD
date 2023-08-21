@@ -4,7 +4,6 @@ import Sensor from "./models/Sensor";
 import SensorMonitoring from "./interfaces/SensorMonitoring";
 import SensorDataFilters from "./interfaces/SensorDataFilters";
 import machineryService from "../../services/MachineryService";
-import Machinery from "../../machineries-map/components/Machinery";
 import SlidingSensorData from "./interfaces/SlidingSensorData";
 import GridWidget from "./interfaces/GridWidget";
 import {ChartProps} from "./components/widget/useWidgetLogic";
@@ -74,7 +73,7 @@ export const loadSensorData = async (
     requestType: string,
     cacheDataRequestMaxTime: number,
     newDataRequestMinTime: number,
-    machinery: Machinery,
+    machineryUID: string,
     widget: GridWidget,
 ) => {
 
@@ -99,7 +98,7 @@ export const loadSensorData = async (
         numSamplesDisplaying: 0
     };
 
-    const result = await machineryService.getMachinerySensorsData(machinery.uid, {
+    const result = await machineryService.getMachinerySensorsData(machineryUID, {
         ...sensorsMonitoringConfig,
         requestType,
         cacheDataRequestMaxTime,
@@ -107,7 +106,7 @@ export const loadSensorData = async (
     })
 
     if (requestType === 'first-time' && result.displaySensorData.length > 0) {
-        const cachedData = await machineryService.getMachinerySensorsData(machinery.uid, {
+        const cachedData = await machineryService.getMachinerySensorsData(machineryUID, {
             ...sensorsMonitoringConfig,
             requestType: 'cache-only',
             cacheDataRequestMaxTime: result.displaySensorData[0].time

@@ -13,7 +13,13 @@ import LoadDashboardAction from "./interfaces/LoadDashboardAction";
 import dashboardService from "../../services/DashboardService";
 import toastHelper from "../../utils/ToastHelper";
 import {Layout} from "react-grid-layout";
-import {calculateChartProps, loadSensorData, processSensorsMonitoring} from "../dashboard/utils"
+import {
+    calculateChartProps,
+    calculatePolarChartSensorData,
+    loadSensorData,
+    processSensorsMonitoring,
+    setNewWidgetSensorData
+} from "../dashboard/utils"
 
 export const useMachineryPageLogic = () => {
 
@@ -131,7 +137,7 @@ export const useMachineryPageLogic = () => {
     }, [toast])
 
     //LOAD DASHBOARD
-    const loadDashboard = async (machineryUID, loadDashboard?: LoadDashboardAction) => {
+    const loadDashboard = async (machineryUID, loadDashboard?: LoadDashboardAction, sensors?: Sensor[]) => {
 
         setDashboard((val) => {
             val.isLoading = true;
@@ -167,51 +173,26 @@ export const useMachineryPageLogic = () => {
                             },
                             aggregations: [{name: 'none', color: '#A0AEC0'}]
                         }
-
-                } else
-                    for (let widget of result.widgets)
-                        try {
-                            const sensorData = await loadSensorData(
-                                widget.sensorsMonitoring,
-                                'first-time',
-                                0,
-                                0,
-                                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                                machinery!,
-                                widget
-                            )
-                            const chartProps = calculateChartProps(sensorData, widget.chartProps);
-
-                            widget.sensorData = sensorData;
-                            widget.chartProps = chartProps;
-
-                            widget = {
-                                ...widget,
-                                ...processSensorsMonitoring(widget.sensorsMonitoring, machinerySensors)
-                            }
-
-                        } catch (e) {
-                            console.error(e)
-                            axiosExceptionHandler.handleAxiosExceptionWithToast(
-                                e,
-                                toast,
-                                'Sensor data could not be loaded'
-                            )
-                        }
-
-
+                }
             } else
                 result = await dashboardService.loadDefaultDashboard(machineryUID);
+
+            if (!loadDashboard?.isTemplate)
+                for (const widget of result.widgets)
+                    widget.sensorDataLoading = true;
 
             result.numUnsavedChanges = 0
             result.lastSave = 0
             result.isNew = false
 
-            result.widgets.forEach((widget) => ({
+            result.widgets = result.widgets.map((widget) => ({
                     ...widget,
-                    ...processSensorsMonitoring(widget.sensorsMonitoring, machinerySensors)
+                    ...processSensorsMonitoring(widget.sensorsMonitoring, sensors || machinerySensors),
+                    numChange: widget.numChange + 1,
+                    chartNumChange: widget.chartNumChange + 1
                 }
             ))
+
 
             setChartTooltip((val) => {
                 val.active = false
@@ -234,7 +215,11 @@ export const useMachineryPageLogic = () => {
                     'Dashboard loaded',
                     'info'
                 )
-        } catch (e) {
+
+            loadAllWidgetsSensorData(result, machineryUID);
+
+        } catch
+            (e) {
             console.error(e)
             if (loadDashboard?.isTemplate)
                 axiosExceptionHandler.handleAxiosExceptionWithToast(
@@ -260,6 +245,7 @@ export const useMachineryPageLogic = () => {
 
             return val;
         })
+
 
     }
 
@@ -298,9 +284,9 @@ export const useMachineryPageLogic = () => {
                             isTemplate: false,
                             machineryUID: machineryUID || '',
                             name: location.state.dashboardName
-                        });
+                        }, sensorsResult);
                     else
-                        loadDashboard(machineryUID);
+                        loadDashboard(machineryUID, undefined, sensorsResult);
 
             } catch (e) {
                 console.error(e)
@@ -321,7 +307,35 @@ export const useMachineryPageLogic = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location.state, machineryUID, toast])
 
-    // BREADCRUMB LINK NAVIGATION
+    const loadAllWidgetsSensorData = (dashboard: Dashboard, machineryUID: string) => {
+
+        dashboard.widgets.forEach((widget, index) => {
+            loadSensorData(
+                widget.sensorsMonitoring,
+                'first-time',
+                0,
+                0,
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                machineryUID,
+                widget
+            ).then((sensorDataResults) => {
+                const chartProps = calculateChartProps(sensorDataResults, widget.chartProps);
+                const polarChartSensorDataResults = calculatePolarChartSensorData(widget.polarChartSensorData, sensorDataResults, widget.sensorsMonitoringArray, widget.type, widget.aggregationsArray, widget.dataDisplaySize);
+
+                setNewWidgetSensorData(setDashboard, index, sensorDataResults, chartProps, polarChartSensorDataResults);
+
+            }).catch((e) => {
+                console.error(e)
+                axiosExceptionHandler.handleAxiosExceptionWithToast(
+                    e,
+                    toast,
+                    `Sensor data could not be loaded for widget ${widget.name}`
+                )
+            })
+        })
+    }
+
+// BREADCRUMB LINK NAVIGATION
     const breadcrumbNavigate = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, to: string, isCurrent: boolean) => {
         e.preventDefault()
         e.stopPropagation()

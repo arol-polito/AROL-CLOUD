@@ -49,6 +49,11 @@ export default function DashboardPanel(props: DashboardPanelProps) {
         [dashboard.size]
     )
 
+    // eslint-disable-next-line no-console
+    console.log("dashboard", dashboard.layout);
+    // eslint-disable-next-line no-console
+    console.log("layout", layout);
+
     return (
         <Fragment>
             {

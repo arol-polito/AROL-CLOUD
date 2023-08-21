@@ -86,7 +86,7 @@ export const useWidgetLogic = (props: DashboardWidgetProps) => {
 
         try {
             setWidgetSensorDataLoadingAndError(setDashboard, widgetIndex, false, true, false);
-            const sensorDataResult = await loadSensorData(widget.sensorsMonitoring, requestType, cacheDataRequestMaxTime, 0, machinery, widget)
+            const sensorDataResult = await loadSensorData(widget.sensorsMonitoring, requestType, cacheDataRequestMaxTime, 0, machinery.uid, widget)
             const chartPropsResult = calculateChartProps(sensorDataResult, widget.chartProps);
             const polarChartSensorDataResult = calculatePolarChartSensorData(widget.polarChartSensorData, sensorDataResult, widget.sensorsMonitoringArray, widget.type, widget.aggregationsArray, widget.dataDisplaySize)
 

@@ -276,9 +276,9 @@ function SavedDashboardEntry(props: SavedDashboardEntryProps) {
 
     // LOAD DASHBOARD
     function handleLoadDashboardButton() {
-        props.loadDashboard({
+        props.loadDashboard(props.machineryUID, {
             isTemplate: false,
-            machineryUID: '',
+            machineryUID: props.machineryUID,
             name: props.savedDashboard.name
         });
         props.setLoadDashboardModalOpen(false)

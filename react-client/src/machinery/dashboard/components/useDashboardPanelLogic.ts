@@ -33,22 +33,24 @@ export const useDashboardPanelLogic = (props: DashboardPanelProps) => {
 
 
     // RESET PLACEHOLDERS ON NEW DASHBOARD CREATED
-    // TODO: function
-    useEffect(() => {
-        if (!dashboard.isNew) return
-
-        setDashboard((val) => {
-            if (val.isNew) {
-                val.isNew = false
-                val.size.numRows = 4
-                val.size.compactType = 'vertical'
-                setLayout([])
-                // updateDashboardSize()
-            }
-
-            return val
-        })
-    }, [dashboard.isNew, setDashboard, setLayout])
+    // // TODO: function
+    // useEffect(() => {
+    //     if (!dashboard.isNew) return
+    //
+    //     debugger;
+    //
+    //     setDashboard((val) => {
+    //         if (val.isNew) {
+    //             val.isNew = false
+    //             val.size.numRows = 4
+    //             val.size.compactType = 'vertical'
+    //             setLayout([])
+    //             // updateDashboardSize()
+    //         }
+    //
+    //         return {...val}
+    //     })
+    // }, [dashboard.isNew, setDashboard, setLayout])
 
     const saveDashboard = async (saveDashboard: SaveDashboard) => {
         setDashboardSaving(true)
@@ -61,6 +63,31 @@ export const useDashboardPanelLogic = (props: DashboardPanelProps) => {
             widgetToSave.sensorsMonitoring.newDataRequestMinTime = 0
             widgetToSave.numChange = 1
             widgetToSave.chartNumChange = 1
+            widgetToSave.sensorData = {
+                displayData: [],
+                endOfData: true,
+                hasNewData: false,
+                leftData: [],
+                minDisplayTime: 0,
+                numSamplesDisplaying: 0,
+                numSensorData: 0,
+                rightData: []
+            };
+            widgetToSave.sensorsMonitoringArray = [];
+            widgetToSave.sensorsMonitoringObject = {};
+            widgetToSave.polarChartSensorData = {
+                aggregationData: {},
+                allData: {},
+                sectionSize: 0,
+                startingFromTime: ""
+            }
+            widgetToSave.sensorDataError = false;
+            widgetToSave.sensorDataLoading = false;
+            widgetToSave.sensorDataError = false;
+            widgetToSave.dataDisplaySize = {
+                height: 0,
+                width: 0
+            }
             gridWidgets.push(widgetToSave)
         })
 
@@ -79,7 +106,7 @@ export const useDashboardPanelLogic = (props: DashboardPanelProps) => {
                         false,
                         dashboard.size,
                         gridWidgets,
-                        layout
+                        dashboard.layout
                     )
                 )
             else
@@ -154,12 +181,16 @@ export const useDashboardPanelLogic = (props: DashboardPanelProps) => {
             val.size.rowHeight = (dashboardContainerWidth - (5 * val.size.numCols)) / val.size.numCols
             val.size = {...val.size};
 
+            if (val.isNew)
+                val.isNew = false;
+
+
             return {...val}
         })
 
         window.dispatchEvent(new Event('resize'))
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [width])
+    }, [width, dashboard.isNew])
 
     // MODIFY WIDGET - this must be done to have un updated view of the widgets at save time
     const handleWidgetModifiedFn = (type: string, bundle: any) => {
