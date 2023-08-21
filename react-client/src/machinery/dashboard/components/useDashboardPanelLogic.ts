@@ -350,7 +350,8 @@ export const useDashboardPanelLogic = (props: DashboardPanelProps) => {
 
             const chartProps: ChartProps = {
                 xAxisProps: {
-                    dataKey: "", style: {
+                    dataKey: "formattedTime",
+                    style: {
                         fontSize: "10px",
                     },
                 },
