@@ -134,6 +134,10 @@ export function Widget(props: DashboardWidgetProps) {
                                             widgetIndex={widgetIndex}
                                             setDashboard={setDashboard}
                                             displayType="dashboard"
+                                            fullscreenDataDisplaySize={{
+                                                width: 0,
+                                                height: 0
+                                            }}
                                             availableSensors={availableSensors}
                                             loadMoreSensorData={loadMoreSensorData}
                                             chartTooltipActive={chartTooltipActive}

@@ -61,6 +61,7 @@ export default function ChartFullscreenModal(props: ChartFullscreenModalProps) {
                         // <Box py={4} w={"full"} h={"full"}>
                         <MultiValueDataDisplay
                             {...props}
+                            fullscreenDataDisplaySize={modalBodySize}
                             displayType="fullscreen"
                         />
                         // </Box>

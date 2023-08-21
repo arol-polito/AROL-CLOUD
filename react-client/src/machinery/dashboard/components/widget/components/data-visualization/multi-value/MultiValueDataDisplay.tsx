@@ -9,6 +9,7 @@ import {useMultiValueDataDisplayLogic} from "./useMultiValueDataDisplayLogic";
 import Dashboard from "../../../../../models/Dashboard";
 import {MemoizedChart} from "./components/MemoizedChart";
 import {MemoizedChartControlPanel} from "./components/MemoizedChartControlPanel";
+import {DataDisplaySize} from "../../../../../interfaces/DataDisplaySize";
 
 export interface MultiValueDataDisplayProps {
     widget: GridWidget
@@ -17,6 +18,7 @@ export interface MultiValueDataDisplayProps {
     displayType: string
     availableSensors: Sensor[]
     loadMoreSensorData: () => void
+    fullscreenDataDisplaySize: DataDisplaySize
     chartTooltipActive: boolean
     setChartTooltip: React.Dispatch<React.SetStateAction<TooltipData>>
 }
@@ -25,7 +27,7 @@ export function MultiValueDataDisplay(props: MultiValueDataDisplayProps) {
 
     const {widget, availableSensors, loadMoreSensorData} = props;
     const {widgetIndex, setDashboard, setChartTooltip} = props;
-    const {chartTooltipActive, displayType} = props;
+    const {chartTooltipActive, displayType, fullscreenDataDisplaySize} = props;
 
     const multiValueLogic = useMultiValueDataDisplayLogic(props);
 
@@ -56,6 +58,7 @@ export function MultiValueDataDisplay(props: MultiValueDataDisplayProps) {
                     chartFullscreenModalOpen={chartFullscreenModalOpen}
                     setChartFullscreenModalOpen={setChartFullscreenModalOpen}
                     displayType="fullscreen"
+                    fullscreenDataDisplaySize={fullscreenDataDisplaySize}
                     availableSensors={availableSensors}
                     loadMoreSensorData={loadMoreSensorData}
                     chartTooltipActive={chartTooltipActive}

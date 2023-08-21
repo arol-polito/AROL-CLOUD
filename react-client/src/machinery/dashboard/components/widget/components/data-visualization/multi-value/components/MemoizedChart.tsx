@@ -23,11 +23,13 @@ import {
 import Dot from "./chart-components/Dot";
 import PieTooltip from "./chart-components/PieTooltip";
 import GridWidget from "../../../../../../interfaces/GridWidget";
+import {DataDisplaySize} from "../../../../../../interfaces/DataDisplaySize";
 
 export interface ChartProps {
     widget: GridWidget
     displayType: string
     loadMoreSensorData: () => void
+    fullscreenDataDisplaySize: DataDisplaySize
     chartTooltipActive: boolean
     multiValueLogic: any
 }
@@ -38,6 +40,7 @@ export const MemoizedChart = (props: ChartProps) => {
         widget,
         displayType,
         loadMoreSensorData,
+        fullscreenDataDisplaySize,
         chartTooltipActive,
         multiValueLogic
     } = props;
@@ -50,6 +53,8 @@ export const MemoizedChart = (props: ChartProps) => {
     const {chartZoomSelector, handleChartMouseDown, handleChartMouseMove} = multiValueLogic;
     const {handleChartMouseUp, handleChartMouseLeave, legendNameTranslator} = multiValueLogic;
 
+    const displaySize = displayType === "fullscreen" ? fullscreenDataDisplaySize : dataDisplaySize;
+
     const chart = useMemo(
         () =>
             <>
@@ -57,8 +62,8 @@ export const MemoizedChart = (props: ChartProps) => {
                     type === 'line-chart' &&
                     <Box>
                         <ResponsiveContainer
-                            width={dataDisplaySize.width}
-                            height={dataDisplaySize.height}
+                            width={displaySize.width}
+                            height={displaySize.height}
                         >
                             <LineChart
                                 data={sensorData.displayData}
@@ -142,8 +147,8 @@ export const MemoizedChart = (props: ChartProps) => {
                 {
                     type === 'area-chart' &&
                     <ResponsiveContainer
-                        width={dataDisplaySize.width}
-                        height={dataDisplaySize.height}
+                        width={displaySize.width}
+                        height={displaySize.height}
                     >
                         <AreaChart
                             data={sensorData.displayData}
@@ -227,8 +232,8 @@ export const MemoizedChart = (props: ChartProps) => {
                 {
                     type === 'bar-chart' &&
                     <ResponsiveContainer
-                        width={dataDisplaySize.width}
-                        height={dataDisplaySize.height}
+                        width={displaySize.width}
+                        height={displaySize.height}
                     >
                         <BarChart
                             data={sensorData.displayData}
@@ -305,8 +310,8 @@ export const MemoizedChart = (props: ChartProps) => {
                 {
                     type === 'pie-chart' &&
                     <>
-                        <ResponsiveContainer width={dataDisplaySize.width}
-                                             height={dataDisplaySize.height - 40}>
+                        <ResponsiveContainer width={displaySize.width}
+                                             height={displaySize.height - 40}>
                             <PieChart>
                                 {/* <YAxis/> */}
                                 <Tooltip
@@ -369,7 +374,7 @@ export const MemoizedChart = (props: ChartProps) => {
                 }
                 {
                     type === 'scatter-chart' &&
-                    <ResponsiveContainer width={dataDisplaySize.width} height={dataDisplaySize.height}>
+                    <ResponsiveContainer width={displaySize.width} height={displaySize.height}>
                         <ScatterChart>
                             <CartesianGrid strokeDasharray="3 3"/>
                             <XAxis dataKey="uv"/>

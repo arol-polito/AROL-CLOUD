@@ -10,11 +10,13 @@ import {
     FiZoomOut
 } from "react-icons/fi";
 import GridWidget from "../../../../../../interfaces/GridWidget";
+import {DataDisplaySize} from "../../../../../../interfaces/DataDisplaySize";
 
 interface ChartControlPanelProps {
     widget: GridWidget
     displayType: string
     loadMoreSensorData: () => void
+    fullscreenDataDisplaySize: DataDisplaySize
     chartTooltipActive: boolean
     multiValueLogic: any
 }
@@ -24,6 +26,7 @@ export const MemoizedChartControlPanel = (props: ChartControlPanelProps) => {
     const {
         widget,
         displayType,
+        fullscreenDataDisplaySize,
         multiValueLogic
     } = props;
 
@@ -33,6 +36,8 @@ export const MemoizedChartControlPanel = (props: ChartControlPanelProps) => {
     const {handlePanChartButtonClicked, handleZoomChartButtonClicked, setChartFullscreenModalOpen} = multiValueLogic;
     const {setQuickNavigateModalOpen, closeNewDataPopup, navigateToNewData} = multiValueLogic;
 
+    const displaySize = displayType === "fullscreen" ? fullscreenDataDisplaySize : dataDisplaySize;
+
     const chartControlPanel = useMemo(
         () => {
             if (!['line-chart', 'area-chart', 'bar-chart'].includes(type))
@@ -41,7 +46,7 @@ export const MemoizedChartControlPanel = (props: ChartControlPanelProps) => {
             return (
                 <>
                     <HStack
-                        w={dataDisplaySize.width - chartProps.yAxisProps.width - 45}
+                        w={displaySize.width - chartProps.yAxisProps.width - 45}
                         position="absolute"
                         top="50px"
                         left={`${chartProps.yAxisProps.width + 45}px`}
@@ -150,7 +155,7 @@ export const MemoizedChartControlPanel = (props: ChartControlPanelProps) => {
                         />
                     </HStack>
                     <HStack
-                        w={dataDisplaySize.width - chartProps.yAxisProps.width - 70}
+                        w={displaySize.width - chartProps.yAxisProps.width - 70}
                         position="absolute"
                         top="35px"
                         left={`${chartProps.yAxisProps.width + 45}px`}
@@ -195,7 +200,7 @@ export const MemoizedChartControlPanel = (props: ChartControlPanelProps) => {
                             borderWidth={1}
                             borderColor="gray.400"
                             position="absolute"
-                            top={`${dataDisplaySize.height / 2}px`}
+                            top={`${displaySize.height / 2}px`}
                             right="10px"
                             p={2}
                         >
