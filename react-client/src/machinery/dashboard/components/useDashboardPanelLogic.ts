@@ -282,7 +282,7 @@ export const useDashboardPanelLogic = (props: DashboardPanelProps) => {
     // LAYOUT CHANGES - reposition
     const onLayoutChange = (layout: Layout[]) => {
         setDashboard((val) => {
-            if (!_.isEqual(val.layout, layout))
+            if (!_.isEqual(val.layout, layout.filter((layoutItem) => (layoutItem.i !== 'add-widgets-dummy'))))
                 val.numUnsavedChanges++;
 
             val.layout = [...layout]

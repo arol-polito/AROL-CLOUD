@@ -182,7 +182,6 @@ export const useMachineryPageLogic = () => {
                     widget.sensorDataLoading = true;
 
             result.numUnsavedChanges = 0
-            result.lastSave = 0
             result.isNew = false
 
             result.widgets = result.widgets.map((widget) => ({

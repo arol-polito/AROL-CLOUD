@@ -108,7 +108,7 @@ export default function ChartTooltip(props: ChartTooltipProps) {
                     return {
                         color: sensorMonitoringEntry.color,
                         name: sensorMonitoringEntry.name,
-                        value: sensorValue,
+                        value: sensorValue?.toFixed(2),
                         unit: sensorMonitoringEntry.unit,
                         diff
                     }

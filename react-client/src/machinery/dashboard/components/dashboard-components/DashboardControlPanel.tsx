@@ -134,7 +134,9 @@ export default function DashboardControlPanel(props: DashboardControlPanelProps)
                                         ? <Text fontSize="xs" fontStyle="italic" color="gray.400">Changes not
                                             yet
                                             saved</Text>
-                                        : <Text fontSize="xs" fontStyle="italic" color="gray.400">Saved</Text>
+                                        : <Text fontSize="xs" fontStyle="italic" color="gray.400">
+                                            {!props.dashboard.lastSave ? '' : 'Saved'}
+                                        </Text>
                                 }
                             </Box>
                         </PopoverTrigger>
