@@ -1,41 +1,45 @@
-import { Box, Divider, HStack, Select, Text, useColorModeValue } from '@chakra-ui/react'
+import {Box, Divider, HStack, Select, Text, useColorModeValue} from '@chakra-ui/react'
 import React from 'react'
 import type SortingAndPaginationBarProps from '../classes/SortingAndPaginationBarProps'
 import type Page from '../classes/Page'
-import { ChevronUpDownIcon } from '@heroicons/react/24/solid'
+import {ChevronUpDownIcon} from '@heroicons/react/24/solid'
 
-export default function SortingAndPaginationBar (props: SortingAndPaginationBarProps) {
-  const paginationEntries = [10, 25, 50]
+export default function SortingAndPaginationBar(props: SortingAndPaginationBarProps) {
 
-  function getShownItemsRange (): string {
-    const from = props.sortingAndPagination.currentPage * props.sortingAndPagination.pageSize
-    let to = (props.sortingAndPagination.currentPage + 1) * props.sortingAndPagination.pageSize
-    if (to > props.sortingAndPagination.totalItems)
-      to = props.sortingAndPagination.totalItems
+    const {sortingAndPagination} = props;
+    const {setSortBy, setPage} = props;
 
-    // console.log(from+" - "+to+" out of "+props.sortingAndPagination.totalItems)
+    const paginationEntries = [10, 25, 50]
 
-    return `${from} - ${to}`
-  }
+    function getShownItemsRange(): string {
+        const from = sortingAndPagination.currentPage * sortingAndPagination.pageSize
+        let to = (sortingAndPagination.currentPage + 1) * sortingAndPagination.pageSize
+        if (to > sortingAndPagination.totalItems)
+            to = sortingAndPagination.totalItems
 
-  function handleSortDropdownChanged (event: React.ChangeEvent<HTMLSelectElement>) {
-    const sortIndex = parseInt(event.target.value)
-    props.setSortBy({
-      by: props.sortingAndPagination.sortingEntries[sortIndex].entry,
-      mode: 'ASC'
-    })
-  }
+        // console.log(from+" - "+to+" out of "+sortingAndPagination.totalItems)
 
-  function handlePageSizeDropdownChanged (event: React.ChangeEvent<HTMLSelectElement>) {
-    props.setPage((val: Page) => ({
-      currPage: val.currPage,
-      pageSize: event.target.value,
-      skeletonArray: Array(parseInt(event.target.value)).fill(1).map((x, y) => (x + y))
-    })
-    )
-  }
+        return `${from} - ${to}`
+    }
 
-  return (
+    function handleSortDropdownChanged(event: React.ChangeEvent<HTMLSelectElement>) {
+        const sortIndex = parseInt(event.target.value)
+        setSortBy({
+            by: sortingAndPagination.sortingEntries[sortIndex].entry,
+            mode: 'ASC'
+        })
+    }
+
+    function handlePageSizeDropdownChanged(event: React.ChangeEvent<HTMLSelectElement>) {
+        setPage((val: Page) => ({
+                currPage: val.currPage,
+                pageSize: event.target.value,
+                skeletonArray: Array(parseInt(event.target.value)).fill(1).map((x, y) => (x + y))
+            })
+        )
+    }
+
+    return (
 
         <HStack alignItems="stretch"
                 justifyContent="space-between"
@@ -48,7 +52,7 @@ export default function SortingAndPaginationBar (props: SortingAndPaginationBarP
                 mb={6}
         >
             <Box>
-                <Text>{getShownItemsRange()} out of {props.sortingAndPagination.totalItems}</Text>
+                <Text>{getShownItemsRange()} out of {sortingAndPagination.totalItems}</Text>
             </Box>
             <HStack flexWrap="nowrap">
                 <Select
@@ -56,12 +60,12 @@ export default function SortingAndPaginationBar (props: SortingAndPaginationBarP
                     icon={<ChevronUpDownIcon/>}
                     width="fit-content"
                     onChange={(e) => {
-                      handleSortDropdownChanged(e)
+                        handleSortDropdownChanged(e)
                     }}
-                    // value={props.machinerySortingAndFilters.sortingList.find((val)=>(val.selected))?.entry}
+                    // value={machinerySortingAndFilters.sortingList.find((val)=>(val.selected))?.entry}
                 >
                     {
-                        props.sortingAndPagination.sortingEntries.map((sortValue, index) =>
+                        sortingAndPagination.sortingEntries.map((sortValue, index) =>
                             <option key={sortValue.entry} value={index}>
                                 Sort by {sortValue.entry}
                             </option>
@@ -74,9 +78,9 @@ export default function SortingAndPaginationBar (props: SortingAndPaginationBarP
                     icon={<ChevronUpDownIcon/>}
                     width="fit-content"
                     onChange={(e) => {
-                      handlePageSizeDropdownChanged(e)
+                        handlePageSizeDropdownChanged(e)
                     }}
-                    // value={props.machinerySortingAndFilters.sortingList.find((val)=>(val.selected))?.entry}
+                    // value={machinerySortingAndFilters.sortingList.find((val)=>(val.selected))?.entry}
                 >
                     {
                         paginationEntries.map((val) =>
@@ -89,5 +93,5 @@ export default function SortingAndPaginationBar (props: SortingAndPaginationBarP
             </HStack>
         </HStack>
 
-  )
+    )
 }

@@ -28,6 +28,7 @@ import type UserWithPermissions from '../../machinery-users/interfaces/UserWithP
 import type Machinery from '../../machineries-map/components/Machinery'
 import axiosExceptionHandler from '../../utils/AxiosExceptionHandler'
 import toastHelper from '../../utils/ToastHelper'
+import _ from "lodash";
 
 interface UserAccountModalProps {
     accountModalUser: User | null
@@ -47,9 +48,13 @@ const rolesOptions = [
 ]
 
 export default function UserAccountModal(props: UserAccountModalProps) {
+    
+    const {operationType, setAccountModalUser, setUsers} = props;
+    const {accountModalUser, setUsersWithPermissions, machineries} = props;
+
     const toast = useContext(ToastContext)
 
-    const [user, setUser] = useState<User>(JSON.parse(JSON.stringify(props.user)))
+    const [user, setUser] = useState<User>(_.cloneDeep(props.user))
     const [userPassword, setUserPassword] = useState('')
     const [showPassword, setShowPassword] = useState(false)
 
@@ -63,17 +68,17 @@ export default function UserAccountModal(props: UserAccountModalProps) {
             try {
                 user.roles = user.roles.filter((el) => (el !== 'none'))
 
-                if (props.operationType === 'create') {
+                if (operationType === 'create') {
                     const newUser: User = await userService.createAccount(user, userPassword)
                     newUser.active = true
 
-                    if (props.setUsers != null)
-                        props.setUsers((val) => Array.from([newUser, ...val]))
-                    else if ((props.setUsersWithPermissions != null) && (props.machineries != null))
-                        props.setUsersWithPermissions((val) => [
+                    if (setUsers != null)
+                        setUsers((val) => Array.from([newUser, ...val]))
+                    else if ((setUsersWithPermissions != null) && (machineries != null))
+                        setUsersWithPermissions((val) => [
                                 {
                                     user: newUser,
-                                    permissions: props.machineries?.map((el) => (
+                                    permissions: machineries?.map((el) => (
                                         {
                                             dashboardsModify: false,
                                             dashboardsRead: false,
@@ -98,12 +103,12 @@ export default function UserAccountModal(props: UserAccountModalProps) {
                         'success'
                     )
 
-                    props.setAccountModalUser(null)
+                    setAccountModalUser(null)
                 } else {
                     await userService.updateAccountDetails(user)
 
-                    if (props.setUsers != null)
-                        props.setUsers((val) => {
+                    if (setUsers != null)
+                        setUsers((val) => {
                             const foundUser = val.find((el) => (el.id === user.id))
                             if (foundUser != null) {
                                 const userIndex = val.indexOf(foundUser)
@@ -112,8 +117,8 @@ export default function UserAccountModal(props: UserAccountModalProps) {
 
                             return [...val]
                         })
-                    else if (props.setUsersWithPermissions != null)
-                        props.setUsersWithPermissions((val) => {
+                    else if (setUsersWithPermissions != null)
+                        setUsersWithPermissions((val) => {
                             const foundUser = val.find((el) => (el.user.id === user.id))
                             if (foundUser != null) {
                                 const userIndex = val.indexOf(foundUser)
@@ -131,14 +136,14 @@ export default function UserAccountModal(props: UserAccountModalProps) {
                         'success'
                     )
 
-                    props.setAccountModalUser(null)
+                    setAccountModalUser(null)
                 }
             } catch (e) {
                 console.error(e)
                 axiosExceptionHandler.handleAxiosExceptionWithToast(
                     e,
                     toast,
-                    `${props.operationType === 'create' ? 'Account creation' : 'Account modification'} failed`
+                    `${operationType === 'create' ? 'Account creation' : 'Account modification'} failed`
                 )
             }
 
@@ -146,7 +151,7 @@ export default function UserAccountModal(props: UserAccountModalProps) {
         }
 
         doSubmit()
-    }, [submit, props, toast, user, userPassword])
+    }, [submit, props, toast, user, userPassword, operationType, setUsers, setUsersWithPermissions, machineries, setAccountModalUser])
 
     // USER DETAILS (other than role) MODIFIED
     function handleUserDetailsChanged(target: string, newValue: string) {
@@ -220,14 +225,14 @@ export default function UserAccountModal(props: UserAccountModalProps) {
     function closeModal() {
         if (submit) return
 
-        props.setAccountModalUser(null)
+        setAccountModalUser(null)
     }
 
     return (
-        <Modal isOpen={props.accountModalUser !== null} onClose={closeModal}>
+        <Modal isOpen={accountModalUser !== null} onClose={closeModal}>
             <ModalOverlay/>
             <ModalContent>
-                <ModalHeader>{props.operationType === 'create' ? 'Create account' : 'Modify account'}</ModalHeader>
+                <ModalHeader>{operationType === 'create' ? 'Create account' : 'Modify account'}</ModalHeader>
                 <ModalCloseButton/>
                 <ModalBody>
                     <VStack spacing={4}>
@@ -268,7 +273,7 @@ export default function UserAccountModal(props: UserAccountModalProps) {
                             />
                         </FormControl>
                         {
-                            props.operationType === 'create' &&
+                            operationType === 'create' &&
                             <FormControl id="password" isRequired>
                                 <FormLabel>Password</FormLabel>
                                 <InputGroup>
@@ -392,12 +397,12 @@ export default function UserAccountModal(props: UserAccountModalProps) {
                     <Button
                         colorScheme="blue"
                         isLoading={submit}
-                        loadingText={props.operationType === 'create' ? 'Creating account' : 'Modifying account'}
+                        loadingText={operationType === 'create' ? 'Creating account' : 'Modifying account'}
                         onClick={() => {
                             setSubmit(true)
                         }}
                     >
-                        {props.operationType === 'create' ? 'Create account' : 'Modify account'}
+                        {operationType === 'create' ? 'Create account' : 'Modify account'}
                     </Button>
                 </ModalFooter>
             </ModalContent>

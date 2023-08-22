@@ -3,11 +3,13 @@ import React, {useMemo} from "react";
 
 export const MemoizedWidget = (props: DashboardWidgetProps) => {
 
-    const widget = useMemo(
+    const {widget, dashboardSize, layout} = props;
+
+    const memoizedWidgets = useMemo(
         () => <Widget {...props} />,
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [props.widget.numChange, props.dashboardSize.width, props.dashboardSize.rowHeight, props.layout.w, props.layout.h]
+        [widget.numChange, dashboardSize.width, dashboardSize.rowHeight, layout.w, layout.h]
     )
 
-    return (widget)
+    return (memoizedWidgets)
 }

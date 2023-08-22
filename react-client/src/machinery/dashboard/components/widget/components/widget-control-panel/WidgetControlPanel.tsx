@@ -36,7 +36,6 @@ function WidgetControlPanel(props: WidgetControlPanelProps) {
 
     const sensorsMonitoringSensors = sensorsMonitoring.sensors
     const sensorsMonitoringAggregations = sensorsMonitoring.aggregations
-    const sensorsMonitoringDataRange = sensorsMonitoring.dataRange
 
     const widgetControlPanelLogic = useWidgetControlPanelLogic(props);
 
@@ -91,7 +90,6 @@ function WidgetControlPanel(props: WidgetControlPanelProps) {
                             <WidgetInfoPopover
                                 sensorsMonitoringSensors={sensorsMonitoringSensors}
                                 sensorsMonitoringAggregations={sensorsMonitoringAggregations}
-                                sensorsMonitoringDataRange={sensorsMonitoringDataRange}
                                 availableSensors={availableSensors}
                             />
                         }

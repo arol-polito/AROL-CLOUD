@@ -1,61 +1,61 @@
-import { Box, Divider, Flex, Heading, HStack, Image, Spinner, Text, VStack } from '@chakra-ui/react'
-import React, { useEffect, useRef, useState } from 'react'
-import RGL, { WidthProvider } from 'react-grid-layout'
+import {Box, Divider, Flex, Heading, HStack, Image, Spinner, Text, VStack} from '@chakra-ui/react'
+import React, {useEffect, useRef, useState} from 'react'
+import RGL, {WidthProvider} from 'react-grid-layout'
 import 'react-grid-layout/css/styles.css'
 import 'react-resizable/css/styles.css'
-import { MapContainer, Marker, TileLayer, Tooltip, useMap } from 'react-leaflet'
-import { type LatLngTuple } from 'leaflet'
+import {MapContainer, Marker, TileLayer, Tooltip, useMap} from 'react-leaflet'
+import {type LatLngTuple} from 'leaflet'
 import type Machinery from '../machineries-map/components/Machinery'
 import machineryService from '../services/MachineryService'
-import { Carousel } from 'react-responsive-carousel'
+import {Carousel} from 'react-responsive-carousel'
 import 'react-responsive-carousel/lib/styles/carousel.min.css'
-import { useNavigate } from 'react-router-dom'
-import { useResizeDetector } from 'react-resize-detector'
+import {useNavigate} from 'react-router-dom'
+import {useResizeDetector} from 'react-resize-detector'
 
 const ReactGridLayout = WidthProvider(RGL)
 
 interface MapMarker {
-  position: LatLngTuple
-  label: string
+    position: LatLngTuple
+    label: string
 }
 
-export default function Home () {
-  const [machineriesLoading, setMachineriesLoading] = useState(false)
-  const [machineriesMap, setMachineriesMap] = useState<Map<string, Machinery[]>>(new Map())
-  const [machineriesArray, setMachineriesArray] = useState<Machinery[]>([])
+export default function Home() {
+    const [machineriesLoading, setMachineriesLoading] = useState(false)
+    const [machineriesMap, setMachineriesMap] = useState<Map<string, Machinery[]>>(new Map())
+    const [machineriesArray, setMachineriesArray] = useState<Machinery[]>([])
 
-  const homeGridContainerRef = useRef<HTMLDivElement>(null)
-  const { width } = useResizeDetector({ targetRef: homeGridContainerRef, refreshMode: 'debounce', refreshRate: 500 })
+    const homeGridContainerRef = useRef<HTMLDivElement>(null)
+    const {width} = useResizeDetector({targetRef: homeGridContainerRef, refreshMode: 'debounce', refreshRate: 500})
 
-  // FETCH HOME DATA (machineries etc.)
-  useEffect(() => {
-    async function getHomeData () {
-      setMachineriesLoading(true)
+    // FETCH HOME DATA (machineries etc.)
+    useEffect(() => {
+        async function getHomeData() {
+            setMachineriesLoading(true)
 
-      try {
-        const machineriesMap = await machineryService.getMachineryByCompany()
-        const machineriesArray: Machinery[] = []
-        machineriesMap.forEach((val) => {
-          machineriesArray.push(...val)
-        })
-        setMachineriesArray(machineriesArray)
-        setMachineriesMap(machineriesMap)
-      } catch (e) {
-        console.error(e)
-      }
+            try {
+                const machineriesMap = await machineryService.getMachineryByCompany()
+                const machineriesArray: Machinery[] = []
+                machineriesMap.forEach((val) => {
+                    machineriesArray.push(...val)
+                })
+                setMachineriesArray(machineriesArray)
+                setMachineriesMap(machineriesMap)
+            } catch (e) {
+                console.error(e)
+            }
 
-      setMachineriesLoading(false)
-    }
+            setMachineriesLoading(false)
+        }
 
-    getHomeData()
-  }, [])
+        getHomeData()
+    }, [])
 
-  // GRID WIDTH
-  useEffect(() => {
-    window.dispatchEvent(new Event('resize'))
-  }, [width])
+    // GRID WIDTH
+    useEffect(() => {
+        window.dispatchEvent(new Event('resize'))
+    }, [width])
 
-  return (
+    return (
         <Box
             ref={homeGridContainerRef}
             w="full"
@@ -69,7 +69,7 @@ export default function Home () {
                 useCSSTransforms
             >
                 <VStack
-                    key="plants-map" data-grid={{ x: 0, y: 0, w: 12, h: 4, static: true }}
+                    key="plants-map" data-grid={{x: 0, y: 0, w: 12, h: 4, static: true}}
                     w="full"
                     h="full"
                     borderWidth={1}
@@ -93,14 +93,13 @@ export default function Home () {
                         h="full"
                     >
                         <MapContainer
-                            style={{ width: '100%', height: '100%' }}
+                            style={{width: '100%', height: '100%'}}
                             center={[44.729519, 8.296058]}
                             zoom={13}
                             scrollWheelZoom={false}
                         >
                             {/* Must be done like this or useMap will not work */}
                             <MapRenderer
-                                machineriesArray={machineriesArray}
                                 machineriesMap={machineriesMap}
                             />
                         </MapContainer>
@@ -108,7 +107,7 @@ export default function Home () {
                 </VStack>
                 <VStack
                     key="machinery-carousel"
-                    data-grid={{ x: 0, y: 4, w: 6, h: 3, static: true }}
+                    data-grid={{x: 0, y: 4, w: 6, h: 3, static: true}}
                     w="full"
                     h="full"
                     borderWidth={1}
@@ -161,44 +160,46 @@ export default function Home () {
 
             </ReactGridLayout>
         </Box>
-  )
+    )
 }
 
 interface MapPanelProps {
-  machineriesArray: Machinery[]
-  machineriesMap: Map<string, Machinery[]>
+    machineriesMap: Map<string, Machinery[]>
 }
 
-function MapRenderer (props: MapPanelProps) {
-  const map = useMap()
-  const [markers, setMarkers] = useState<MapMarker[]>([])
+function MapRenderer(props: MapPanelProps) {
 
-  // Update markers when machineries get updated
-  // FitBounds of marker
-  useEffect(() => {
-    const markersArray: MapMarker[] = []
+    const {machineriesMap} = props;
 
-    props.machineriesMap.forEach((value, key) => {
-      let avgX = 0
-      let avgY = 0
-      value.forEach((machinery) => {
-        avgX += machinery.geoLocation.x
-        avgY += machinery.geoLocation.y
-      })
+    const map = useMap()
+    const [markers, setMarkers] = useState<MapMarker[]>([])
 
-      markersArray.push({
-        position: [avgX / value.length, avgY / value.length],
-        label: `${key} - ${value.length} machineries`
-      })
-    })
+    // Update markers when machineries get updated
+    // FitBounds of marker
+    useEffect(() => {
+        const markersArray: MapMarker[] = []
 
-    setMarkers(markersArray)
+        machineriesMap.forEach((value, key) => {
+            let avgX = 0
+            let avgY = 0
+            value.forEach((machinery) => {
+                avgX += machinery.geoLocation.x
+                avgY += machinery.geoLocation.y
+            })
 
-    if (markersArray.length > 1)
-      map.flyToBounds(markersArray.map((el) => (el.position)), { padding: [100, 100], duration: 1.25 })
-  }, [props.machineriesMap, map])
+            markersArray.push({
+                position: [avgX / value.length, avgY / value.length],
+                label: `${key} - ${value.length} machineries`
+            })
+        })
 
-  return (
+        setMarkers(markersArray)
+
+        if (markersArray.length > 1)
+            map.flyToBounds(markersArray.map((el) => (el.position)), {padding: [100, 100], duration: 1.25})
+    }, [machineriesMap, map])
+
+    return (
         <>
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -217,28 +218,31 @@ function MapRenderer (props: MapPanelProps) {
                 ))
             }
         </>
-  )
+    )
 }
 
 interface MachineryCardProps {
-  machinery: Machinery
+    machinery: Machinery
 }
 
-function MachineryCard (props: MachineryCardProps) {
-  const navigate = useNavigate()
+function MachineryCard(props: MachineryCardProps) {
 
-  function navigateToMachinery () {
-    navigate(
-      `/machinery/${props.machinery.uid}`,
-      {
-        state: {
-          machinery: props.machinery
-        }
-      }
-    )
-  }
+    const {machinery} = props;
 
-  return (
+    const navigate = useNavigate()
+
+    function navigateToMachinery() {
+        navigate(
+            `/machinery/${machinery.uid}`,
+            {
+                state: {
+                    machinery: machinery
+                }
+            }
+        )
+    }
+
+    return (
         <HStack
             w="full"
             h="full"
@@ -249,14 +253,14 @@ function MachineryCard (props: MachineryCardProps) {
                 <Box
                     boxSize="200px"
                     _hover={{
-                      cursor: 'pointer'
+                        cursor: 'pointer'
                     }}
                     onClick={navigateToMachinery}
                 >
                     <Image
                         objectFit="cover"
                         boxSize="100%"
-                        src={require(`./../assets/machineries/${props.machinery.modelID}.png`)}
+                        src={require(`./../assets/machineries/${machinery.modelID}.png`)}
                     />
                 </Box>
             </Flex>
@@ -271,7 +275,7 @@ function MachineryCard (props: MachineryCardProps) {
             >
                 <Heading fontSize="md" fontFamily="body" color="gray.400" whiteSpace="nowrap"
                          mx="0!important">
-                    {props.machinery.uid}
+                    {machinery.uid}
                 </Heading>
                 <Heading
                     fontSize="2xl"
@@ -279,7 +283,7 @@ function MachineryCard (props: MachineryCardProps) {
                     whiteSpace="nowrap"
                     mt="0!important"
                 >
-                    {props.machinery.modelName}
+                    {machinery.modelName}
                 </Heading>
                 <Text
                     fontWeight={300}
@@ -297,7 +301,7 @@ function MachineryCard (props: MachineryCardProps) {
                     mt="0!important"
                     mb={4}
                 >
-                    {props.machinery.modelType}
+                    {machinery.modelType}
                 </Text>
                 <Text
                     fontWeight={300}
@@ -315,7 +319,7 @@ function MachineryCard (props: MachineryCardProps) {
                     mt="0!important"
                     mb={4}
                 >
-                    {props.machinery.numHeads} heads
+                    {machinery.numHeads} heads
                 </Text>
                 <Text
                     fontWeight={300}
@@ -331,9 +335,9 @@ function MachineryCard (props: MachineryCardProps) {
                     mt="0!important"
                     mb={4}
                 >
-                    {props.machinery.locationCluster}
+                    {machinery.locationCluster}
                 </Text>
             </VStack>
         </HStack>
-  )
+    )
 }

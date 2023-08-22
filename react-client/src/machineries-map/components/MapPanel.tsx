@@ -25,7 +25,6 @@ interface MapMarker {
 export default function MapPanel(props: MapPanelProps) {
     return (
         <Box w="full">
-            {/* <Heading w={"full"} textAlign={"right"} >HELLLLOOOOOOOOOOOOOOOOOOOOOOOOOOOO</Heading> */}
             <MapContainer
                 style={{width: '100%', height: '500px'}}
                 center={[44.729519, 8.296058]}
@@ -40,6 +39,9 @@ export default function MapPanel(props: MapPanelProps) {
 }
 
 function MapRenderer(props: MapPanelProps) {
+
+    const {machineries, navigator, setNavigator} = props;
+
     const map = useMap()
     const [markers, setMarkers] = useState<MapMarker[]>([])
 
@@ -48,8 +50,8 @@ function MapRenderer(props: MapPanelProps) {
     useEffect(() => {
         const markersArray: MapMarker[] = []
 
-        if (props.navigator.stage === 0) {
-            Array.from(props.machineries.entries()).forEach((entry) => {
+        if (navigator.stage === 0) {
+            Array.from(machineries.entries()).forEach((entry) => {
                 let avgX = 0
                 let avgY = 0
                 entry[1].forEach((machinery) => {
@@ -64,8 +66,8 @@ function MapRenderer(props: MapPanelProps) {
             })
 
             setMarkers(markersArray)
-        } else if (props.navigator.stage === 1) {
-            props.machineries.get(props.navigator.clusterLocation)?.forEach((entry) => {
+        } else if (navigator.stage === 1) {
+            machineries.get(navigator.clusterLocation)?.forEach((entry) => {
                 markersArray.push({
                     position: [entry.geoLocation.x, entry.geoLocation.y],
                     label: entry.uid
@@ -73,9 +75,9 @@ function MapRenderer(props: MapPanelProps) {
             })
 
             setMarkers(markersArray)
-        } else if (props.navigator.stage === 2) {
-            const machinery = props.machineries.get(props.navigator.clusterLocation)
-                ?.find((el) => (el.uid === props.navigator.machineryUID))
+        } else if (navigator.stage === 2) {
+            const machinery = machineries.get(navigator.clusterLocation)
+                ?.find((el) => (el.uid === navigator.machineryUID))
 
             if (!machinery) return;
 
@@ -90,18 +92,18 @@ function MapRenderer(props: MapPanelProps) {
 
         if (markersArray.length > 1)
             map.flyToBounds(markersArray.map((el) => (el.position)), {padding: [100, 100], duration: 1.25})
-    }, [props.machineries, props.navigator, map])
+    }, [machineries, navigator, map])
 
     function handleMarkerClick(markerValue: string) {
-        if (props.navigator.stage === 0)
-            props.setNavigator((val) => {
+        if (navigator.stage === 0)
+            setNavigator((val) => {
                 val.stage = 1
                 val.clusterLocation = markerValue
 
                 return {...val}
             })
-        else if (props.navigator.stage === 1)
-            props.setNavigator((val) => {
+        else if (navigator.stage === 1)
+            setNavigator((val) => {
                 val.stage = 2
                 val.machineryUID = markerValue
 

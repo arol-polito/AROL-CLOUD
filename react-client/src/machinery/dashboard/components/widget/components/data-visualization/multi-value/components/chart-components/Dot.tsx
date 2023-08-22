@@ -4,16 +4,16 @@ import React from 'react'
 export default function Dot (props: any) {
   // console.log(props)
 
-  const { cx, cy, fill } = props
+  const { cx, cy, fill, payload, dataKey } = props
 
-  const sensorDataPayload = props.payload as SensorData
+  const sensorDataPayload = payload as SensorData
 
   let dotType, entryInternalName
   if (Object.keys(sensorDataPayload.aggregationData).length > 0)
     dotType = 'aggregation'
   else {
     dotType = 'sensor'
-    entryInternalName = props.dataKey.substring(8)
+    entryInternalName = dataKey.substring(8)
   }
 
   return (

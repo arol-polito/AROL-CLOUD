@@ -30,6 +30,9 @@ interface PasswordResetModalProps {
 }
 
 export default function PasswordResetModal(props: PasswordResetModalProps) {
+    
+    const {user, passwordResetModalUser, setPasswordResetModalUser} = props;
+    
     const toast = useContext(ToastContext)
 
     const [userPassword, setUserPassword] = useState('')
@@ -42,8 +45,8 @@ export default function PasswordResetModal(props: PasswordResetModalProps) {
     const [submit, setSubmit] = useState(false)
 
     const closeModal = useCallback(() => {
-        props.setPasswordResetModalUser(null)
-    }, [props])
+        setPasswordResetModalUser(null)
+    }, [setPasswordResetModalUser])
 
     useEffect(() => {
         if (!submit) return
@@ -67,7 +70,7 @@ export default function PasswordResetModal(props: PasswordResetModalProps) {
 
         async function doSubmit() {
             try {
-                await userService.resetAccountPassword(props.user.id, userPassword)
+                await userService.resetAccountPassword(user.id, userPassword)
 
                 toastHelper.makeToast(
                     toast,
@@ -89,10 +92,10 @@ export default function PasswordResetModal(props: PasswordResetModalProps) {
         }
 
         doSubmit()
-    }, [submit, closeModal, props.user.id, repeatUserPassword, toast, userPassword])
+    }, [submit, closeModal, user.id, repeatUserPassword, toast, userPassword])
 
     return (
-        <Modal isOpen={props.passwordResetModalUser !== null} onClose={closeModal}>
+        <Modal isOpen={passwordResetModalUser !== null} onClose={closeModal}>
             <ModalOverlay/>
             <ModalContent>
                 <ModalHeader>Password reset</ModalHeader>

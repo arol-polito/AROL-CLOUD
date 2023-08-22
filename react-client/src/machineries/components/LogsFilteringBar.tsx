@@ -9,6 +9,9 @@ interface LogsFilteringBarProps {
 }
 
 export default function LogsFilteringBar(props: LogsFilteringBarProps) {
+
+    const {machineryLogsFilter, setMachineryLogFilters} = props;
+
     const [dateErrors, setDateErrors] = useState({
         fromError: '',
         toError: ''
@@ -19,8 +22,8 @@ export default function LogsFilteringBar(props: LogsFilteringBarProps) {
         const inputDate = dayjs(event.target.value)
 
         if (from) {
-            if (props.machineryLogsFilter?.to &&
-                inputDate.isAfter(dayjs(props.machineryLogsFilter.to))
+            if (machineryLogsFilter?.to &&
+                inputDate.isAfter(dayjs(machineryLogsFilter.to))
             ) {
                 setDateErrors((val) => {
                     val.fromError = 'Start date cannot be later than end date'
@@ -32,7 +35,7 @@ export default function LogsFilteringBar(props: LogsFilteringBarProps) {
             }
 
             setDateErrors({fromError: '', toError: ''})
-            props.setMachineryLogFilters((val: LogsParameters) => {
+            setMachineryLogFilters((val: LogsParameters) => {
                 val.from = event.target.value
 
                 return {...val}
@@ -41,8 +44,8 @@ export default function LogsFilteringBar(props: LogsFilteringBarProps) {
             return
         }
         if (to) {
-            if (props.machineryLogsFilter?.from &&
-                inputDate.isBefore(dayjs(props.machineryLogsFilter.from))
+            if (machineryLogsFilter?.from &&
+                inputDate.isBefore(dayjs(machineryLogsFilter.from))
             ) {
                 setDateErrors((val) => {
                     val.toError = 'End date cannot be earlier than start date'
@@ -54,7 +57,7 @@ export default function LogsFilteringBar(props: LogsFilteringBarProps) {
             }
 
             setDateErrors({fromError: '', toError: ''})
-            props.setMachineryLogFilters((val: LogsParameters) => {
+            setMachineryLogFilters((val: LogsParameters) => {
                 val.to = event.target.value
 
                 return {...val}
@@ -63,7 +66,7 @@ export default function LogsFilteringBar(props: LogsFilteringBarProps) {
     }
 
     function handleSearchButtonPressed() {
-        props.setMachineryLogFilters((val: LogsParameters) => {
+        setMachineryLogFilters((val: LogsParameters) => {
             val.submit = true
 
             return {...val}
@@ -71,7 +74,7 @@ export default function LogsFilteringBar(props: LogsFilteringBarProps) {
     }
 
     function handleResetButtonPressed() {
-        props.setMachineryLogFilters((val: LogsParameters) => {
+        setMachineryLogFilters((val: LogsParameters) => {
             val.from = null
             val.to = null
             val.submit = true
@@ -103,7 +106,7 @@ export default function LogsFilteringBar(props: LogsFilteringBarProps) {
                             placeholder="Select Date and Time"
                             size="md"
                             type="datetime-local"
-                            value={props.machineryLogsFilter?.from ? props.machineryLogsFilter.from : ''}
+                            value={machineryLogsFilter?.from ? machineryLogsFilter.from : ''}
                             onChange={(e) => {
                                 handleDateChanged(true, false, e)
                             }}
@@ -125,7 +128,7 @@ export default function LogsFilteringBar(props: LogsFilteringBarProps) {
                             placeholder="Select Date and Time"
                             size="md"
                             type="datetime-local"
-                            value={props.machineryLogsFilter?.to ? props.machineryLogsFilter.to : ''}
+                            value={machineryLogsFilter?.to ? machineryLogsFilter.to : ''}
                             onChange={(e) => {
                                 handleDateChanged(false, true, e)
                             }}

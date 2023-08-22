@@ -1,48 +1,50 @@
 import type Sensor from '../../../../../models/Sensor'
 import {
-  Box,
-  Divider,
-  Heading,
-  HStack,
-  IconButton,
-  Popover,
-  PopoverArrow,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverTrigger,
-  Portal,
-  Text,
-  VStack
+    Box,
+    Divider,
+    Heading,
+    HStack,
+    IconButton,
+    Popover,
+    PopoverArrow,
+    PopoverBody,
+    PopoverCloseButton,
+    PopoverContent,
+    PopoverTrigger,
+    Portal,
+    Text,
+    VStack
 } from '@chakra-ui/react'
-import { FiInfo } from 'react-icons/fi'
+import {FiInfo} from 'react-icons/fi'
 import React from 'react'
 import type SensorDataFilter from '../../../../../interfaces/SensorDataFilter'
-import type SensorDataRange from '../../../../../interfaces/SensorDataRange'
 
 interface WidgetInfoPopoverProps {
-  sensorsMonitoringSensors: Record<string, SensorDataFilter[]>
-  sensorsMonitoringAggregations: Array<{ name: string, color: string }>
-  sensorsMonitoringDataRange: SensorDataRange
-  availableSensors: Sensor[]
+    sensorsMonitoringSensors: Record<string, SensorDataFilter[]>
+    sensorsMonitoringAggregations: Array<{ name: string, color: string }>
+    availableSensors: Sensor[]
 }
 
-export default function WidgetInfoPopover (props: WidgetInfoPopoverProps) {
-  function getSensorName (sensorInternalName: string, indexHead: number) {
-    const findSensor = props.availableSensors.find((el) => (el.internalName === sensorInternalName))
+export default function WidgetInfoPopover(props: WidgetInfoPopoverProps) {
 
-    if (findSensor == null)
-      return 'N/A'
+    const {sensorsMonitoringSensors, sensorsMonitoringAggregations} = props;
+    const {availableSensors} = props;
 
-    let sensorName = findSensor.name
+    function getSensorName(sensorInternalName: string, indexHead: number) {
+        const findSensor = availableSensors.find((el) => (el.internalName === sensorInternalName))
 
-    if (indexHead > 0)
-      sensorName += ` - Head ${indexHead}`
+        if (findSensor == null)
+            return 'N/A'
 
-    return sensorName
-  }
+        let sensorName = findSensor.name
 
-  return (
+        if (indexHead > 0)
+            sensorName += ` - Head ${indexHead}`
+
+        return sensorName
+    }
+
+    return (
         <Popover
             placement="right"
         >
@@ -57,7 +59,7 @@ export default function WidgetInfoPopover (props: WidgetInfoPopoverProps) {
                     borderColor="gray.300"
                     // Stop click from propagating down to dashboard
                     onMouseDown={(e) => {
-                      e.stopPropagation()
+                        e.stopPropagation()
                     }}
                 >
                     <PopoverArrow/>
@@ -69,8 +71,6 @@ export default function WidgetInfoPopover (props: WidgetInfoPopoverProps) {
                             alignItems="flex-start"
                         >
                             <Heading size="md">Chart legend</Heading>
-                            {/* <Text fontSize={"sm"} fontWeight={400}>Showing */}
-                            {/*    last {props.sensorsMonitoringDataRange.amount} {rangeUnits.find((el) => (el.value === props.sensorsMonitoringDataRange.unit))!!.displayName}</Text> */}
                             <Divider orientation="horizontal"/>
                             <VStack
                                 w="full"
@@ -79,11 +79,11 @@ export default function WidgetInfoPopover (props: WidgetInfoPopoverProps) {
                                 alignItems="left"
                             >
                                 {
-                                    props.sensorsMonitoringAggregations.length > 0 &&
+                                    sensorsMonitoringAggregations.length > 0 &&
                                     <>
                                         <Text fontSize="md" fontWeight={500}>Aggregations</Text>
                                         {
-                                            props.sensorsMonitoringAggregations.map((aggregation) => (
+                                            sensorsMonitoringAggregations.map((aggregation) => (
                                                 <HStack
                                                     key={aggregation.name}
                                                     w="full"
@@ -108,9 +108,9 @@ export default function WidgetInfoPopover (props: WidgetInfoPopoverProps) {
                                     </>
                                 }
                                 {
-                                    Array.from(Object.entries(props.sensorsMonitoringSensors)).map(([, value]) => (
-                                      value.map((headMechEntry) => (
-                                        headMechEntry.sensorNames.map((sensorName) => (
+                                    Array.from(Object.entries(sensorsMonitoringSensors)).map(([, value]) => (
+                                        value.map((headMechEntry) => (
+                                            headMechEntry.sensorNames.map((sensorName) => (
                                                 <HStack
                                                     key={`${sensorName.name}-${headMechEntry.headNumber}`}
                                                     w="full"
@@ -128,8 +128,8 @@ export default function WidgetInfoPopover (props: WidgetInfoPopoverProps) {
                                                         {getSensorName(sensorName.name, headMechEntry.headNumber)}
                                                     </Text>
                                                 </HStack>
+                                            ))
                                         ))
-                                      ))
                                     ))
                                 }
                             </VStack>
@@ -139,5 +139,5 @@ export default function WidgetInfoPopover (props: WidgetInfoPopoverProps) {
                 </PopoverContent>
             </Portal>
         </Popover>
-  )
+    )
 }

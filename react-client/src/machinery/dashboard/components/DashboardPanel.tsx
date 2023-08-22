@@ -79,8 +79,6 @@ export default function DashboardPanel(props: DashboardPanelProps) {
                     dashboard={dashboard}
                     setDashboard={setDashboard}
                     setLayout={setLayout}
-                    dashboardLoading={dashboard.isLoading}
-                    dashboardCompactType={dashboard.size.compactType}
                     dashboardPermissions={dashboardPermissions}
                     setSaveDashboardPromptOpen={setSaveDashboardPromptOpen}
                     saveDashboard={saveDashboard}

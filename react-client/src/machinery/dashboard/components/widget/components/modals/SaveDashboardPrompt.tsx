@@ -27,22 +27,26 @@ interface SaveDashboardPromptProps {
 }
 
 export default function SaveDashboardPrompt(props: SaveDashboardPromptProps) {
+
+    const {dashboard, dashboardSaving, setPromptOpen} = props;
+    const {promptOpen, saveDashboard} = props;
+
     const [dashboardName, setDashboardName] = useState(
-        props.dashboard.name !== 'Unsaved new dashboard'
-            ? props.dashboard.name
+        dashboard.name !== 'Unsaved new dashboard'
+            ? dashboard.name
             : `Dashboard ${dayjs().format('ddd, MMM D, YYYY H:mm')}`
     )
-    const [isDefaultDashboard, setIsDefaultDashboard] = useState(props.dashboard.isDefault)
+    const [isDefaultDashboard, setIsDefaultDashboard] = useState(dashboard.isDefault)
     const cancelRef = useRef<HTMLButtonElement>(null)
 
     function handlePromptClose() {
-        if (props.dashboardSaving) return
+        if (dashboardSaving) return
 
-        props.setPromptOpen(false)
+        setPromptOpen(false)
     }
 
     function handleSaveButtonPressed() {
-        props.saveDashboard({
+        saveDashboard({
             name: dashboardName,
             isDefault: isDefaultDashboard,
             save: false,
@@ -52,7 +56,7 @@ export default function SaveDashboardPrompt(props: SaveDashboardPromptProps) {
 
     return (
         <AlertDialog
-            isOpen={props.promptOpen}
+            isOpen={promptOpen}
             leastDestructiveRef={cancelRef}
             onClose={handlePromptClose}
         >
@@ -92,7 +96,7 @@ export default function SaveDashboardPrompt(props: SaveDashboardPromptProps) {
                                 <Text fontSize="sm" color="red">Dashboard name cannot be empty</Text>
                             }
                             {/*{*/}
-                            {/*    props.saveDashboard.saveAsError &&*/}
+                            {/*    saveDashboard.saveAsError &&*/}
                             {/*    <Text fontSize="sm" color="red">A dashboard with this name already exists</Text>*/}
                             {/*}*/}
                         </VStack>
@@ -102,16 +106,16 @@ export default function SaveDashboardPrompt(props: SaveDashboardPromptProps) {
                         <Button
                             ref={cancelRef}
                             onClick={handlePromptClose}
-                            disabled={props.dashboardSaving}
+                            disabled={dashboardSaving}
                         >
                             Cancel
                         </Button>
                         <Button
                             colorScheme='blue'
                             onClick={handleSaveButtonPressed} ml={3}
-                            isLoading={props.dashboardSaving}
+                            isLoading={dashboardSaving}
                             loadingText="Saving"
-                            disabled={dashboardName.length === 0 || props.dashboardSaving}
+                            disabled={dashboardName.length === 0 || dashboardSaving}
                         >
                             Save
                         </Button>

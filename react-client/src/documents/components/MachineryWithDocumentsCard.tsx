@@ -1,26 +1,29 @@
-import { useNavigate } from 'react-router-dom'
-import { Button, Divider, Heading, HStack, Image, Text, VStack } from '@chakra-ui/react'
-import { FiFolder, FiSearch } from 'react-icons/fi'
-import React, { Fragment } from 'react'
+import {useNavigate} from 'react-router-dom'
+import {Button, Divider, Heading, HStack, Image, Text, VStack} from '@chakra-ui/react'
+import {FiFolder, FiSearch} from 'react-icons/fi'
+import React, {Fragment} from 'react'
 import type MachineryWithDocuments from '../interfaces/MachineryWithDocuments'
 import helperFunctions from '../../utils/HelperFunctions'
 
 interface MachineryWithDashboardsCardProps {
-  machineryWithDocuments: MachineryWithDocuments
-  highlightTerm: string
+    machineryWithDocuments: MachineryWithDocuments
+    highlightTerm: string
 }
 
-export default function MachineryWithDocumentsCard (props: MachineryWithDashboardsCardProps) {
-  const navigate = useNavigate()
+export default function MachineryWithDocumentsCard(props: MachineryWithDashboardsCardProps) {
 
-  // FORMAT FILE PATH
-  function getFilePath (inputFilePath: string) {
-    const startIndex = inputFilePath.indexOf(props.machineryWithDocuments.uid)
+    const {machineryWithDocuments, highlightTerm} = props;
 
-    return inputFilePath.slice(startIndex + props.machineryWithDocuments.uid.length).toString()
-  }
+    const navigate = useNavigate()
 
-  return (
+    // FORMAT FILE PATH
+    function getFilePath(inputFilePath: string) {
+        const startIndex = inputFilePath.indexOf(machineryWithDocuments.uid)
+
+        return inputFilePath.slice(startIndex + machineryWithDocuments.uid.length).toString()
+    }
+
+    return (
 
         <VStack
             p={6}
@@ -42,8 +45,8 @@ export default function MachineryWithDocumentsCard (props: MachineryWithDashboar
                     <Image
                         boxSize="200px"
                         objectFit="contain"
-                        // src={require("/src/assets/machineries/"+ props.machinery.modelID + ".png")}
-                        src={require(`./../../assets/machineries/${props.machineryWithDocuments.modelID}.png`)}
+                        // src={require("/src/assets/machineries/"+ machinery.modelID + ".png")}
+                        src={require(`./../../assets/machineries/${machineryWithDocuments.modelID}.png`)}
                     />
                 </HStack>
                 <Divider orientation="vertical" h="full"/>
@@ -58,7 +61,7 @@ export default function MachineryWithDocumentsCard (props: MachineryWithDashboar
                 >
                     <Heading fontSize="md" fontFamily="body" fontWeight={450} color="gray.400"
                              whiteSpace="nowrap">
-                        {helperFunctions.highlightText(props.machineryWithDocuments.uid, 450, props.highlightTerm)}
+                        {helperFunctions.highlightText(machineryWithDocuments.uid, 450, highlightTerm)}
                     </Heading>
                     <Heading
                         fontSize="2xl"
@@ -67,7 +70,7 @@ export default function MachineryWithDocumentsCard (props: MachineryWithDashboar
                         whiteSpace="nowrap"
                         mb="4!important"
                     >
-                        {helperFunctions.highlightText(props.machineryWithDocuments.modelName, 550, props.highlightTerm)}
+                        {helperFunctions.highlightText(machineryWithDocuments.modelName, 550, highlightTerm)}
                     </Heading>
                     <Text
                         fontWeight={300}
@@ -86,7 +89,7 @@ export default function MachineryWithDocumentsCard (props: MachineryWithDashboar
                         mt="0!important"
                         mb={4}
                     >
-                        {helperFunctions.highlightText(props.machineryWithDocuments.modelType, 400, props.highlightTerm)}
+                        {helperFunctions.highlightText(machineryWithDocuments.modelType, 400, highlightTerm)}
                     </Text>
                     <Text
                         fontWeight={300}
@@ -103,7 +106,7 @@ export default function MachineryWithDocumentsCard (props: MachineryWithDashboar
                         mt="0!important"
                         mb={4}
                     >
-                        {helperFunctions.highlightText(props.machineryWithDocuments.locationCluster, 400, props.highlightTerm)}
+                        {helperFunctions.highlightText(machineryWithDocuments.locationCluster, 400, highlightTerm)}
                     </Text>
                 </VStack>
                 <VStack
@@ -116,11 +119,11 @@ export default function MachineryWithDocumentsCard (props: MachineryWithDashboar
                         leftIcon={<FiFolder/>}
                         colorScheme="blue"
                         onClick={() => {
-                          navigate(`/machinery/${props.machineryWithDocuments.uid}/documents`, {
-                            state: {
-                              machinery: { ...props.machineryWithDocuments }
-                            }
-                          })
+                            navigate(`/machinery/${machineryWithDocuments.uid}/documents`, {
+                                state: {
+                                    machinery: {...machineryWithDocuments}
+                                }
+                            })
                         }}
                     >
                         Open document browser
@@ -134,8 +137,8 @@ export default function MachineryWithDocumentsCard (props: MachineryWithDashboar
                 overflowY="auto"
             >
                 {
-                    props.machineryWithDocuments.documents.length > 0 &&
-                    props.machineryWithDocuments.documents.map((document, index) => (
+                    machineryWithDocuments.documents.length > 0 &&
+                    machineryWithDocuments.documents.map((document, index) => (
                         <Fragment key={document.id}>
                             <HStack
                                 w="full"
@@ -150,7 +153,7 @@ export default function MachineryWithDocumentsCard (props: MachineryWithDashboar
                                         mt="0!important"
                                     >
                                         <Text fontSize="md" fontWeight={500}>
-                                            {helperFunctions.highlightText(document.name, 500, props.highlightTerm)}
+                                            {helperFunctions.highlightText(document.name, 500, highlightTerm)}
                                         </Text>
                                         <Text fontSize="xs" color="gray.500" fontWeight={500}>
                                             {document.size} KB
@@ -167,12 +170,12 @@ export default function MachineryWithDocumentsCard (props: MachineryWithDashboar
                                         colorScheme='teal'
                                         variant='solid'
                                         onClick={() => {
-                                          document.documentUID && navigate(`/machinery/${props.machineryWithDocuments.uid}/documents/${document.documentUID.split('\\').pop()}` /* Document UID */, {
-                                            state: {
-                                              document,
-                                              machinery: props.machineryWithDocuments
-                                            }
-                                          })
+                                            document.documentUID && navigate(`/machinery/${machineryWithDocuments.uid}/documents/${document.documentUID.split('\\').pop()}` /* Document UID */, {
+                                                state: {
+                                                    document,
+                                                    machinery: machineryWithDocuments
+                                                }
+                                            })
                                         }}
                                     >
                                         View document
@@ -180,7 +183,7 @@ export default function MachineryWithDocumentsCard (props: MachineryWithDashboar
                                 </VStack>
                             </HStack>
                             {
-                                index < props.machineryWithDocuments.documents.length - 1 &&
+                                index < machineryWithDocuments.documents.length - 1 &&
                                 <Divider/>
                             }
                         </Fragment>
@@ -188,7 +191,7 @@ export default function MachineryWithDocumentsCard (props: MachineryWithDashboar
                 }
             </VStack>
             {
-                props.machineryWithDocuments.documents.length === 0 &&
+                machineryWithDocuments.documents.length === 0 &&
                 <HStack
                     w="full"
                     justifyContent="center"
@@ -197,5 +200,5 @@ export default function MachineryWithDocumentsCard (props: MachineryWithDashboar
                 </HStack>
             }
         </VStack>
-  )
+    )
 }

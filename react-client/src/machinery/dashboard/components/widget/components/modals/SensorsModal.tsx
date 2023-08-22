@@ -74,8 +74,9 @@ const rangeUnits = [
 // Need to use "any" otherwise ts will complain when dynamically indexing object
 export default function SensorsModal(props: SensorsModalProps) {
 
-    const {widget, widgetIndex, setDashboard, availableSensors} = props;
-    const {machinery} = props;
+    const {widget, widgetIndex, setDashboard} = props;
+    const {machinery, modalOpen, setModalOpen} = props;
+    const {availableSensors, availableSensorsMap, numHeads} = props;
 
     const {maxSensors, sensorsMonitoring, dataDisplaySize} = widget;
 
@@ -196,7 +197,7 @@ export default function SensorsModal(props: SensorsModalProps) {
             setWidgetSensorDataLoadingAndError(setDashboard, widgetIndex, false, false, true);
         }
 
-        props.setModalOpen(false)
+        setModalOpen(false)
     }
 
     function handleAggregationSelected(value: string, index: number) {
@@ -236,10 +237,10 @@ export default function SensorsModal(props: SensorsModalProps) {
 
     return (
         <Modal
-            isOpen={props.modalOpen}
+            isOpen={modalOpen}
             size="2xl"
             onClose={() => {
-                props.setModalOpen(false)
+                setModalOpen(false)
             }}
             scrollBehavior="inside"
         >
@@ -271,12 +272,12 @@ export default function SensorsModal(props: SensorsModalProps) {
                 <ModalBody
                     pb={12}
                 >
-                    {props.availableSensorsMap.size > 0 &&
+                    {availableSensorsMap.size > 0 &&
                         <>
                             <Text fontSize="lg" fontWeight={600}>Select sensors</Text>
                             <Tabs variant='soft-rounded' colorScheme='green'>
                                 <TabList>
-                                    {Array.from(props.availableSensorsMap.keys()).map((keyEntry) => (
+                                    {Array.from(availableSensorsMap.keys()).map((keyEntry) => (
                                         <Tab key={keyEntry}>
                                             {keyEntry.toUpperCase()}
                                         </Tab>
@@ -285,7 +286,7 @@ export default function SensorsModal(props: SensorsModalProps) {
                                 <TabPanels>
                                     {
                                         // display each sensor category into its corresponding tab
-                                        Array.from(props.availableSensorsMap.entries()).map((mapKeyAndValue) => (
+                                        Array.from(availableSensorsMap.entries()).map((mapKeyAndValue) => (
                                             <TabPanel key={mapKeyAndValue[0]}>
                                                 {
                                                     // If category contains sensors
@@ -296,11 +297,11 @@ export default function SensorsModal(props: SensorsModalProps) {
                                                             sensor={sensor}
                                                             sensorsMonitoring={[...sensorsMonitoring.sensors[mapKeyAndValue[0]]]}
                                                             selectedSensors={[...selectedSensors[mapKeyAndValue[0]]]}
-                                                            numHeads={props.numHeads}
+                                                            numHeads={numHeads}
                                                             maxSelectableSensors={maxSensors}
                                                             numSensorsSelected={numSensorsSelected}
                                                             setNumSensorsSelected={setNumSensorsSelected}
-                                                            setModalOpen={props.setModalOpen}
+                                                            setModalOpen={setModalOpen}
                                                             setSelectedSensors={setSelectedSensors}
                                                         />
                                                     ))
@@ -325,7 +326,7 @@ export default function SensorsModal(props: SensorsModalProps) {
                         </>
                     }
                     {
-                        props.availableSensorsMap.size === 0 &&
+                        availableSensorsMap.size === 0 &&
                         <>
                             <Text fontSize="lg" fontWeight={600}>Select sensors</Text>
                             <Box
@@ -443,7 +444,7 @@ export default function SensorsModal(props: SensorsModalProps) {
                         colorScheme='gray'
                         mr={3}
                         onClick={() => {
-                            props.setModalOpen(false)
+                            setModalOpen(false)
                         }}
                     >
                         Close
@@ -475,6 +476,11 @@ interface SensorEntryProps {
 }
 
 function SensorEntry(props: SensorEntryProps) {
+
+    const {sensor, sensorsMonitoring, numHeads, selectedSensors} = props;
+    const {numSensorsSelected, maxSelectableSensors, setSelectedSensors} = props;
+    const {setNumSensorsSelected} = props;
+
     const [sensorExpanded, setSensorExpanded] = useState(false)
     const [descriptionExpanded, setDescriptionExpanded] = useState(false)
 
@@ -484,41 +490,41 @@ function SensorEntry(props: SensorEntryProps) {
 
     // CHECK IF ALL SENSORS OF THIS GROUP ARE MONITORED
     useEffect(() => {
-        const numHeads = props.sensor.isHeadMounted ? props.numHeads : 1
+        const numHeads = sensor.isHeadMounted ? props.numHeads : 1
 
         let numHeadsSelected = 0
-        for (const entry of props.sensorsMonitoring)
-            if (entry.sensorNames.find((el) => (el.name === props.sensor.internalName)) != null)
+        for (const entry of sensorsMonitoring)
+            if (entry.sensorNames.find((el) => (el.name === sensor.internalName)) != null)
                 numHeadsSelected++
 
 
         setAllSensorsMonitored(numHeadsSelected === numHeads)
-    }, [props.sensorsMonitoring, props.numHeads, props.sensor.internalName, props.sensor.isHeadMounted])
+    }, [sensorsMonitoring, numHeads, sensor.internalName, sensor.isHeadMounted, props.numHeads])
 
     // CHECK IF ALL SENSORS OF THIS GROUP ARE SELECTED
     useEffect(() => {
-        const numHeads = props.sensor.isHeadMounted ? props.numHeads : 1
+        const numHeads = sensor.isHeadMounted ? props.numHeads : 1
 
         let numHeadsSelected = 0
-        for (const entry of props.selectedSensors)
-            if (entry.sensorNames.find((el) => (el.name === props.sensor.internalName)) != null)
+        for (const entry of selectedSensors)
+            if (entry.sensorNames.find((el) => (el.name === sensor.internalName)) != null)
                 numHeadsSelected++
 
         setAllSensorsSelected(numHeadsSelected === numHeads)
-    }, [props.selectedSensors, props.numHeads, props.sensor.internalName, props.sensor.isHeadMounted])
+    }, [selectedSensors, numHeads, sensor.internalName, sensor.isHeadMounted, props.numHeads])
 
     // CHECK IF LIMIT OF NUM SENSORS MONITORING REACHED
     useEffect(() => {
-        if (props.numSensorsSelected >= props.maxSelectableSensors)
+        if (numSensorsSelected >= maxSelectableSensors)
             setSensorLimitReached(true)
         else
             setSensorLimitReached(false)
-    }, [props.numSensorsSelected, props.maxSelectableSensors])
+    }, [numSensorsSelected, maxSelectableSensors])
 
     // MONITOR ALL SENSORS OF GROUP button clicked
     function handleSelectAllSensorsButtonClick() {
-        const sensorCategory = props.sensor.category
-        const sensorHeads = props.sensor.isHeadMounted ? props.numHeads : 0
+        const sensorCategory = sensor.category
+        const sensorHeads = sensor.isHeadMounted ? props.numHeads : 0
         let numSensorsAdded = 0
 
         let numHeads = sensorHeads
@@ -527,18 +533,18 @@ function SensorEntry(props: SensorEntryProps) {
 
         let currHeadNum: number
 
-        props.setSelectedSensors((val) => {
+        setSelectedSensors((val) => {
             Array.from(Array(numHeads)).forEach((_, indexHead) => {
                 currHeadNum = sensorHeads === 0 ? 0 : indexHead + 1
-                if (numSensorsAdded + props.numSensorsSelected >= props.maxSelectableSensors)
+                if (numSensorsAdded + numSensorsSelected >= maxSelectableSensors)
                     return
 
                 const foundEntry = val[sensorCategory].find((el) => (el.headNumber === currHeadNum))
                 if (foundEntry != null) {
-                    if (foundEntry.sensorNames.find((el) => (el.name === props.sensor.internalName)) === undefined) {
+                    if (foundEntry.sensorNames.find((el) => (el.name === sensor.internalName)) === undefined) {
                         foundEntry.sensorNames.push({
-                            name: props.sensor.internalName,
-                            color: colors[props.numSensorsSelected + numSensorsAdded]
+                            name: sensor.internalName,
+                            color: colors[numSensorsSelected + numSensorsAdded]
                         })
                         numSensorsAdded++
                     }
@@ -546,15 +552,15 @@ function SensorEntry(props: SensorEntryProps) {
                     val[sensorCategory].push({
                         headNumber: currHeadNum,
                         sensorNames: [{
-                            name: props.sensor.internalName,
-                            color: colors[props.numSensorsSelected + numSensorsAdded]
+                            name: sensor.internalName,
+                            color: colors[numSensorsSelected + numSensorsAdded]
                         }]
                     })
                     numSensorsAdded++
                 }
             })
 
-            props.setNumSensorsSelected((val) => (val + numSensorsAdded))
+            setNumSensorsSelected((val) => (val + numSensorsAdded))
 
             if (sensorHeads > 0)
                 setSensorExpanded(true)
@@ -565,9 +571,9 @@ function SensorEntry(props: SensorEntryProps) {
 
     // REMOVE ALL SENSORS OF GROUP
     function handleRemoveAllSensorsButtonClick() {
-        const sensorCategory = props.sensor.category
-        const sensorHeads = props.sensor.isHeadMounted ? props.numHeads : 0
-        // const sensorMechs = 0// props.sensor.numMechs
+        const sensorCategory = sensor.category
+        const sensorHeads = sensor.isHeadMounted ? props.numHeads : 0
+        // const sensorMechs = 0// sensor.numMechs
         let numSensorsRemoved = 0
 
         let numHeads = sensorHeads
@@ -580,13 +586,13 @@ function SensorEntry(props: SensorEntryProps) {
 
         let currHeadNum: number
 
-        props.setSelectedSensors((val) => {
+        setSelectedSensors((val) => {
             Array.from(Array(numHeads)).forEach((_, indexHead) => {
                 currHeadNum = sensorHeads === 0 ? 0 : indexHead + 1
 
                 const foundEntry = val[sensorCategory].find((el) => (el.headNumber === currHeadNum))
                 if (foundEntry != null) {
-                    foundEntry.sensorNames = foundEntry.sensorNames.filter((el) => (el.name !== props.sensor.internalName))
+                    foundEntry.sensorNames = foundEntry.sensorNames.filter((el) => (el.name !== sensor.internalName))
                     if (foundEntry.sensorNames.length === 0)
                         val[sensorCategory] = val[sensorCategory].filter((el) => (el.headNumber !== currHeadNum))
 
@@ -594,7 +600,7 @@ function SensorEntry(props: SensorEntryProps) {
                 }
             })
 
-            props.setNumSensorsSelected((val) => (val - numSensorsRemoved))
+            setNumSensorsSelected((val) => (val - numSensorsRemoved))
 
             return {...val}
         })
@@ -602,10 +608,10 @@ function SensorEntry(props: SensorEntryProps) {
 
     // GET BUTTON TEXT
     function getButtonText() {
-        if (!allSensorsSelected && props.numSensorsSelected >= props.maxSelectableSensors)
+        if (!allSensorsSelected && numSensorsSelected >= maxSelectableSensors)
             return 'Sensor limit reached'
 
-        const nonHeadSensor = !props.sensor.isHeadMounted // props.sensor.numHeads === 0 && props.sensor.numHeads === 0
+        const nonHeadSensor = !sensor.isHeadMounted // sensor.numHeads === 0 && sensor.numHeads === 0
         if (allSensorsMonitored) {
             if (nonHeadSensor)
                 return 'Already monitoring'
@@ -626,7 +632,7 @@ function SensorEntry(props: SensorEntryProps) {
 
     // GET BUTTON COLOR - green/red/gray
     function getButtonColor() {
-        if (!allSensorsSelected && props.numSensorsSelected >= props.maxSelectableSensors)
+        if (!allSensorsSelected && numSensorsSelected >= maxSelectableSensors)
             return 'gray'
 
         if (allSensorsMonitored)
@@ -650,7 +656,7 @@ function SensorEntry(props: SensorEntryProps) {
 
             <HStack>
                 {
-                    props.sensor.isHeadMounted &&
+                    sensor.isHeadMounted &&
                     <Box
                         _hover={{
                             cursor: 'pointer'
@@ -666,7 +672,7 @@ function SensorEntry(props: SensorEntryProps) {
                     alignItems="left"
                 >
                     <HStack justifyContent="left">
-                        <Text>{props.sensor.name}</Text>
+                        <Text>{sensor.name}</Text>
                         <Box
                             _hover={{
                                 cursor: 'pointer'
@@ -678,12 +684,12 @@ function SensorEntry(props: SensorEntryProps) {
                             <FiInfo/>
                         </Box>
                     </HStack>
-                    {props.sensor.isHeadMounted &&
+                    {sensor.isHeadMounted &&
                         <Text fontSize="xs" color="gray.500"
-                              mt="0!important">{props.numHeads} heads</Text>
+                              mt="0!important">{numHeads} heads</Text>
                     }
-                    {/* {props.sensor.numHeads > 0 && props.sensor.numMechs > 0 && */}
-                    {/*    <Text fontSize={"xs"} color={"gray.500"} mt={"0!important"}>{props.sensor.numMechs} mechs / */}
+                    {/* {sensor.numHeads > 0 && sensor.numMechs > 0 && */}
+                    {/*    <Text fontSize={"xs"} color={"gray.500"} mt={"0!important"}>{sensor.numMechs} mechs / */}
                     {/*        head</Text> */}
                     {/* } */}
                 </VStack>
@@ -709,137 +715,146 @@ function SensorEntry(props: SensorEntryProps) {
         </HStack>
         {
             descriptionExpanded &&
-            <SensorDescription sensor={props.sensor} setDescriptionExpanded={setDescriptionExpanded}/>
+            <SensorDescription sensor={sensor} setDescriptionExpanded={setDescriptionExpanded}/>
         }
         {
             sensorExpanded &&
-            props.sensor.isHeadMounted &&
-            Array.from(Array(props.numHeads)).map((_, indexHead) => <HeadMechEntry
+            sensor.isHeadMounted &&
+            Array.from(Array(numHeads)).map((_, indexHead) => <HeadMechEntry
                 key={indexHead}
                 indexHead={indexHead + 1}
-                sensor={props.sensor}
-                selectedSensors={props.selectedSensors}
-                setSelectedSensors={props.setSelectedSensors}
-                sensorsMonitoring={props.sensorsMonitoring}
-                numHeads={props.numHeads}
-                numSensorsSelected={props.numSensorsSelected}
-                setNumSensorsSelected={props.setNumSensorsSelected}
-                maxSelectableSensors={props.maxSelectableSensors}
+                sensor={sensor}
+                selectedSensors={selectedSensors}
+                setSelectedSensors={setSelectedSensors}
+                sensorsMonitoring={sensorsMonitoring}
+                numHeads={numHeads}
+                numSensorsSelected={numSensorsSelected}
+                setNumSensorsSelected={setNumSensorsSelected}
+                maxSelectableSensors={maxSelectableSensors}
             />)
         }
         <Divider orientation="horizontal" w="full"/>
     </VStack>
 }
 
-const SensorDescription = (props: {
+interface SensorDescriptionProps {
     sensor: Sensor
     setDescriptionExpanded: React.Dispatch<React.SetStateAction<boolean>>
-}) => <HStack
-    w="full"
-    alignItems="top"
-    justifyContent="space-between"
-    pl={6}
->
-    <HStack>
-        <Flex>
-            <Box boxSize="125px">
-                <Image
-                    objectFit="cover"
-                    boxSize="100%"
-                    src={require('../../../../../../assets/machineries/EQUA.png')}
-                />
-            </Box>
-        </Flex>
-        <Divider orientation="vertical" h="125px"/>
-        <VStack
-            h="full"
-            alignItems="left"
-            justifyContent="start"
+}
+
+const SensorDescription = (props: SensorDescriptionProps) => {
+
+    const {sensor, setDescriptionExpanded} = props;
+
+    return (
+        <HStack
+            w="full"
+            alignItems="top"
+            justifyContent="space-between"
+            pl={6}
         >
-            <Text
-                fontWeight={300}
-                color="gray.500"
-                fontSize="xs"
-            >
-                Sensor description
-            </Text>
-            <Text
-                // fontWeight={600}
-                color="black"
-                fontSize="sm"
-                mt="0!important"
-                mb={4}
-            >
-                {props.sensor.description ? props.sensor.description : 'N/A'}
-            </Text>
-
-            <Text
-                fontWeight={300}
-                color="gray.500"
-                fontSize="xs"
-            >
-                Sensor type
-            </Text>
-            <Text
-                // fontWeight={600}
-                color="black"
-                fontSize="sm"
-                mt="0!important"
-                mb={4}
-            >
-                {props.sensor.type ? props.sensor.type : 'N/A'}
-            </Text>
-
-            <Text
-                fontWeight={300}
-                color="gray.500"
-                fontSize="xs"
-            >
-                Sensor unit
-            </Text>
-            <Text
-                // fontWeight={600}
-                color="black"
-                fontSize="sm"
-                mt="0!important"
-                mb={4}
-            >
-                {props.sensor.unit ? props.sensor.unit : 'N/A'}
-            </Text>
-
-            <Text
-                fontWeight={300}
-                color="gray.500"
-                fontSize="xs"
-            >
-                Sensor thresholds
-            </Text>
-            <HStack
-                mb={4}
-                mt="0!important"
-            >
-                <Text
-                    // fontWeight={600}
-                    color="black"
-                    fontSize="sm"
+            <HStack>
+                <Flex>
+                    <Box boxSize="125px">
+                        <Image
+                            objectFit="cover"
+                            boxSize="100%"
+                            src={require('../../../../../../assets/machineries/EQUA.png')}
+                        />
+                    </Box>
+                </Flex>
+                <Divider orientation="vertical" h="125px"/>
+                <VStack
+                    h="full"
+                    alignItems="left"
+                    justifyContent="start"
                 >
-                    Lower: {props.sensor.thresholdLow ? `${props.sensor.thresholdLow} ${props.sensor.unit}` : 'N/A'}
-                </Text>
-                <Text color="black" fontSize="sm">-</Text>
-                <Text
-                    // fontWeight={600}
-                    color="black"
-                    fontSize="sm"
-                >
-                    Upper: {props.sensor.thresholdHigh ? `${props.sensor.thresholdHigh} ${props.sensor.unit}` : 'N/A'}
-                </Text>
+                    <Text
+                        fontWeight={300}
+                        color="gray.500"
+                        fontSize="xs"
+                    >
+                        Sensor description
+                    </Text>
+                    <Text
+                        // fontWeight={600}
+                        color="black"
+                        fontSize="sm"
+                        mt="0!important"
+                        mb={4}
+                    >
+                        {sensor.description ? sensor.description : 'N/A'}
+                    </Text>
+
+                    <Text
+                        fontWeight={300}
+                        color="gray.500"
+                        fontSize="xs"
+                    >
+                        Sensor type
+                    </Text>
+                    <Text
+                        // fontWeight={600}
+                        color="black"
+                        fontSize="sm"
+                        mt="0!important"
+                        mb={4}
+                    >
+                        {sensor.type ? sensor.type : 'N/A'}
+                    </Text>
+
+                    <Text
+                        fontWeight={300}
+                        color="gray.500"
+                        fontSize="xs"
+                    >
+                        Sensor unit
+                    </Text>
+                    <Text
+                        // fontWeight={600}
+                        color="black"
+                        fontSize="sm"
+                        mt="0!important"
+                        mb={4}
+                    >
+                        {sensor.unit ? sensor.unit : 'N/A'}
+                    </Text>
+
+                    <Text
+                        fontWeight={300}
+                        color="gray.500"
+                        fontSize="xs"
+                    >
+                        Sensor thresholds
+                    </Text>
+                    <HStack
+                        mb={4}
+                        mt="0!important"
+                    >
+                        <Text
+                            // fontWeight={600}
+                            color="black"
+                            fontSize="sm"
+                        >
+                            Lower: {sensor.thresholdLow ? `${sensor.thresholdLow} ${sensor.unit}` : 'N/A'}
+                        </Text>
+                        <Text color="black" fontSize="sm">-</Text>
+                        <Text
+                            // fontWeight={600}
+                            color="black"
+                            fontSize="sm"
+                        >
+                            Upper: {sensor.thresholdHigh ? `${sensor.thresholdHigh} ${sensor.unit}` : 'N/A'}
+                        </Text>
+                    </HStack>
+                </VStack>
             </HStack>
-        </VStack>
-    </HStack>
-    <CloseButton onClick={() => {
-        props.setDescriptionExpanded(false)
-    }}/>
-</HStack>;
+            <CloseButton onClick={() => {
+                setDescriptionExpanded(false)
+            }}/>
+        </HStack>
+    )
+}
 
 interface HeadMechEntryProps {
     indexHead: number
@@ -854,86 +869,91 @@ interface HeadMechEntryProps {
 }
 
 function HeadMechEntry(props: HeadMechEntryProps) {
+
+    const {indexHead, sensor, selectedSensors} = props;
+    const {setSelectedSensors, sensorsMonitoring, numHeads} = props;
+    const {setNumSensorsSelected, maxSelectableSensors, numSensorsSelected} = props;
+
     const [sensorLimitReached, setSensorLimitReached] = useState(false)
     const [sensorSelected, setSensorSelected] = useState(false)
     const [sensorMonitored, setSensorMonitored] = useState(false)
 
     // CHECK IF SENSOR IS SELECTED
     useEffect(() => {
-        const foundEntry = props.selectedSensors.find((el) => (el.headNumber === props.indexHead))
+        const foundEntry = selectedSensors.find((el) => (el.headNumber === indexHead))
         if (foundEntry != null)
-            if (foundEntry.sensorNames.find((el) => (el.name === props.sensor.internalName)) !== undefined) {
+            if (foundEntry.sensorNames.find((el) => (el.name === sensor.internalName)) !== undefined) {
                 setSensorSelected(true)
 
                 return
             }
 
         setSensorSelected(false)
-    }, [props.selectedSensors, props.indexHead, props.sensor.internalName])
+    }, [selectedSensors, indexHead, sensor.internalName])
 
     // CHECK IF SENSOR IS ALREADY MONITORED
     useEffect(() => {
-        const foundEntry = props.sensorsMonitoring.find((el) => (el.headNumber === props.indexHead))
+        const foundEntry = sensorsMonitoring.find((el) => (el.headNumber === indexHead))
         if (foundEntry != null)
-            if (foundEntry.sensorNames.find((el) => (el.name === props.sensor.internalName)) !== undefined) {
+            if (foundEntry.sensorNames.find((el) => (el.name === sensor.internalName)) !== undefined) {
                 setSensorMonitored(true)
 
                 return
             }
 
         setSensorMonitored(false)
-    }, [props.sensorsMonitoring, props.indexHead, props.sensor.internalName])
+    }, [sensorsMonitoring, indexHead, sensor.internalName])
 
     // CHECK IF LIMIT OF NUM SENSORS MONITORING REACHED
     useEffect(() => {
-        if (props.numSensorsSelected >= props.maxSelectableSensors)
+        if (numSensorsSelected >= maxSelectableSensors)
             setSensorLimitReached(true)
         else
             setSensorLimitReached(false)
-    }, [props.numSensorsSelected, props.maxSelectableSensors])
+    }, [numSensorsSelected, maxSelectableSensors])
 
     // SELECT SENSOR BUTTON CLICK
     function handleSelectSensorButtonClick() {
-        const sensorCategory = props.sensor.category
+        const sensorCategory = sensor.category
 
-        props.setSelectedSensors((val) => {
-            const foundEntry = val[sensorCategory].find((el) => (el.headNumber === props.indexHead))
+        setSelectedSensors((val) => {
+            const foundEntry = val[sensorCategory].find((el) => (el.headNumber === indexHead))
             if (foundEntry != null)
                 foundEntry.sensorNames.push({
-                    name: props.sensor.internalName,
-                    color: colors[props.numSensorsSelected]
+                    name: sensor.internalName,
+                    color: colors[numSensorsSelected]
                 })
             else
                 val[sensorCategory].push({
-                    headNumber: props.indexHead,
+                    headNumber: indexHead,
                     sensorNames: [{
-                        name: props.sensor.internalName,
-                        color: colors[props.numSensorsSelected]
+                        name: sensor.internalName,
+                        color: colors[numSensorsSelected]
                     }]
                 })
 
             return {...val}
         })
 
-        props.setNumSensorsSelected((val) => (val + 1))
+        setNumSensorsSelected((val) => (val + 1))
     }
 
     // REMOVE SENSOR BUTTON CLICK
     function handleRemoveSensorButtonClick() {
-        const sensorCategory = props.sensor.category
+        const sensorCategory = sensor.category
 
-        props.setSelectedSensors((val) => {
-            const foundEntry = val[sensorCategory].find((el) => (el.headNumber === props.indexHead))
+        setSelectedSensors((val) => {
+            const foundEntry = val[sensorCategory].find((el) => (el.headNumber === indexHead))
             if (foundEntry != null) {
-                foundEntry.sensorNames = foundEntry.sensorNames.filter((el) => (el.name !== props.sensor.internalName))
+                foundEntry.sensorNames = foundEntry.sensorNames.filter((el) => (el.name !== sensor.internalName))
                 if (foundEntry.sensorNames.length === 0)
-                    val[sensorCategory] = val[sensorCategory].filter((el) => (el.headNumber !== props.indexHead))
+                    val[sensorCategory] = val[sensorCategory].filter((el) => (el.headNumber !== indexHead))
             }
 
             return {...val}
         })
 
-        props.setNumSensorsSelected((val) => (val - 1))
+        setNumSensorsSelected((val) => (val - 1))
     }
 
     // GET BUTTON TEXT
@@ -966,7 +986,7 @@ function HeadMechEntry(props: HeadMechEntryProps) {
                 w="full"
                 justifyContent="space-between"
             >
-                <Text>{`• Head ${props.indexHead}`}</Text>
+                <Text>{`• Head ${indexHead}`}</Text>
                 <Button
                     colorScheme={getButtonColor()}
                     variant='outline'
@@ -982,7 +1002,7 @@ function HeadMechEntry(props: HeadMechEntryProps) {
                 </Button>
             </HStack>
             {
-                (props.indexHead < props.numHeads) &&
+                (indexHead < numHeads) &&
                 <Divider orientation="horizontal" mt="1!important"/>
             }
         </>

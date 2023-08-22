@@ -69,6 +69,9 @@ interface SidebarProps extends BoxProps {
 }
 
 export default function Sidebar(props: any) {
+
+    const {onClose, isOpen} = props;
+
     const location = useLocation()
     const {sidebarStatus, dispatchSidebar} = useContext(SidebarStatusContext)
 
@@ -92,28 +95,28 @@ export default function Sidebar(props: any) {
         <>
             {displaySidebar &&
                 <SidebarContent
-                    onClose={() => props.onClose}
+                    onClose={() => onClose}
                     display="block"
                 />
             }
             {displayWidgetSelector &&
                 <WidgetSelectorContent
-                    onClose={() => props.onClose}
+                    onClose={() => onClose}
                     display="flex"
                 />
             }
             <Drawer
                 autoFocus={false}
-                isOpen={props.isOpen}
+                isOpen={isOpen}
                 placement="left"
-                onClose={props.onClose}
+                onClose={onClose}
                 returnFocusOnClose={false}
-                onOverlayClick={props.onClose}
+                onOverlayClick={onClose}
                 size="full"
             >
                 <DrawerContent>
-                    {displaySidebar && <SidebarContent onClose={props.onClose}/>}
-                    {displayWidgetSelector && <WidgetSelectorContent onClose={props.onClose}/>}
+                    {displaySidebar && <SidebarContent onClose={onClose}/>}
+                    {displayWidgetSelector && <WidgetSelectorContent onClose={onClose}/>}
                 </DrawerContent>
             </Drawer>
         </>
@@ -200,6 +203,9 @@ interface NavItemProps extends FlexProps {
 }
 
 const SidebarItem = (props: NavItemProps) => {
+
+    const {name, icon, link, selectedMatcher} = props;
+
     const location = useLocation()
 
     const {principal} = useContext(PrincipalContext)
@@ -216,11 +222,11 @@ const SidebarItem = (props: NavItemProps) => {
             return
         }
 
-        if (permissionChecker.hasSidebarItemAccess(principal, props.name))
+        if (permissionChecker.hasSidebarItemAccess(principal, name))
             setShowItem(true)
         else
             setShowItem(false)
-    }, [principal, props.name])
+    }, [principal, name])
 
     // CHECK IF SIDEBAR ITEM IS TO BE SELECTED
     useEffect(() => {
@@ -230,14 +236,14 @@ const SidebarItem = (props: NavItemProps) => {
             return
         }
 
-        if (props.selectedMatcher === '/')
-            setIsSelected(location.pathname === props.selectedMatcher)
+        if (selectedMatcher === '/')
+            setIsSelected(location.pathname === selectedMatcher)
         else
-            setIsSelected(location.pathname.startsWith(props.selectedMatcher))
-    }, [principal, location.pathname, props.selectedMatcher])
+            setIsSelected(location.pathname.startsWith(selectedMatcher))
+    }, [principal, location.pathname, selectedMatcher])
 
     return (
-        <RouterLink to={props.link} hidden={!showItem}>
+        <RouterLink to={link} hidden={!showItem}>
             <Box style={{textDecoration: 'none'}} _focus={{boxShadow: 'none'}}>
                 <Flex
                     align="center"
@@ -259,9 +265,9 @@ const SidebarItem = (props: NavItemProps) => {
                         _groupHover={{
                             color: 'white'
                         }}
-                        as={props.icon}
+                        as={icon}
                     />
-                    {sidebarStatus.status === 'open' && props.name}
+                    {sidebarStatus.status === 'open' && name}
                 </Flex>
             </Box>
         </RouterLink>
@@ -359,14 +365,17 @@ interface WidgetSelectorItemProps {
 }
 
 const WidgetSelectorItem = memo((props: WidgetSelectorItemProps) => {
+
+    const {widget} = props;
+
     function handleDragStart(event: React.DragEvent<HTMLDivElement>, widget: WidgetSelectorItemProps['widget']) {
         // Set format like this to be able to retrieve w&h in the onDragOver event (via .types)
         event.dataTransfer.setData(`${widget.w},${widget.h}`, JSON.stringify(widget))
     }
 
     const WidgetPreviewComponent = useMemo(
-        () => (WidgetPreview(props.widget.type)),
-        [props.widget.type]
+        () => (WidgetPreview(widget.type)),
+        [widget.type]
     )
 
     return (
@@ -380,11 +389,11 @@ const WidgetSelectorItem = memo((props: WidgetSelectorItemProps) => {
             p={3}
             justifyContent="stretch"
             onDragStart={(e) => {
-                handleDragStart(e, props.widget)
+                handleDragStart(e, widget)
             }}
             draggable
         >
-            <Text fontSize="md" fontWeight="600">{props.widget.name} widget</Text>
+            <Text fontSize="md" fontWeight="600">{widget.name} widget</Text>
             {WidgetPreviewComponent}
         </VStack>
     )

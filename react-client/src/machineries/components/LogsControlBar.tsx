@@ -1,18 +1,21 @@
-import { Box, FormLabel, HStack, Switch, Text, useColorModeValue } from '@chakra-ui/react'
+import {Box, FormLabel, HStack, Switch, Text, useColorModeValue} from '@chakra-ui/react'
 import React from 'react'
 
 interface LogsControlBarProps {
-  expandAll: string
-  setExpandAll: Function
-  numLogs: number | undefined
+    expandAll: string
+    setExpandAll: Function
+    numLogs: number | undefined
 }
 
-export default function LogsControlBar (props: LogsControlBarProps) {
-  function handleExpandAllSwitchClicked (event: React.ChangeEvent<HTMLInputElement>) {
-    props.setExpandAll(event.target.checked ? 'true' : 'false')
-  }
+export default function LogsControlBar(props: LogsControlBarProps) {
 
-  return (
+    const {setExpandAll, numLogs, expandAll} = props;
+
+    function handleExpandAllSwitchClicked(event: React.ChangeEvent<HTMLInputElement>) {
+        setExpandAll(event.target.checked ? 'true' : 'false')
+    }
+
+    return (
         <HStack
             w="full"
             alignItems="stretch"
@@ -26,26 +29,26 @@ export default function LogsControlBar (props: LogsControlBarProps) {
             mb={6}
         >
             <Box>
-                <Text>{props.numLogs ? props.numLogs : ''} results</Text>
+                <Text>{numLogs ? numLogs : ''} results</Text>
             </Box>
             <Box>
                 <HStack
                     alignItems="baseline"
                     _hover={{
-                      cursor: 'pointer'
+                        cursor: 'pointer'
                     }}
                 >
                     <FormLabel htmlFor='expandAll'>Expand all</FormLabel>
                     <Switch
                         id='expandAll'
                         size="md"
-                        isChecked={props.expandAll === 'true'}
+                        isChecked={expandAll === 'true'}
                         onChange={(e) => {
-                          handleExpandAllSwitchClicked(e)
+                            handleExpandAllSwitchClicked(e)
                         }}
                     />
                 </HStack>
             </Box>
         </HStack>
-  )
+    )
 }

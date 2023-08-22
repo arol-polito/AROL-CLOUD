@@ -1,33 +1,36 @@
-import { Divider, HStack, Text, useColorModeValue, VStack } from '@chakra-ui/react'
-import { FiFileText, FiGrid } from 'react-icons/fi'
-import { useNavigate } from 'react-router-dom'
+import {Divider, HStack, Text, useColorModeValue, VStack} from '@chakra-ui/react'
+import {FiFileText, FiGrid} from 'react-icons/fi'
+import {useNavigate} from 'react-router-dom'
 import type Machinery from '../../../machineries-map/components/Machinery'
-import React, { useContext, useEffect, useState } from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import PrincipalContext from '../../../utils/contexts/PrincipalContext'
 import permissionChecker from '../../../utils/PermissionChecker'
 
 interface LandingPanelProps {
-  machinery: Machinery
+    machinery: Machinery
 }
 
-export default function LandingPanel (props: LandingPanelProps) {
-  const navigate = useNavigate()
+export default function LandingPanel(props: LandingPanelProps) {
 
-  const { principal } = useContext(PrincipalContext)
+    const {machinery} = props;
 
-  const [hasDashboardsAccess, setHasDashboardsAccess] = useState(true)
-  const [hasDocumentsAccess, setHasDocumentsAccess] = useState(true)
+    const navigate = useNavigate()
 
-  useEffect(() => {
-    setHasDashboardsAccess(permissionChecker.hasAnyDashboardAccess(principal))
-    setHasDocumentsAccess(permissionChecker.hasAnyDocumentsAccess(principal))
-  }, [principal])
+    const {principal} = useContext(PrincipalContext)
 
-  function handleNavigate (to: string) {
-    navigate(to, { state: props.machinery })
-  }
+    const [hasDashboardsAccess, setHasDashboardsAccess] = useState(true)
+    const [hasDocumentsAccess, setHasDocumentsAccess] = useState(true)
 
-  return (
+    useEffect(() => {
+        setHasDashboardsAccess(permissionChecker.hasAnyDashboardAccess(principal))
+        setHasDocumentsAccess(permissionChecker.hasAnyDocumentsAccess(principal))
+    }, [principal])
+
+    function handleNavigate(to: string) {
+        navigate(to, {state: machinery})
+    }
+
+    return (
         <VStack
             h="400px"
             w="full"
@@ -48,16 +51,16 @@ export default function LandingPanel (props: LandingPanelProps) {
                     justifyContent="center"
                     mr={2}
                     _hover={hasDashboardsAccess
-                      ? {
-                          cursor: 'pointer',
-                          bgColor: 'gray.100'
+                        ? {
+                            cursor: 'pointer',
+                            bgColor: 'gray.100'
                         }
-                      : {
-                          cursor: 'not-allowed'
+                        : {
+                            cursor: 'not-allowed'
                         }}
                     title={!hasDashboardsAccess ? 'Operation not permitted' : ''}
                     onClick={() => {
-                      hasDashboardsAccess && handleNavigate(`/machinery/${props.machinery.uid}/dashboard`)
+                        hasDashboardsAccess && handleNavigate(`/machinery/${machinery.uid}/dashboard`)
                     }}
                 >
                     <FiGrid size={100} color={hasDashboardsAccess ? '#000000' : '#A0AEC0'}/>
@@ -70,16 +73,16 @@ export default function LandingPanel (props: LandingPanelProps) {
                     alignItems="center"
                     justifyContent="center"
                     _hover={hasDocumentsAccess
-                      ? {
-                          cursor: 'pointer',
-                          bgColor: 'gray.100'
+                        ? {
+                            cursor: 'pointer',
+                            bgColor: 'gray.100'
                         }
-                      : {
-                          cursor: 'not-allowed'
+                        : {
+                            cursor: 'not-allowed'
                         }}
                     title={!hasDocumentsAccess ? 'Operation not permitted' : ''}
                     onClick={() => {
-                      hasDocumentsAccess && handleNavigate(`/machinery/${props.machinery.uid}/documents`)
+                        hasDocumentsAccess && handleNavigate(`/machinery/${machinery.uid}/documents`)
                     }}
                 >
                     <FiFileText size={100} color={hasDocumentsAccess ? '#000000' : '#A0AEC0'}/>
@@ -87,5 +90,5 @@ export default function LandingPanel (props: LandingPanelProps) {
                 </VStack>
             </HStack>
         </VStack>
-  )
+    )
 }

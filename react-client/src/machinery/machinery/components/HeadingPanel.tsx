@@ -36,6 +36,10 @@ interface HeadingPanelProps {
 }
 
 export default function HeadingPanel(props: HeadingPanelProps) {
+
+    const {type, machinery, dashboard, setDashboard, loadDashboard} = props;
+    const {dashboardPermissions, documentsPermissions, setChartTooltip} = props;
+
     const [expanded, setExpanded] = useState(true)
     const [loadDashboardModalOpen, setLoadDashboardModalOpen] = useState(false)
 
@@ -49,20 +53,20 @@ export default function HeadingPanel(props: HeadingPanelProps) {
 
     // NEW DASHBOARD BUTTON CLICKED
     function handleNewDashboardButtonClicked() {
-        if (props.dashboard.numUnsavedChanges)
+        if (dashboard.numUnsavedChanges)
             setDashboardNotSavedPromptObject({
                 open: true,
                 type: 'new-dashboard'
             })
         else
-            props.setDashboard(
+            setDashboard(
                 new Dashboard()
             )
     }
 
     // LOAD DASHBOARD BUTTON CLICKED
     function handleLoadDashboardButtonClicked() {
-        if (props.dashboard.numUnsavedChanges)
+        if (dashboard.numUnsavedChanges)
             setDashboardNotSavedPromptObject({
                 open: true,
                 type: 'load-dashboard'
@@ -73,7 +77,7 @@ export default function HeadingPanel(props: HeadingPanelProps) {
 
     // CLOSE TOOLTIP on mouse down over dashboard container
     function closeTooltip() {
-        props.setChartTooltip((val) => {
+        setChartTooltip((val) => {
             val.active = false
 
             return {...val}
@@ -99,27 +103,27 @@ export default function HeadingPanel(props: HeadingPanelProps) {
                 {
                     expanded &&
                     <ExpandedHeadingPanel
-                        type={props.type}
-                        machinery={props.machinery}
+                        type={type}
+                        machinery={machinery}
                         setLoadDashboardModalOpen={setLoadDashboardModalOpen}
                         setExpanded={setExpanded}
                         handleNewDashboardButtonClicked={handleNewDashboardButtonClicked}
                         handleLoadDashboardButtonClicked={handleLoadDashboardButtonClicked}
-                        dashboardPermissions={props.dashboardPermissions}
-                        documentsPermissions={props.documentsPermissions}
+                        dashboardPermissions={dashboardPermissions}
+                        documentsPermissions={documentsPermissions}
                     />
                 }
                 {
                     !expanded &&
                     <CollapsedHeadingPanel
-                        type={props.type}
-                        machinery={props.machinery}
+                        type={type}
+                        machinery={machinery}
                         setLoadDashboardModalOpen={setLoadDashboardModalOpen}
                         setExpanded={setExpanded}
                         handleNewDashboardButtonClicked={handleNewDashboardButtonClicked}
                         handleLoadDashboardButtonClicked={handleLoadDashboardButtonClicked}
-                        dashboardPermissions={props.dashboardPermissions}
-                        documentsPermissions={props.documentsPermissions}
+                        dashboardPermissions={dashboardPermissions}
+                        documentsPermissions={documentsPermissions}
                     />
                 }
 
@@ -127,13 +131,13 @@ export default function HeadingPanel(props: HeadingPanelProps) {
             {
                 loadDashboardModalOpen &&
                 <LoadDashboardModal
-                    machineryUID={props.machinery.uid}
-                    dashboard={props.dashboard}
-                    setDashboard={props.setDashboard}
+                    machineryUID={machinery.uid}
+                    dashboard={dashboard}
+                    setDashboard={setDashboard}
                     loadDashboardModalOpen={loadDashboardModalOpen}
                     setLoadDashboardModalOpen={setLoadDashboardModalOpen}
-                    loadDashboard={props.loadDashboard}
-                    dashboardPermissions={props.dashboardPermissions}
+                    loadDashboard={loadDashboard}
+                    dashboardPermissions={dashboardPermissions}
                 />
             }
             {
@@ -141,7 +145,7 @@ export default function HeadingPanel(props: HeadingPanelProps) {
                 <DashboardNotSavedPrompt
                     dashboardNotSavePromptObject={dashboardNotSavedPromptObject}
                     setDashboardNotSavePromptObject={setDashboardNotSavedPromptObject}
-                    setDashboard={props.setDashboard}
+                    setDashboard={setDashboard}
                     setLoadDashboardModalOpen={setLoadDashboardModalOpen}
                 />
             }
@@ -161,8 +165,12 @@ interface ExpandedCollapsedHeadingPanelProps {
 }
 
 function ExpandedHeadingPanel(props: ExpandedCollapsedHeadingPanelProps) {
+
+    const {type, machinery, setExpanded} = props;
+    const {dashboardPermissions, handleLoadDashboardButtonClicked, handleNewDashboardButtonClicked} = props;
+
     function handleHeadingPanelCollapse() {
-        props.setExpanded(false)
+        setExpanded(false)
     }
 
     return <>
@@ -171,8 +179,8 @@ function ExpandedHeadingPanel(props: ExpandedCollapsedHeadingPanelProps) {
                 <Image
                     objectFit="cover"
                     boxSize="100%"
-                    // src={require("/src/assets/machineries/"+ props.machinery.modelID + ".png")}
-                    src={require(`./../../../assets/machineries/${props.machinery.modelID}.png`)}
+                    // src={require("/src/assets/machineries/"+ machinery.modelID + ".png")}
+                    src={require(`./../../../assets/machineries/${machinery.modelID}.png`)}
                 />
             </Box>
         </Flex>
@@ -188,7 +196,7 @@ function ExpandedHeadingPanel(props: ExpandedCollapsedHeadingPanelProps) {
                     p={1}
                 >
                     <Heading fontSize="md" fontFamily="body" color="gray.400" whiteSpace="nowrap">
-                        {props.machinery.uid}
+                        {machinery.uid}
                     </Heading>
                     <Heading
                         fontSize="2xl"
@@ -196,7 +204,7 @@ function ExpandedHeadingPanel(props: ExpandedCollapsedHeadingPanelProps) {
                         whiteSpace="nowrap"
                         mb="0!important"
                     >
-                        {props.machinery.modelName}
+                        {machinery.modelName}
                     </Heading>
                     <Text
                         fontWeight={300}
@@ -214,7 +222,7 @@ function ExpandedHeadingPanel(props: ExpandedCollapsedHeadingPanelProps) {
                         mt="0!important"
                         mb={4}
                     >
-                        {props.machinery.modelType}
+                        {machinery.modelType}
                     </Text>
                     <Text
                         fontWeight={300}
@@ -230,7 +238,7 @@ function ExpandedHeadingPanel(props: ExpandedCollapsedHeadingPanelProps) {
                         mt="0!important"
                         mb={4}
                     >
-                        {props.machinery.numHeads} heads
+                        {machinery.numHeads} heads
                     </Text>
                     <Text
                         fontWeight={300}
@@ -246,11 +254,11 @@ function ExpandedHeadingPanel(props: ExpandedCollapsedHeadingPanelProps) {
                         my="0!important"
                         // mb={0}
                     >
-                        {props.machinery.locationCluster}
+                        {machinery.locationCluster}
                     </Text>
                 </Stack>
                 {
-                    props.type === 'dashboard' &&
+                    type === 'dashboard' &&
                     <VStack
                         w="250px"
                         h="full"
@@ -260,9 +268,9 @@ function ExpandedHeadingPanel(props: ExpandedCollapsedHeadingPanelProps) {
                             w="full"
                             leftIcon={<FiFolder/>}
                             colorScheme="blue"
-                            isDisabled={!props.dashboardPermissions.read}
-                            title={!props.dashboardPermissions.read ? 'Operation not permitted' : ''}
-                            onClick={() => (props.handleLoadDashboardButtonClicked())}
+                            isDisabled={!dashboardPermissions.read}
+                            title={!dashboardPermissions.read ? 'Operation not permitted' : ''}
+                            onClick={() => (handleLoadDashboardButtonClicked())}
                         >
                             Load dashboard
                         </Button>
@@ -270,9 +278,9 @@ function ExpandedHeadingPanel(props: ExpandedCollapsedHeadingPanelProps) {
                             w="full"
                             leftIcon={<FiFolderPlus/>}
                             colorScheme="blue"
-                            isDisabled={!props.dashboardPermissions.write}
-                            title={!props.dashboardPermissions.write ? 'Operation not permitted' : ''}
-                            onClick={() => (props.handleNewDashboardButtonClicked())}
+                            isDisabled={!dashboardPermissions.write}
+                            title={!dashboardPermissions.write ? 'Operation not permitted' : ''}
+                            onClick={() => (handleNewDashboardButtonClicked())}
                         >
                             New dashboard
                         </Button>
@@ -299,8 +307,12 @@ function ExpandedHeadingPanel(props: ExpandedCollapsedHeadingPanelProps) {
 }
 
 function CollapsedHeadingPanel(props: ExpandedCollapsedHeadingPanelProps) {
+
+    const {type, machinery, setExpanded} = props;
+    const {dashboardPermissions, handleLoadDashboardButtonClicked, handleNewDashboardButtonClicked} = props;
+
     function handleHeadingPanelExpand() {
-        props.setExpanded(true)
+        setExpanded(true)
     }
 
     return <>
@@ -309,7 +321,7 @@ function CollapsedHeadingPanel(props: ExpandedCollapsedHeadingPanelProps) {
                 <Image
                     objectFit="cover"
                     boxSize="100%"
-                    src={require(`./../../../assets/machineries/${props.machinery.modelID}.png`)}
+                    src={require(`./../../../assets/machineries/${machinery.modelID}.png`)}
                 />
             </Box>
         </Flex>
@@ -331,10 +343,10 @@ function CollapsedHeadingPanel(props: ExpandedCollapsedHeadingPanelProps) {
                             mb="4!important"
                             mr={3}
                         >
-                            {props.machinery.modelName}
+                            {machinery.modelName}
                         </Heading>
                         <Heading fontSize="md" fontFamily="body" color="gray.400" whiteSpace="nowrap">
-                            {props.machinery.uid}
+                            {machinery.uid}
                         </Heading>
                     </HStack>
                     <HStack mt="-2!important">
@@ -342,26 +354,26 @@ function CollapsedHeadingPanel(props: ExpandedCollapsedHeadingPanelProps) {
                             whiteSpace="nowrap"
                             mt="0!important"
                         >
-                            {props.machinery.modelType}
+                            {machinery.modelType}
                         </Text>
                         <Text color="gray.200" mx={1} mt="0!important">|</Text>
                         <Text
                             whiteSpace="nowrap"
                             mt="0!important"
                         >
-                            {props.machinery.numHeads} heads
+                            {machinery.numHeads} heads
                         </Text>
                         <Text color="gray.200" mx={1} mt="0!important">|</Text>
                         <Text
                             whiteSpace="nowrap"
                             mt="0!important"
                         >
-                            {props.machinery.locationCluster}
+                            {machinery.locationCluster}
                         </Text>
                     </HStack>
                 </VStack>
                 {
-                    props.type === 'dashboard' &&
+                    type === 'dashboard' &&
                     <VStack
                         w="full"
                         alignItems="flex-end"
@@ -371,18 +383,18 @@ function CollapsedHeadingPanel(props: ExpandedCollapsedHeadingPanelProps) {
                             <Button
                                 leftIcon={<FiFolder/>}
                                 colorScheme="blue"
-                                isDisabled={!props.dashboardPermissions.read}
-                                title={!props.dashboardPermissions.read ? 'Operation not permitted' : ''}
-                                onClick={() => (props.handleLoadDashboardButtonClicked())}
+                                isDisabled={!dashboardPermissions.read}
+                                title={!dashboardPermissions.read ? 'Operation not permitted' : ''}
+                                onClick={() => (handleLoadDashboardButtonClicked())}
                             >
                                 Load dashboard
                             </Button>
                             <Button
                                 leftIcon={<FiFolderPlus/>}
                                 colorScheme="blue"
-                                isDisabled={!props.dashboardPermissions.write}
-                                title={!props.dashboardPermissions.write ? 'Operation not permitted' : ''}
-                                onClick={() => (props.handleNewDashboardButtonClicked())}
+                                isDisabled={!dashboardPermissions.write}
+                                title={!dashboardPermissions.write ? 'Operation not permitted' : ''}
+                                onClick={() => (handleNewDashboardButtonClicked())}
                             >
                                 New dashboard
                             </Button>
@@ -417,20 +429,24 @@ interface DashboardNotSavedPromptProps {
 }
 
 function DashboardNotSavedPrompt(props: DashboardNotSavedPromptProps) {
+
+    const {setLoadDashboardModalOpen, setDashboard} = props;
+    const {setDashboardNotSavePromptObject, dashboardNotSavePromptObject} = props;
+
     const cancelRef = useRef<HTMLButtonElement>(null)
 
     function closePrompt() {
-        props.setDashboardNotSavePromptObject({
+        setDashboardNotSavePromptObject({
             open: false,
             type: ''
         })
     }
 
     function handleContinueButtonClicked() {
-        if (props.dashboardNotSavePromptObject.type === 'new-dashboard')
+        if (dashboardNotSavePromptObject.type === 'new-dashboard')
             createNewDashboard()
         else {
-            props.setLoadDashboardModalOpen(true)
+            setLoadDashboardModalOpen(true)
             closePrompt()
         }
     }
@@ -438,7 +454,7 @@ function DashboardNotSavedPrompt(props: DashboardNotSavedPromptProps) {
     function createNewDashboard() {
         const newDash = new Dashboard()
 
-        props.setDashboard(
+        setDashboard(
             newDash
         )
 
@@ -447,7 +463,7 @@ function DashboardNotSavedPrompt(props: DashboardNotSavedPromptProps) {
 
     return (
         <AlertDialog
-            isOpen={props.dashboardNotSavePromptObject.open}
+            isOpen={dashboardNotSavePromptObject.open}
             leastDestructiveRef={cancelRef}
             onClose={closePrompt}
         >

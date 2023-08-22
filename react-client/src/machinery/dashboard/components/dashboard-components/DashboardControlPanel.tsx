@@ -36,8 +36,6 @@ import type SaveDashboard from '../../interfaces/SaveDashboard'
 interface DashboardControlPanelProps {
     dashboard: Dashboard
     setDashboard: React.Dispatch<React.SetStateAction<Dashboard>>
-    dashboardLoading: boolean
-    dashboardCompactType: string | null
     setLayout: React.Dispatch<React.SetStateAction<Layout[]>>
     setSaveDashboardPromptOpen: React.Dispatch<React.SetStateAction<boolean>>
     saveDashboard: (saveDashboard: SaveDashboard) => Promise<void>
@@ -46,6 +44,9 @@ interface DashboardControlPanelProps {
 
 export default function DashboardControlPanel(props: DashboardControlPanelProps) {
     const {dispatchSidebar} = useContext(SidebarStatusContext)
+
+    const {dashboard, setDashboard, setLayout} = props;
+    const {setSaveDashboardPromptOpen, dashboardPermissions} = props;
 
     // BUTTON CLICK - ADD WIDGET
     function handleAddWidgetButton() {
@@ -56,8 +57,8 @@ export default function DashboardControlPanel(props: DashboardControlPanelProps)
 
     // DASHBOARD COMPACTION/GRAVITY
     function setDashboardCompactType(compactType: string | null) {
-        props.setLayout(props.dashboard.layout)
-        props.setDashboard((val) => {
+        setLayout(dashboard.layout)
+        setDashboard((val) => {
             if (val.size.compactType !== compactType) {
                 switch (compactType) {
                     case 'horizontal': {
@@ -87,7 +88,7 @@ export default function DashboardControlPanel(props: DashboardControlPanelProps)
     function saveDashboard(isDefault: boolean) {
         props.saveDashboard({
             isDefault,
-            name: props.dashboard.name,
+            name: dashboard.name,
             save: true,
             saveAs: false,
         })
@@ -95,15 +96,15 @@ export default function DashboardControlPanel(props: DashboardControlPanelProps)
 
     // SAVE AS DASHBOARD (set states to trigger save)
     function saveAsDashboard() {
-        props.setSaveDashboardPromptOpen(true)
+        setSaveDashboardPromptOpen(true)
     }
 
     // FORMAT DASHBOARD COMPACTION/GRAVITY TEXT
     function getCompactionType() {
-        if (props.dashboardCompactType === 'horizontal')
+        if (dashboard.size.compactType === 'horizontal')
             return 'Compact grid horizontally'
 
-        if (props.dashboardCompactType === 'vertical')
+        if (dashboard.size.compactType === 'vertical')
             return 'Compact grid vertically'
 
         return 'No grid compaction'
@@ -119,9 +120,9 @@ export default function DashboardControlPanel(props: DashboardControlPanelProps)
                 alignItems="baseline"
                 my={2}
             >
-                <Text fontSize="md" fontWeight={500}>{props.dashboard.name}</Text>
+                <Text fontSize="md" fontWeight={500}>{dashboard.name}</Text>
                 {
-                    props.dashboardPermissions.modify &&
+                    dashboardPermissions.modify &&
                     <Popover>
                         <PopoverTrigger>
                             <Box
@@ -130,12 +131,12 @@ export default function DashboardControlPanel(props: DashboardControlPanelProps)
                                 }}
                             >
                                 {
-                                    props.dashboard.numUnsavedChanges > 0
+                                    dashboard.numUnsavedChanges > 0
                                         ? <Text fontSize="xs" fontStyle="italic" color="gray.400">Changes not
                                             yet
                                             saved</Text>
                                         : <Text fontSize="xs" fontStyle="italic" color="gray.400">
-                                            {!props.dashboard.lastSave ? '' : 'Saved'}
+                                            {!dashboard.lastSave ? '' : 'Saved'}
                                         </Text>
                                 }
                             </Box>
@@ -146,14 +147,14 @@ export default function DashboardControlPanel(props: DashboardControlPanelProps)
                                 <PopoverCloseButton/>
                                 <PopoverBody>
                                     {
-                                        props.dashboard.numUnsavedChanges > 0 &&
+                                        dashboard.numUnsavedChanges > 0 &&
                                         <Text fontSize="md">There
-                                            are {props.dashboard.numUnsavedChanges} unsaved changes. Please consider
+                                            are {dashboard.numUnsavedChanges} unsaved changes. Please consider
                                             saving your modifications as soon as possible so not to risk them being
                                             lost.</Text>
                                     }
                                     {
-                                        props.dashboard.numUnsavedChanges === 0 &&
+                                        dashboard.numUnsavedChanges === 0 &&
                                         <Text fontSize="md">All changes
                                             are saved. You can safely navigate away from the dashboard.</Text>
                                     }
@@ -173,8 +174,8 @@ export default function DashboardControlPanel(props: DashboardControlPanelProps)
                 <Button
                     colorScheme='blue'
                     variant='ghost'
-                    isDisabled={props.dashboardLoading || !props.dashboardPermissions.modify}
-                    title={!props.dashboardPermissions.modify ? 'Operation not permitted' : ''}
+                    isDisabled={dashboard.isLoading || !dashboardPermissions.modify}
+                    title={!dashboardPermissions.modify ? 'Operation not permitted' : ''}
                     leftIcon={<FiPlus/>}
                     onClick={handleAddWidgetButton}
                 >
@@ -207,8 +208,8 @@ export default function DashboardControlPanel(props: DashboardControlPanelProps)
                         >
                             <MenuItem
                                 icon={<FiSave/>}
-                                isDisabled={props.dashboard.widgets.length === 0 || props.dashboardLoading || !props.dashboardPermissions.modify}
-                                title={!props.dashboardPermissions.modify ? 'Operation not permitted' : ''}
+                                isDisabled={dashboard.widgets.length === 0 || dashboard.isLoading || !dashboardPermissions.modify}
+                                title={!dashboardPermissions.modify ? 'Operation not permitted' : ''}
                                 onClick={() => {
                                     saveDashboard(false)
                                 }}
@@ -217,8 +218,8 @@ export default function DashboardControlPanel(props: DashboardControlPanelProps)
                             </MenuItem>
                             <MenuItem
                                 icon={<FiSave/>}
-                                isDisabled={props.dashboard.widgets.length === 0 || props.dashboardLoading || !props.dashboardPermissions.modify}
-                                title={!props.dashboardPermissions.modify ? 'Operation not permitted' : ''}
+                                isDisabled={dashboard.widgets.length === 0 || dashboard.isLoading || !dashboardPermissions.modify}
+                                title={!dashboardPermissions.modify ? 'Operation not permitted' : ''}
                                 onClick={() => {
                                     saveDashboard(true)
                                 }}
@@ -227,8 +228,8 @@ export default function DashboardControlPanel(props: DashboardControlPanelProps)
                             </MenuItem>
                             <MenuItem
                                 icon={<FiEdit/>}
-                                isDisabled={props.dashboard.widgets.length === 0 || props.dashboardLoading || !props.dashboardPermissions.write}
-                                title={!props.dashboardPermissions.write ? 'Operation not permitted' : ''}
+                                isDisabled={dashboard.widgets.length === 0 || dashboard.isLoading || !dashboardPermissions.write}
+                                title={!dashboardPermissions.write ? 'Operation not permitted' : ''}
                                 onClick={saveAsDashboard}
                             >
                                 Save as
@@ -263,8 +264,8 @@ export default function DashboardControlPanel(props: DashboardControlPanelProps)
                         >
                             <MenuItem
                                 icon={<FiMoreVertical/>}
-                                isDisabled={!props.dashboardPermissions.modify}
-                                title={!props.dashboardPermissions.modify ? 'Operation not permitted' : ''}
+                                isDisabled={!dashboardPermissions.modify}
+                                title={!dashboardPermissions.modify ? 'Operation not permitted' : ''}
                                 onClick={() => {
                                     setDashboardCompactType('vertical')
                                 }}
@@ -273,8 +274,8 @@ export default function DashboardControlPanel(props: DashboardControlPanelProps)
                             </MenuItem>
                             <MenuItem
                                 icon={<FiMoreHorizontal/>}
-                                isDisabled={!props.dashboardPermissions.modify}
-                                title={!props.dashboardPermissions.modify ? 'Operation not permitted' : ''}
+                                isDisabled={!dashboardPermissions.modify}
+                                title={!dashboardPermissions.modify ? 'Operation not permitted' : ''}
                                 onClick={() => {
                                     setDashboardCompactType('horizontal')
                                 }}
@@ -283,8 +284,8 @@ export default function DashboardControlPanel(props: DashboardControlPanelProps)
                             </MenuItem>
                             <MenuItem
                                 icon={<FiMaximize2/>}
-                                isDisabled={!props.dashboardPermissions.modify}
-                                title={!props.dashboardPermissions.modify ? 'Operation not permitted' : ''}
+                                isDisabled={!dashboardPermissions.modify}
+                                title={!dashboardPermissions.modify ? 'Operation not permitted' : ''}
                                 onClick={() => {
                                     setDashboardCompactType(null)
                                 }}

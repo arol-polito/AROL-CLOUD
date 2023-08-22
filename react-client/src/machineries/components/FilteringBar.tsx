@@ -16,6 +16,9 @@ import type FilteringBarProps from '../classes/FilteringBarProps'
 import type MachinerySortingAndFilters from '../classes/MachinerySortingAndFilters'
 
 export default function FilteringBar(props: FilteringBarProps) {
+
+    const {machinerySortingAndFilters,setMachinerySortingAndFilters} = props;
+
     const [filtersBarOpen, setFiltersBarOpen] = useState(false)
     const [numFiltersSelected, setNumFiltersSelected] = useState<number>(0)
     const [searchTerm, setSearchTerm] = useState<string>('')
@@ -25,7 +28,7 @@ export default function FilteringBar(props: FilteringBarProps) {
     }
 
     function handleSearchButtonPressed() {
-        props.setMachinerySortingAndFilters((val: MachinerySortingAndFilters) => {
+        setMachinerySortingAndFilters((val: MachinerySortingAndFilters) => {
             val.searchTerm = searchTerm
             val.submit = true
 
@@ -79,8 +82,8 @@ export default function FilteringBar(props: FilteringBarProps) {
                 {
                     filtersBarOpen &&
                     <FiltersBar
-                        machinerySortingAndFilters={props.machinerySortingAndFilters}
-                        setMachinerySortingAndFilters={props.setMachinerySortingAndFilters}
+                        machinerySortingAndFilters={machinerySortingAndFilters}
+                        setMachinerySortingAndFilters={setMachinerySortingAndFilters}
                         setNumFiltersSelected={setNumFiltersSelected}
                     />
                 }
@@ -91,16 +94,19 @@ export default function FilteringBar(props: FilteringBarProps) {
 }
 
 function FiltersBar(props: FilteringBarProps) {
-    function handleTopLevelFilterCheckboxChanged(filterKey: string, event: React.ChangeEvent<HTMLInputElement>) {
-        if (!props.machinerySortingAndFilters) return false
-        if (props.machinerySortingAndFilters.filtersMap.get(filterKey) == null) return false
 
-        props.setMachinerySortingAndFilters((val: MachinerySortingAndFilters) => {
+    const {machinerySortingAndFilters,setMachinerySortingAndFilters, setNumFiltersSelected} = props;
+
+    function handleTopLevelFilterCheckboxChanged(filterKey: string, event: React.ChangeEvent<HTMLInputElement>) {
+        if (!machinerySortingAndFilters) return false
+        if (machinerySortingAndFilters.filtersMap.get(filterKey) == null) return false
+
+        setMachinerySortingAndFilters((val: MachinerySortingAndFilters) => {
             val.filtersMap.get(filterKey)?.filterEntries.forEach((filterValue: any) => (filterValue.selected = event.target.checked))
 
             const numEntriesAffected = val.filtersMap.get(filterKey)?.filterEntries.length;
             if (numEntriesAffected !== undefined)
-                props.setNumFiltersSelected((val: number) => {
+                setNumFiltersSelected((val: number) => {
                     if (event.target.checked)
                         return val + numEntriesAffected
 
@@ -118,10 +124,10 @@ function FiltersBar(props: FilteringBarProps) {
     }
 
     function handleFilterCheckboxChanged(filterKey: string, filterValue: string, event: React.ChangeEvent<HTMLInputElement>) {
-        if (!props.machinerySortingAndFilters) return false
-        if (props.machinerySortingAndFilters.filtersMap.get(filterKey) == null) return false
+        if (!machinerySortingAndFilters) return false
+        if (machinerySortingAndFilters.filtersMap.get(filterKey) == null) return false
 
-        props.setMachinerySortingAndFilters((val: MachinerySortingAndFilters) => {
+        setMachinerySortingAndFilters((val: MachinerySortingAndFilters) => {
             const filterEntries = val.filtersMap.get(filterKey)?.filterEntries;
             if (filterEntries) {
                 const foundFilterEntry = filterEntries.find((value) => (value.entryInternalName === filterValue))
@@ -134,7 +140,7 @@ function FiltersBar(props: FilteringBarProps) {
                 filtersMap: new Map(val.filtersMap)
             }
         })
-        props.setNumFiltersSelected((val: number) => {
+        setNumFiltersSelected((val: number) => {
             if (event.target.checked)
                 return val + 1
 
@@ -145,26 +151,26 @@ function FiltersBar(props: FilteringBarProps) {
     }
 
     function controlIfAllFilterCheckboxesChecked(filterKey: string) {
-        if (!props.machinerySortingAndFilters) return false
-        if (props.machinerySortingAndFilters.filtersMap.get(filterKey) == null) return false
+        if (!machinerySortingAndFilters) return false
+        if (machinerySortingAndFilters.filtersMap.get(filterKey) == null) return false
 
-        return props.machinerySortingAndFilters.filtersMap.get(filterKey)?.filterEntries.filter((val) => !val.selected).length === 0
+        return machinerySortingAndFilters.filtersMap.get(filterKey)?.filterEntries.filter((val) => !val.selected).length === 0
     }
 
     function controlIfFilterCheckboxesAreIndeterminate(filterKey: string) {
-        if (!props.machinerySortingAndFilters) return false
-        if (props.machinerySortingAndFilters.filtersMap.get(filterKey) == null) return false
+        if (!machinerySortingAndFilters) return false
+        if (machinerySortingAndFilters.filtersMap.get(filterKey) == null) return false
 
-        const numUnchecked = props.machinerySortingAndFilters.filtersMap.get(filterKey)?.filterEntries.filter((val) => !val.selected).length
+        const numUnchecked = machinerySortingAndFilters.filtersMap.get(filterKey)?.filterEntries.filter((val) => !val.selected).length
 
         return numUnchecked !== 0 &&
-            numUnchecked !== props.machinerySortingAndFilters.filtersMap.get(filterKey)?.filterEntries.length
+            numUnchecked !== machinerySortingAndFilters.filtersMap.get(filterKey)?.filterEntries.length
     }
 
     return (
         <HStack justifyContent="left" alignItems="flex-start" flexWrap="wrap">
             {
-                Array.from(props.machinerySortingAndFilters.filtersMap.keys()).map((filterKey: string) =>
+                Array.from(machinerySortingAndFilters.filtersMap.keys()).map((filterKey: string) =>
                     <Box key={filterKey} pr={3} mt="5!important">
                         <VStack alignItems="left">
                             <Checkbox
@@ -173,11 +179,11 @@ function FiltersBar(props: FilteringBarProps) {
                                 onChange={(e) => (handleTopLevelFilterCheckboxChanged(filterKey, e))}
                             >
                                 <Heading size="sm">
-                                    {props.machinerySortingAndFilters.filtersMap.get(filterKey)?.filterDisplayName}
+                                    {machinerySortingAndFilters.filtersMap.get(filterKey)?.filterDisplayName}
                                 </Heading>
                             </Checkbox>
                             <List pl={6} mt={1} spacing={3} maxHeight="250px" overflowY="auto">
-                                {props.machinerySortingAndFilters.filtersMap.get(filterKey)?.filterEntries.map((filterEntry) =>
+                                {machinerySortingAndFilters.filtersMap.get(filterKey)?.filterEntries.map((filterEntry) =>
                                     <ListItem key={`${filterKey}_${filterEntry.entryInternalName}`}>
                                         <Checkbox
                                             isChecked={filterEntry.selected}
