@@ -106,7 +106,7 @@ export default function SaveDashboardPrompt(props: SaveDashboardPromptProps) {
                         <Button
                             ref={cancelRef}
                             onClick={handlePromptClose}
-                            disabled={dashboardSaving}
+                            isDisabled={dashboardSaving}
                         >
                             Cancel
                         </Button>
@@ -115,7 +115,7 @@ export default function SaveDashboardPrompt(props: SaveDashboardPromptProps) {
                             onClick={handleSaveButtonPressed} ml={3}
                             isLoading={dashboardSaving}
                             loadingText="Saving"
-                            disabled={dashboardName.length === 0 || dashboardSaving}
+                            isDisabled={dashboardName.length === 0 || dashboardSaving}
                         >
                             Save
                         </Button>

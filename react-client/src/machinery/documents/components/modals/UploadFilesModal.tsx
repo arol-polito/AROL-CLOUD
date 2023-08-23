@@ -84,7 +84,7 @@ export default function UploadFilesModal(props: UploadFilesModalProps) {
 
                         const uploadedFile = uploadedFiles.find((el) => (el.name === selectedFile.name))
                         if (uploadedFile != null) {
-                            const id = `${parentFolderID}\\${uploadedFile.documentUID}`
+                            const id = `${parentFolderID}\\${uploadedFile.name}`
                             val[id] = {
                                 childrenCount: 0,
                                 childrenIds: [],
@@ -306,7 +306,7 @@ export default function UploadFilesModal(props: UploadFilesModalProps) {
                     </Button>
                     <Button
                         colorScheme='blue'
-                        disabled={selectedFiles.length === 0 || numErrors > 0}
+                        isDisabled={selectedFiles.length === 0 || numErrors > 0}
                         isLoading={isUploading}
                         loadingText="Uploading"
                         onClick={handleUploadClicked}

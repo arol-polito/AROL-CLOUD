@@ -452,7 +452,7 @@ export default function SensorsModal(props: SensorsModalProps) {
                     <Button
                         variant='solid'
                         colorScheme="teal"
-                        disabled={numSensorsSelected === 0}
+                        isDisabled={numSensorsSelected === 0}
                         onClick={handleMonitorSensorsClicked}
                     >
                         Monitor {numSensorsSelected} sensors
@@ -701,7 +701,7 @@ function SensorEntry(props: SensorEntryProps) {
                 <Button
                     colorScheme={getButtonColor()}
                     variant='outline'
-                    disabled={allSensorsMonitored || (!allSensorsSelected && sensorLimitReached)}
+                    isDisabled={allSensorsMonitored || (!allSensorsSelected && sensorLimitReached)}
                     onClick={() => {
                         if (allSensorsSelected)
                             handleRemoveAllSensorsButtonClick()
@@ -990,7 +990,7 @@ function HeadMechEntry(props: HeadMechEntryProps) {
                 <Button
                     colorScheme={getButtonColor()}
                     variant='outline'
-                    disabled={sensorMonitored || (!sensorSelected && sensorLimitReached)}
+                    isDisabled={sensorMonitored || (!sensorSelected && sensorLimitReached)}
                     onClick={() => {
                         if (sensorSelected)
                             handleRemoveSensorButtonClick()

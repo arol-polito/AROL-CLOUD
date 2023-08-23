@@ -1,5 +1,5 @@
 import {Avatar, Box, Button, Divider, Heading, HStack, Text, VStack} from '@chakra-ui/react'
-import React, {useContext, useEffect, useState} from 'react'
+import React, {useContext, useEffect, useMemo, useState} from 'react'
 import type User from '../interfaces/User'
 import userService from '../../services/UserService'
 import ToastContext from '../../utils/contexts/ToastContext'
@@ -70,6 +70,10 @@ export default function UserCard(props: UserCardProps) {
 
         changeAccountStatus()
     }, [accountStatus, props, setUsers, toast, user])
+
+    const isModifyUserButtonDisabled = useMemo(() =>
+            (user.id.toString() === principal?.id.toString())
+        , [user, principal])
 
     function handleModifyAccountClicked() {
         setAccountModalUser(user)
@@ -193,7 +197,7 @@ export default function UserCard(props: UserCardProps) {
                 <Button
                     leftIcon={<FiEdit3/>}
                     colorScheme="blue"
-                    disabled={principal !== null && user.id.toString() === principal.id}
+                    isDisabled={isModifyUserButtonDisabled}
                     onClick={handleModifyAccountClicked}
                 >
                     Modify account
@@ -201,7 +205,7 @@ export default function UserCard(props: UserCardProps) {
                 <Button
                     leftIcon={<FiKey/>}
                     colorScheme="purple"
-                    disabled={principal !== null && user.id.toString() === principal.id}
+                    isDisabled={isModifyUserButtonDisabled}
                     onClick={() => {
                         setResetPasswordModalUser(user)
                     }}
@@ -215,7 +219,7 @@ export default function UserCard(props: UserCardProps) {
                         colorScheme="red"
                         isLoading={accountStatus !== ''}
                         loadingText="Disabling account"
-                        disabled={principal !== null && user.id.toString() === principal.id}
+                        isDisabled={isModifyUserButtonDisabled}
                         onClick={() => {
                             setAccountStatus('disabled')
                         }}
@@ -230,7 +234,7 @@ export default function UserCard(props: UserCardProps) {
                         colorScheme="teal"
                         isLoading={accountStatus !== ''}
                         loadingText="Enabling account"
-                        disabled={principal !== null && user.id.toString() === principal.id}
+                        isDisabled={principal !== null && user.id.toString() === principal.id}
                         onClick={() => {
                             setAccountStatus('enabled')
                         }}

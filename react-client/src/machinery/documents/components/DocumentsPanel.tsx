@@ -144,36 +144,42 @@ export default function DocumentsPanel(props: DocumentsPanelProps) {
         if (!deleteFiles.doDelete) return
 
         async function performDelete() {
-            const result = await documentsService.deleteMachineryDocuments(machinery.uid, deleteFiles.filesToDelete)
 
-            setFileMap((oldVal) => {
-                const newVal: FileMap = {...oldVal};
-                result.forEach((deletedDocument: FileData) => {
-                    if (deletedDocument.isDir)
-                        Object.entries(newVal).forEach(([fileID, file]) => {
-                            if ((file as FileMapEntry).parentId.includes(deletedDocument.id, 0))
-                                delete newVal[fileID]
-                        })
+            try {
+                const result = await documentsService.deleteMachineryDocuments(machinery.uid, deleteFiles.filesToDelete)
 
-                    // Update parent folder document count
-                    const parentID = newVal[deletedDocument.id].parentId
-                    if (newVal.hasOwnProperty(parentID)) {
-                        const newEntry = {...newVal[parentID]}
+                setFileMap((oldVal) => {
+                    const newVal: FileMap = {...oldVal};
+                    result.forEach((deletedDocument: FileData) => {
+                        if (deletedDocument.isDir)
+                            Object.entries(newVal).forEach(([fileID, file]) => {
+                                if ((file as FileMapEntry).parentId.includes(deletedDocument.id, 0))
+                                    delete newVal[fileID]
+                            })
 
-                        // With variable otherwise object is immutable
-                        newEntry.childrenIds = newEntry.childrenIds.filter((el) => (el !== deletedDocument.id))
-                        newEntry.childrenCount--
+                        // Update parent folder document count
+                        const parentID = newVal[deletedDocument.id].parentId
+                        if (newVal.hasOwnProperty(parentID)) {
+                            const newEntry = {...newVal[parentID]}
 
-                        newVal[parentID] = newEntry
-                    }
+                            // With variable otherwise object is immutable
+                            newEntry.childrenIds = newEntry.childrenIds.filter((el) => (el !== deletedDocument.id))
+                            newEntry.childrenCount--
 
-                    delete newVal[deletedDocument.id]
+                            newVal[parentID] = newEntry
+                        }
+
+                        delete newVal[deletedDocument.id]
+                    })
+
+                    // console.log(newVal)
+
+                    return newVal
                 })
 
-                // console.log(newVal)
-
-                return newVal
-            })
+            } catch (e) {
+                console.error(e);
+            }
 
             setDeleteFiles({
                 promptOpen: false,

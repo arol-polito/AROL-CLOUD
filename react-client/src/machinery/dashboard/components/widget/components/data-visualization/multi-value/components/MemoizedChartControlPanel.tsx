@@ -57,7 +57,7 @@ export const MemoizedChartControlPanel = (props: ChartControlPanelProps) => {
                             p={2}
                             variant="unstyled"
                             title="Move left"
-                            disabled={sensorData.leftData.length === 0}
+                            isDisabled={sensorData.leftData.length === 0}
                             isLoading={sensorData.leftData.length === 0 && sensorDataCacheLoading}
                             icon={<FiChevronLeft/>}
                             onClick={(e) => {
@@ -77,7 +77,7 @@ export const MemoizedChartControlPanel = (props: ChartControlPanelProps) => {
                                 p={2}
                                 variant="unstyled"
                                 title="Zoom in"
-                                disabled={sensorData.displayData.length <= 5}
+                                isDisabled={sensorData.displayData.length <= 5}
                                 icon={<FiZoomIn/>}
                                 onClick={(e) => {
                                     handleZoomChartButtonClicked(e, 'zoom-in')
@@ -91,7 +91,7 @@ export const MemoizedChartControlPanel = (props: ChartControlPanelProps) => {
                                 p={2}
                                 variant="unstyled"
                                 title="Zoom out"
-                                disabled={sensorData.leftData.length === 0 && sensorData.rightData.length === 0}
+                                isDisabled={sensorData.leftData.length === 0 && sensorData.rightData.length === 0}
                                 icon={<FiZoomOut/>}
                                 onClick={(e) => {
                                     handleZoomChartButtonClicked(e, 'zoom-out')
@@ -108,7 +108,7 @@ export const MemoizedChartControlPanel = (props: ChartControlPanelProps) => {
                                         p={2}
                                         variant="unstyled"
                                         title="Open in fullscreen"
-                                        disabled={sensorData.displayData.length <= 5}
+                                        isDisabled={sensorData.displayData.length <= 5}
                                         icon={<FiMaximize/>}
                                         onClick={() => {
                                             setChartFullscreenModalOpen(true)
@@ -122,7 +122,7 @@ export const MemoizedChartControlPanel = (props: ChartControlPanelProps) => {
                                         p={2}
                                         variant="unstyled"
                                         title="Quick navigate"
-                                        disabled={sensorData.displayData.length <= 5}
+                                        isDisabled={sensorData.displayData.length <= 5}
                                         icon={<FiCalendar/>}
                                         onClick={() => {
                                             setQuickNavigateModalOpen(true)
@@ -139,7 +139,7 @@ export const MemoizedChartControlPanel = (props: ChartControlPanelProps) => {
                             p={2}
                             variant="unstyled"
                             title="Move right"
-                            disabled={sensorData.rightData.length === 0}
+                            isDisabled={sensorData.rightData.length === 0}
                             icon={<FiChevronRight/>}
                             onClick={(e) => {
                                 handlePanChartButtonClicked(e, 'pan-right')

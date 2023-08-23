@@ -363,7 +363,7 @@ export const MemoizedChart = (props: ChartProps) => {
                                 variant="outline"
                                 isLoading={sensorDataCacheLoading}
                                 loadingText="Loading"
-                                disabled={sensorData.endOfData}
+                                isDisabled={sensorData.endOfData}
                                 title={sensorData.endOfData ? 'All sensor data already loaded' : ''}
                                 onClick={loadMoreSensorData}
                             >

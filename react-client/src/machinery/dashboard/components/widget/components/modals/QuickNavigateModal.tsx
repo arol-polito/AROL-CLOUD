@@ -252,7 +252,7 @@ export default function QuickNavigateModal(props: QuickNavigateModalProps) {
                     <Button
                         colorScheme='blue'
                         onClick={handleNavigateButtonClicked}
-                        disabled={selectedIndex < 0}
+                        isDisabled={selectedIndex < 0}
                     >
                         Navigate
                     </Button>

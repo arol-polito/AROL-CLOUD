@@ -193,7 +193,7 @@ export default function DashboardPanel(props: DashboardPanelProps) {
                             boxShadow="2xl"
                             rounded="lg"
                             leftIcon={<FiPlus color={dashboardPermissions.modify ? '#000000' : '#A0AEC0'}/>}
-                            disabled={!dashboardPermissions.modify}
+                            isDisabled={!dashboardPermissions.modify}
                             onClick={extendDashboard}
                             title={!dashboardPermissions.modify ? 'Operation not permitted' : ''}
                         >
