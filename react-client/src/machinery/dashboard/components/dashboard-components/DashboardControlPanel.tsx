@@ -49,7 +49,7 @@ export default function DashboardControlPanel(props: DashboardControlPanelProps)
     const {setSaveDashboardPromptOpen, dashboardPermissions} = props;
 
     // BUTTON CLICK - ADD WIDGET
-    function handleAddWidgetButton() {
+    const handleAddWidgetButton = () => {
         dispatchSidebar({
             type: 'widget-selector-open'
         })
