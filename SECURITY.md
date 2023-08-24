@@ -2,7 +2,8 @@
 
 ## Reporting Security Issues
 
-If you encounter a potential security vulnerability in this project, please report it to the dev at mariodeda@hotmail.com. We will work with you to verify the vulnerability and patch it.
+If you encounter a potential security vulnerability in this project, please report it via email to [mariodeda@hotmail.com](mailto:mariodeda@hotmail.com) and CC [gianpaolo.macario@arol.com](mailto:gianpaolo.macario@arol.com).
+We will work with you to verify the vulnerability and patch it.
 
 When reporting issues, please provide the following information:
 
