@@ -16,7 +16,7 @@ ENV MONGODB_PORT=27017
 COPY ./package.json /server
 COPY ./package-lock.json /server
 
-RUN npm install --force
+RUN npm ci
 
 COPY ./nodemon.json /server
 COPY ./tsconfig.json /server
