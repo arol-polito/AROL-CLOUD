@@ -41,3 +41,11 @@ jobs:
         working-directory: express-server
       - run: npm run ts
         working-directory: express-server
+
+  docker-compose:
+    runs-on: ubuntu-latest
+    name: Check docker container
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build the stack
+        run: docker-compose up --build
