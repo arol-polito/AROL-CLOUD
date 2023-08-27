@@ -47,5 +47,5 @@ jobs:
     name: Check docker container
     steps:
       - uses: actions/checkout@v2
-      - run: docker-compose up --build
+      - run: docker compose up --build
         working-directory: Docker
