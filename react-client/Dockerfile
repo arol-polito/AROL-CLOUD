@@ -1,4 +1,4 @@
-FROM node:12 AS builder
+FROM node:20 AS builder
 WORKDIR /client
 COPY . /client
 RUN npm install --force
