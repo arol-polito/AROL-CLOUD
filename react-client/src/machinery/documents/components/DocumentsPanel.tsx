@@ -32,6 +32,9 @@ interface DeleteFiles {
 }
 
 export default function DocumentsPanel(props: DocumentsPanelProps) {
+
+    const {machinery, documentsPermissions} = props;
+
     const navigate = useNavigate()
 
     const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -57,7 +60,7 @@ export default function DocumentsPanel(props: DocumentsPanelProps) {
     useEffect(() => {
         setFileActions((val) => {
             val = []
-            if (props.documentsPermissions.modify) {
+            if (documentsPermissions.modify) {
                 const RenameAction = defineFileAction({
                     id: 'rename',
                     requiresSelection: true,
@@ -73,19 +76,19 @@ export default function DocumentsPanel(props: DocumentsPanelProps) {
 
                 val.push(RenameAction)
             }
-            if (props.documentsPermissions.write)
+            if (documentsPermissions.write)
                 val.push(...[ChonkyActions.CreateFolder, ChonkyActions.DeleteFiles, ChonkyActions.UploadFiles])
 
             return [...val]
         })
-    }, [props.documentsPermissions.modify, props.documentsPermissions.write])
+    }, [documentsPermissions.modify, documentsPermissions.write])
 
     // FETCH MACHINERY DOCUMENTS
     useEffect(() => {
         async function getData() {
             setIsLoading(true)
 
-            const result = await documentsService.getMachineryDocuments(props.machinery.uid)
+            const result = await documentsService.getMachineryDocuments(machinery.uid)
 
             // Object.values(result.fileMap as FileMap).forEach((doc: FileMapEntry)=>{
             //     console.log(doc.modDate)
@@ -100,7 +103,7 @@ export default function DocumentsPanel(props: DocumentsPanelProps) {
         }
 
         getData()
-    }, [props.machinery.uid])
+    }, [machinery.uid])
 
     // BROWSE FILES AND FOLDERS
     useEffect(() => {
@@ -141,37 +144,42 @@ export default function DocumentsPanel(props: DocumentsPanelProps) {
         if (!deleteFiles.doDelete) return
 
         async function performDelete() {
-            const result = await documentsService.deleteMachineryDocuments(props.machinery.uid, deleteFiles.filesToDelete)
 
-            setFileMap((oldVal) => {
-                const newVal: FileMap = {...oldVal};
-                result.forEach((deletedDocument: FileData) => {
-                    if (deletedDocument.isDir)
-                        Object.entries(newVal).forEach(([fileID, file]) => {
-                            if ((file as FileMapEntry).parentId.includes(deletedDocument.id, 0))
-                                delete newVal[fileID]
-                        })
+            try {
+                const result = await documentsService.deleteMachineryDocuments(machinery.uid, deleteFiles.filesToDelete)
 
-                    // Update parent folder document count
-                    const parentID = newVal[deletedDocument.id].parentId
-                    if (newVal.hasOwnProperty(parentID)) {
-                        const newEntry = {...newVal[parentID]}
+                setFileMap((oldVal) => {
+                    const newVal: FileMap = {...oldVal};
+                    result.forEach((deletedDocument: FileData) => {
+                        if (deletedDocument.isDir)
+                            Object.entries(newVal).forEach(([fileID, file]) => {
+                                if ((file as FileMapEntry).parentId.includes(deletedDocument.id, 0))
+                                    delete newVal[fileID]
+                            })
 
-                        // With variable otherwise object is immutable
-                        const newChildrenIds = newEntry.childrenIds.filter((el) => (el !== deletedDocument.id))
-                        newEntry.childrenIds = newChildrenIds
-                        newEntry.childrenCount--
+                        // Update parent folder document count
+                        const parentID = newVal[deletedDocument.id].parentId
+                        if (newVal.hasOwnProperty(parentID)) {
+                            const newEntry = {...newVal[parentID]}
 
-                        newVal[parentID] = newEntry
-                    }
+                            // With variable otherwise object is immutable
+                            newEntry.childrenIds = newEntry.childrenIds.filter((el) => (el !== deletedDocument.id))
+                            newEntry.childrenCount--
 
-                    delete newVal[deletedDocument.id]
+                            newVal[parentID] = newEntry
+                        }
+
+                        delete newVal[deletedDocument.id]
+                    })
+
+                    // console.log(newVal)
+
+                    return newVal
                 })
 
-                // console.log(newVal)
-
-                return newVal
-            })
+            } catch (e) {
+                console.error(e);
+            }
 
             setDeleteFiles({
                 promptOpen: false,
@@ -181,7 +189,7 @@ export default function DocumentsPanel(props: DocumentsPanelProps) {
         }
 
         performDelete()
-    }, [deleteFiles, props.machinery.uid])
+    }, [deleteFiles, machinery.uid])
 
     // FILE ACTIONS(open file/delete/create folder...)
     const handleFileAction = useCallback((data: ChonkyFileActionData) => {
@@ -201,10 +209,10 @@ export default function DocumentsPanel(props: DocumentsPanelProps) {
 
                 const documentObject = fileMap[document.id]
 
-                navigate(`/machinery/${props.machinery.uid}/documents/${documentUID}`, {
+                navigate(`/machinery/${machinery.uid}/documents/${documentUID}`, {
                     state: {
                         document: documentObject,
-                        machinery: props.machinery
+                        machinery: machinery
                     }
                 })
             } else if (data.id.toString() === 'rename')
@@ -227,7 +235,7 @@ export default function DocumentsPanel(props: DocumentsPanelProps) {
                 setUploadFilesModalOpen(true)
 
             // showActionNotification(data);
-        }, [setCurrentFolderId, fileMap, navigate, props.machinery]
+        }, [setCurrentFolderId, fileMap, navigate, machinery]
     )
 
     return (
@@ -268,7 +276,7 @@ export default function DocumentsPanel(props: DocumentsPanelProps) {
             {
                 newFolderPromptOpen &&
                 <NewFolderPrompt
-                    machinery={props.machinery}
+                    machinery={machinery}
                     newFolderPromptOpen={newFolderPromptOpen}
                     setNewFolderPromptOpen={setNewFolderPromptOpen}
                     fileMap={fileMap}
@@ -279,7 +287,7 @@ export default function DocumentsPanel(props: DocumentsPanelProps) {
             {
                 (renamePromptOpen != null) &&
                 <RenamePrompt
-                    machinery={props.machinery}
+                    machinery={machinery}
                     renamePromptOpen={renamePromptOpen}
                     setRenamePromptOpen={setRenamePromptOpen}
                     fileMap={fileMap}
@@ -290,7 +298,7 @@ export default function DocumentsPanel(props: DocumentsPanelProps) {
             {
                 uploadFilesModalOpen &&
                 <UploadFilesModal
-                    machinery={props.machinery}
+                    machinery={machinery}
                     uploadFilesModalOpen={uploadFilesModalOpen}
                     setUploadFilesModalOpen={setUploadFilesModalOpen}
                     fileMap={fileMap}

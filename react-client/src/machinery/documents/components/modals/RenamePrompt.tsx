@@ -28,7 +28,11 @@ interface RenamePromptProps {
 }
 
 export default function RenamePrompt(props: RenamePromptProps) {
-    const [newFileName, setNewFileName] = useState<string>(props.renamePromptOpen?.name.endsWith('.pdf') ? (props.renamePromptOpen?.name.slice(0, -4) || '') : (props.renamePromptOpen?.name || ''))
+
+    const {machinery, renamePromptOpen, setRenamePromptOpen} = props;
+    const {fileMap, setFileMap, currentFolderId} = props;
+
+    const [newFileName, setNewFileName] = useState<string>(renamePromptOpen?.name.endsWith('.pdf') ? (renamePromptOpen?.name.slice(0, -4) || '') : (renamePromptOpen?.name || ''))
     const [doRename, setDoRename] = useState<boolean>(false)
     const [isRenaming, setIsRenaming] = useState<boolean>(false)
     const [fileExists, setFileExists] = useState<boolean>(false)
@@ -46,24 +50,24 @@ export default function RenamePrompt(props: RenamePromptProps) {
             setIsRenaming(true)
 
             try {
-                const documentUID = props.renamePromptOpen?.id.split('\\').pop()
+                const documentUID = renamePromptOpen?.id.split('\\').pop()
 
                 if (!documentUID) return;
 
                 const renamedFilename = `${newFileName}.pdf`
 
                 const result = await documentsService.renameMachineryFileOrFolder(
-                    props.machinery.uid,
-                    props.renamePromptOpen?.id || '',
+                    machinery.uid,
+                    renamePromptOpen?.id || '',
                     documentUID || 'none',
                     renamedFilename,
-                    props.renamePromptOpen?.isDir ? 'folder' : 'file'
+                    renamePromptOpen?.isDir ? 'folder' : 'file'
                 )
 
-                if (props.renamePromptOpen?.isDir)
-                    props.setFileMap((val) => {
-                        if (!props.renamePromptOpen) return val;
-                        const oldID = props.renamePromptOpen.id
+                if (renamePromptOpen?.isDir)
+                    setFileMap((val) => {
+                        if (!renamePromptOpen) return val;
+                        const oldID = renamePromptOpen.id
                         const parentID = oldID.split('\\').slice(0, -1).join('\\')
                         const newFileID = `${oldID.split('\\').slice(0, -1).join('\\')}\\${renamedFilename}`
 
@@ -101,16 +105,16 @@ export default function RenamePrompt(props: RenamePromptProps) {
                         return newFileMap
                     })
                 else
-                    props.setFileMap((val) => {
-                        if (props.renamePromptOpen && val.hasOwnProperty(props.renamePromptOpen.id)) {
-                            const newValue: any = JSON.parse(JSON.stringify(val[props.renamePromptOpen.id]))
+                    setFileMap((val) => {
+                        if (renamePromptOpen && val.hasOwnProperty(renamePromptOpen.id)) {
+                            const newValue: any = JSON.parse(JSON.stringify(val[renamePromptOpen.id]))
                             newValue.name = renamedFilename
-                            val[props.renamePromptOpen.id] = newValue
+                            val[renamePromptOpen.id] = newValue
 
                             return {...val}
                         }
 
-                        console.error(`File with id ${props.renamePromptOpen?.id} not found`)
+                        console.error(`File with id ${renamePromptOpen?.id} not found`)
 
                         return val
                     })
@@ -123,7 +127,7 @@ export default function RenamePrompt(props: RenamePromptProps) {
                     return
                 }
 
-                props.setRenamePromptOpen(null)
+                setRenamePromptOpen(null)
             } catch (e) {
                 console.error(e)
                 setFileNotRenamed(true)
@@ -134,17 +138,17 @@ export default function RenamePrompt(props: RenamePromptProps) {
         }
 
         create()
-    }, [doRename, newFileName, props])
+    }, [doRename, machinery.uid, newFileName, props, renamePromptOpen, setFileMap, setRenamePromptOpen])
 
     // CLOSE PROMPT
     function handleCancel() {
-        props.setRenamePromptOpen(null)
+        setRenamePromptOpen(null)
     }
 
     // RENAME BUTTON CLICKED - check for duplicate then trigger submit rename request
     function handleRenameClicked() {
 
-        const duplicate = Object.values(props.fileMap).find((el: any) => (el.parentId === props.currentFolderId && el.name === (`${newFileName}.pdf`)))
+        const duplicate = Object.values(fileMap).find((el: any) => (el.parentId === currentFolderId && el.name === (`${newFileName}.pdf`)))
         if (duplicate != null) {
             setFileExists(true)
 
@@ -163,20 +167,20 @@ export default function RenamePrompt(props: RenamePromptProps) {
 
     return (
         <AlertDialog
-            isOpen={props.renamePromptOpen !== null}
+            isOpen={renamePromptOpen !== null}
             leastDestructiveRef={cancelRef}
             onClose={handleCancel}
         >
             <AlertDialogOverlay>
                 <AlertDialogContent>
                     <AlertDialogHeader fontSize='lg' fontWeight='bold'>
-                        Rename {props.renamePromptOpen?.isDir ? 'folder' : 'file'}
+                        Rename {renamePromptOpen?.isDir ? 'folder' : 'file'}
                     </AlertDialogHeader>
 
                     <AlertDialogBody>
                         <VStack w="full" justifyContent="left" alignItems="left">
                             <Text fontSize="sm">Please type a new name for the
-                                Rename {props.renamePromptOpen?.isDir ? 'folder' : 'file'}</Text>
+                                Rename {renamePromptOpen?.isDir ? 'folder' : 'file'}</Text>
                             <InputGroup>
                                 <Input
                                     w="full"
@@ -193,19 +197,19 @@ export default function RenamePrompt(props: RenamePromptProps) {
                             {
                                 newFileName.length === 0 &&
                                 <Text fontSize="sm"
-                                      color="red">{props.renamePromptOpen?.isDir ? 'Folder' : 'File'} name cannot be
+                                      color="red">{renamePromptOpen?.isDir ? 'Folder' : 'File'} name cannot be
                                     empty</Text>
                             }
                             {
                                 fileExists &&
                                 <Text fontSize="sm"
-                                      color="red">A {props.renamePromptOpen?.isDir ? 'folder' : 'file'} with this name
+                                      color="red">A {renamePromptOpen?.isDir ? 'folder' : 'file'} with this name
                                     already exists</Text>
                             }
                             {
                                 fileNotRenamed &&
                                 <Text fontSize="sm" color="red">Oops! Could not
-                                    rename {props.renamePromptOpen?.isDir ? 'folder' : 'file'}. Please try
+                                    rename {renamePromptOpen?.isDir ? 'folder' : 'file'}. Please try
                                     again.</Text>
                             }
                         </VStack>

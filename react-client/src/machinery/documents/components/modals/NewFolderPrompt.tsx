@@ -1,133 +1,137 @@
 import type Machinery from '../../../../machineries-map/components/Machinery'
-import React, { type ChangeEvent, useEffect, useRef, useState } from 'react'
+import React, {type ChangeEvent, useEffect, useRef, useState} from 'react'
 import type {FileMap} from '../../interfaces/FileMap'
 import type FileMapEntry from '../../interfaces/FileMapEntry'
 import documentsService from '../../../../services/DocumentsService'
 import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
-  Button,
-  Input,
-  Text,
-  VStack
+    AlertDialog,
+    AlertDialogBody,
+    AlertDialogContent,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogOverlay,
+    Button,
+    Input,
+    Text,
+    VStack
 } from '@chakra-ui/react'
 
 interface NewFolderPromptProps {
-  machinery: Machinery
-  newFolderPromptOpen: boolean
-  setNewFolderPromptOpen: React.Dispatch<React.SetStateAction<boolean>>
-  fileMap: FileMap
-  setFileMap: React.Dispatch<React.SetStateAction<FileMap>>
-  currentFolderId: string
+    machinery: Machinery
+    newFolderPromptOpen: boolean
+    setNewFolderPromptOpen: React.Dispatch<React.SetStateAction<boolean>>
+    fileMap: FileMap
+    setFileMap: React.Dispatch<React.SetStateAction<FileMap>>
+    currentFolderId: string
 }
 
-export default function NewFolderPrompt (props: NewFolderPromptProps) {
-  const [newFolderName, setNewFolderName] = useState<string>('New folder')
-  const [createFolder, setCreateFolder] = useState<boolean>(false)
-  const [isCreating, setIsCreating] = useState<boolean>(false)
-  const [folderExists, setFolderExists] = useState<boolean>(false)
-  const [folderNotCreated, setFolderNotCreated] = useState<boolean>(false)
+export default function NewFolderPrompt(props: NewFolderPromptProps) {
 
-  const cancelRef = useRef<HTMLButtonElement>(null)
+    const {machinery, fileMap, newFolderPromptOpen} = props;
+    const {currentFolderId, setFileMap, setNewFolderPromptOpen} = props;
 
-  // CREATE NEW FOLDER AND UPDATE FILE MAP
-  useEffect(() => {
-    if (!createFolder) return
+    const [newFolderName, setNewFolderName] = useState<string>('New folder')
+    const [createFolder, setCreateFolder] = useState<boolean>(false)
+    const [isCreating, setIsCreating] = useState<boolean>(false)
+    const [folderExists, setFolderExists] = useState<boolean>(false)
+    const [folderNotCreated, setFolderNotCreated] = useState<boolean>(false)
 
-    if (props.fileMap.hasOwnProperty(`${props.currentFolderId}\\${newFolderName}`)) {
-      setFolderExists(true)
+    const cancelRef = useRef<HTMLButtonElement>(null)
 
-      return
-    }
+    // CREATE NEW FOLDER AND UPDATE FILE MAP
+    useEffect(() => {
+        if (!createFolder) return
 
-    async function create () {
-      setFolderNotCreated(false)
+        if (fileMap.hasOwnProperty(`${currentFolderId}\\${newFolderName}`)) {
+            setFolderExists(true)
 
-      setIsCreating(true)
-
-      try {
-        const folder: FileMapEntry = {
-          childrenCount: 0,
-          childrenIds: [],
-          id: `${props.currentFolderId}\\${newFolderName}`,
-          documentUID: null,
-          isDir: true,
-          isDocument: false,
-          isModifiable: true,
-          modDate: new Date(),
-          name: newFolderName,
-          parentId: props.currentFolderId,
-          size: 0
+            return
         }
 
-        const result = await documentsService.createMachineryFolder(props.machinery.uid, folder.id)
+        async function create() {
+            setFolderNotCreated(false)
 
-        if (!result) {
-          setFolderNotCreated(true)
+            setIsCreating(true)
 
-          return
+            try {
+                const folder: FileMapEntry = {
+                    childrenCount: 0,
+                    childrenIds: [],
+                    id: `${currentFolderId}\\${newFolderName}`,
+                    documentUID: null,
+                    isDir: true,
+                    isDocument: false,
+                    isModifiable: true,
+                    modDate: new Date(),
+                    name: newFolderName,
+                    parentId: currentFolderId,
+                    size: 0
+                }
+
+                const result = await documentsService.createMachineryFolder(machinery.uid, folder.id)
+
+                if (!result) {
+                    setFolderNotCreated(true)
+
+                    return
+                }
+
+                setFileMap((val) => {
+                    val[folder.id] = folder
+
+                    if (val.hasOwnProperty(currentFolderId)) {
+                        const currentFolder = {...val[currentFolderId]}
+                        currentFolder.childrenIds = [...currentFolder.childrenIds, folder.id]
+                        currentFolder.childrenCount++
+
+                        val[currentFolderId] = currentFolder
+                    }
+
+                    return {...val}
+                })
+
+                setNewFolderPromptOpen(false)
+            } catch (e) {
+                console.error(e)
+                setFolderNotCreated(true)
+            }
+
+            setCreateFolder(false)
+            setIsCreating(false)
         }
 
-        props.setFileMap((val) => {
-          val[folder.id] = folder
+        create()
+    }, [createFolder, currentFolderId, fileMap, machinery.uid, newFolderName, props, setFileMap, setNewFolderPromptOpen])
 
-          if (val.hasOwnProperty(props.currentFolderId)) {
-            const currentFolder = { ...val[props.currentFolderId] }
-            currentFolder.childrenIds = [...currentFolder.childrenIds, folder.id]
-            currentFolder.childrenCount++
-
-            val[props.currentFolderId] = currentFolder
-          }
-
-          return { ...val }
-        })
-
-        props.setNewFolderPromptOpen(false)
-      } catch (e) {
-        console.error(e)
-        setFolderNotCreated(true)
-      }
-
-      setCreateFolder(false)
-      setIsCreating(false)
+    // CLOSE PROMPT
+    function handleCancel() {
+        setNewFolderPromptOpen(false)
     }
 
-    create()
-  }, [createFolder, newFolderName, props])
+    // CREATE BUTTON CLICKED
+    function handleCreateClicked() {
+        const folderID = `${currentFolderId}\\${newFolderName}`
 
-  // CLOSE PROMPT
-  function handleCancel () {
-    props.setNewFolderPromptOpen(false)
-  }
+        const duplicate = fileMap.hasOwnProperty(folderID)
+        if (duplicate) {
+            setFolderExists(true)
 
-  // CREATE BUTTON CLICKED
-  function handleCreateClicked () {
-    const folderID = `${props.currentFolderId}\\${newFolderName}`
+            return
+        }
 
-    const duplicate = props.fileMap.hasOwnProperty(folderID)
-    if (duplicate) {
-      setFolderExists(true)
-
-      return
+        setCreateFolder(true)
     }
 
-    setCreateFolder(true)
-  }
+    // NEW FOLDER NAME typed event
+    function updateNewFolderName(e: ChangeEvent<HTMLInputElement>) {
+        setNewFolderName(e.target.value)
+        setFolderNotCreated(false)
+        setFolderExists(false)
+    }
 
-  // NEW FOLDER NAME typed event
-  function updateNewFolderName (e: ChangeEvent<HTMLInputElement>) {
-    setNewFolderName(e.target.value)
-    setFolderNotCreated(false)
-    setFolderExists(false)
-  }
-
-  return (
+    return (
         <AlertDialog
-            isOpen={props.newFolderPromptOpen}
+            isOpen={newFolderPromptOpen}
             leastDestructiveRef={cancelRef}
             onClose={handleCancel}
         >
@@ -181,5 +185,5 @@ export default function NewFolderPrompt (props: NewFolderPromptProps) {
                 </AlertDialogContent>
             </AlertDialogOverlay>
         </AlertDialog>
-  )
+    )
 }

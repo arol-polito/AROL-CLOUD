@@ -1,5 +1,5 @@
 import {Avatar, Box, Button, Divider, Heading, HStack, Text, VStack} from '@chakra-ui/react'
-import React, {useContext, useEffect, useState} from 'react'
+import React, {useContext, useEffect, useMemo, useState} from 'react'
 import type User from '../interfaces/User'
 import userService from '../../services/UserService'
 import ToastContext from '../../utils/contexts/ToastContext'
@@ -22,6 +22,10 @@ interface UserCardProps {
 
 export default function UserCard(props: UserCardProps) {
 
+    const {user, setUsers, highlightTerm} = props;
+    const {setAccountModalUser, setAccountModalType} = props;
+    const {setResetPasswordModalUser} = props;
+
     const {principal} = useContext(PrincipalContext)
     const toast = useContext(ToastContext)
 
@@ -32,12 +36,12 @@ export default function UserCard(props: UserCardProps) {
 
         async function changeAccountStatus() {
             try {
-                const newAccountDetails = {...props.user}
+                const newAccountDetails = {...user}
                 newAccountDetails.accountActive = accountStatus === 'enabled'
 
                 await userService.updateAccountDetails(newAccountDetails)
 
-                props.setUsers((val) => {
+                setUsers((val) => {
                     const foundUser = val.find((el) => (el.id === newAccountDetails.id))
                     if (foundUser != null) {
                         const userIndex = val.indexOf(foundUser)
@@ -65,11 +69,15 @@ export default function UserCard(props: UserCardProps) {
         }
 
         changeAccountStatus()
-    }, [accountStatus, props, toast])
+    }, [accountStatus, props, setUsers, toast, user])
+
+    const isModifyUserButtonDisabled = useMemo(() =>
+            (user.id.toString() === principal?.id.toString())
+        , [user, principal])
 
     function handleModifyAccountClicked() {
-        props.setAccountModalUser(props.user)
-        props.setAccountModalType('modify')
+        setAccountModalUser(user)
+        setAccountModalType('modify')
     }
 
     return (
@@ -95,7 +103,7 @@ export default function UserCard(props: UserCardProps) {
                 >
                     <Avatar
                         size="md"
-                        name={`${props.user.name} ${props.user.surname}`}
+                        name={`${user.name} ${user.surname}`}
                     />
                     <VStack
                         justifyContent="flex-start"
@@ -107,10 +115,10 @@ export default function UserCard(props: UserCardProps) {
                     >
                         <Heading fontSize="2xl" fontFamily="body" fontWeight={550} color="black"
                                  whiteSpace="nowrap">
-                            {helperFunctions.highlightText(`${props.user.name} ${props.user.surname}`, 550, props.highlightTerm)}
+                            {helperFunctions.highlightText(`${user.name} ${user.surname}`, 550, highlightTerm)}
                             {
                                 (principal != null) &&
-                                props.user.id.toString() === principal.id &&
+                                user.id.toString() === principal.id &&
                                 ' (You)'
                             }
                         </Heading>
@@ -122,7 +130,7 @@ export default function UserCard(props: UserCardProps) {
                             whiteSpace="nowrap"
                             mb="1!important"
                         >
-                            {helperFunctions.highlightText(props.user.email, 450, props.highlightTerm)}
+                            {helperFunctions.highlightText(user.email, 450, highlightTerm)}
                         </Heading>
                     </VStack>
                 </HStack>
@@ -142,13 +150,13 @@ export default function UserCard(props: UserCardProps) {
                             Account status
                         </Text>
                         <Text
-                            color={props.user.accountActive ? 'teal' : 'red'}
+                            color={user.accountActive ? 'teal' : 'red'}
                             fontWeight={500}
                             whiteSpace="nowrap"
                             mt="0!important"
                             mb={4}
                         >
-                            {props.user.accountActive ? 'ACTIVE' : 'DISABLED'}
+                            {user.accountActive ? 'ACTIVE' : 'DISABLED'}
                         </Text>
                     </Box>
                     <Divider orientation="vertical" h="auto"/>
@@ -170,7 +178,7 @@ export default function UserCard(props: UserCardProps) {
                             mt="0!important"
                             mb={4}
                         >
-                            {helperFunctions.highlightText(roleTranslator.translateRoles(props.user.roles), 400, props.highlightTerm)}
+                            {helperFunctions.highlightText(roleTranslator.translateRoles(user.roles), 400, highlightTerm)}
                         </Text>
                     </Box>
                 </HStack>
@@ -179,7 +187,7 @@ export default function UserCard(props: UserCardProps) {
                     justifyContent="left"
                 >
                     <Text fontSize="sm" color="gray.400" fontWeight={400}>Account created
-                        on: {dayjs(+props.user.createdAt).format('D MMM YYYY H:mm')}</Text>
+                        on: {dayjs(+user.createdAt).format('D MMM YYYY H:mm')}</Text>
                 </HStack>
             </VStack>
             <VStack
@@ -189,7 +197,7 @@ export default function UserCard(props: UserCardProps) {
                 <Button
                     leftIcon={<FiEdit3/>}
                     colorScheme="blue"
-                    disabled={principal !== null && props.user.id.toString() === principal.id}
+                    isDisabled={isModifyUserButtonDisabled}
                     onClick={handleModifyAccountClicked}
                 >
                     Modify account
@@ -197,21 +205,21 @@ export default function UserCard(props: UserCardProps) {
                 <Button
                     leftIcon={<FiKey/>}
                     colorScheme="purple"
-                    disabled={principal !== null && props.user.id.toString() === principal.id}
+                    isDisabled={isModifyUserButtonDisabled}
                     onClick={() => {
-                        props.setResetPasswordModalUser(props.user)
+                        setResetPasswordModalUser(user)
                     }}
                 >
                     Reset password
                 </Button>
                 {
-                    props.user.accountActive &&
+                    user.accountActive &&
                     <Button
                         leftIcon={<FiXCircle/>}
                         colorScheme="red"
                         isLoading={accountStatus !== ''}
                         loadingText="Disabling account"
-                        disabled={principal !== null && props.user.id.toString() === principal.id}
+                        isDisabled={isModifyUserButtonDisabled}
                         onClick={() => {
                             setAccountStatus('disabled')
                         }}
@@ -220,13 +228,13 @@ export default function UserCard(props: UserCardProps) {
                     </Button>
                 }
                 {
-                    !props.user.accountActive &&
+                    !user.accountActive &&
                     <Button
                         leftIcon={<FiCheckCircle/>}
                         colorScheme="teal"
                         isLoading={accountStatus !== ''}
                         loadingText="Enabling account"
-                        disabled={principal !== null && props.user.id.toString() === principal.id}
+                        isDisabled={principal !== null && user.id.toString() === principal.id}
                         onClick={() => {
                             setAccountStatus('enabled')
                         }}

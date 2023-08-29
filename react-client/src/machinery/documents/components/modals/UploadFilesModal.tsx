@@ -37,6 +37,10 @@ interface UploadFilesModalProps {
 }
 
 export default function UploadFilesModal(props: UploadFilesModalProps) {
+
+    const {machinery, uploadFilesModalOpen, setUploadFilesModalOpen} = props;
+    const {fileMap, setFileMap, parentFolderID} = props;
+
     const toast = useContext(ToastContext)
 
     const [isDragging, setIsDragging] = useState(false)
@@ -64,14 +68,14 @@ export default function UploadFilesModal(props: UploadFilesModalProps) {
                     } else
                         formData.append('files', file)
 
-                formData.append('parentFolderPath', props.parentFolderID)
+                formData.append('parentFolderPath', parentFolderID)
 
                 const uploadedFiles = await documentsService.uploadMachineryDocuments(
-                    props.machinery.uid,
+                    machinery.uid,
                     formData
                 )
 
-                props.setFileMap((val) => {
+                setFileMap((val) => {
                     const newChildrenIds: string[] = []
 
                     selectedFiles.forEach((selectedFile) => {
@@ -80,7 +84,7 @@ export default function UploadFilesModal(props: UploadFilesModalProps) {
 
                         const uploadedFile = uploadedFiles.find((el) => (el.name === selectedFile.name))
                         if (uploadedFile != null) {
-                            const id = `${props.parentFolderID}\\${uploadedFile.documentUID}`
+                            const id = `${parentFolderID}\\${uploadedFile.name}`
                             val[id] = {
                                 childrenCount: 0,
                                 childrenIds: [],
@@ -91,7 +95,7 @@ export default function UploadFilesModal(props: UploadFilesModalProps) {
                                 isModifiable: true,
                                 modDate: new Date(uploadedFile.modificationTimestamp),
                                 name: uploadedFile.name,
-                                parentId: props.parentFolderID,
+                                parentId: parentFolderID,
                                 size: selectedFile.size
                             }
 
@@ -99,11 +103,11 @@ export default function UploadFilesModal(props: UploadFilesModalProps) {
                         }
                     })
 
-                    const currentFolder = {...val[props.parentFolderID]}
+                    const currentFolder = {...val[parentFolderID]}
                     currentFolder.childrenIds = [...currentFolder.childrenIds, ...newChildrenIds]
                     currentFolder.childrenCount += newChildrenIds.length
 
-                    val[props.parentFolderID] = currentFolder
+                    val[parentFolderID] = currentFolder
 
                     return {...val}
                 })
@@ -121,7 +125,7 @@ export default function UploadFilesModal(props: UploadFilesModalProps) {
                         'success'
                     )
 
-                props.setUploadFilesModalOpen(false)
+                setUploadFilesModalOpen(false)
             } catch (e) {
                 console.error(e)
                 axiosExceptionHandler.handleAxiosExceptionWithToast(
@@ -136,7 +140,7 @@ export default function UploadFilesModal(props: UploadFilesModalProps) {
         }
 
         upload()
-    }, [doUpload, props, selectedFiles, toast])
+    }, [doUpload, machinery.uid, parentFolderID, props, selectedFiles, setFileMap, setUploadFilesModalOpen, toast])
 
     // UPLOAD BUTTON CLICKED
     function handleUploadClicked() {
@@ -145,7 +149,7 @@ export default function UploadFilesModal(props: UploadFilesModalProps) {
 
     // CLOSE MODAL
     function handleClose() {
-        props.setUploadFilesModalOpen(false)
+        setUploadFilesModalOpen(false)
     }
 
     // FILES ADDED FOR UPLOAD
@@ -202,7 +206,7 @@ export default function UploadFilesModal(props: UploadFilesModalProps) {
 
     return (
         <Modal
-            isOpen={props.uploadFilesModalOpen}
+            isOpen={uploadFilesModalOpen}
             size="3xl"
             onClose={handleClose}
         >
@@ -279,8 +283,8 @@ export default function UploadFilesModal(props: UploadFilesModalProps) {
                                         selectedFiles={selectedFiles}
                                         setSelectedFiles={setSelectedFiles}
                                         setNumErrors={setNumErrors}
-                                        fileMap={props.fileMap}
-                                        parentFolderID={props.parentFolderID}
+                                        fileMap={fileMap}
+                                        parentFolderID={parentFolderID}
                                     />
                                 ))
                             }
@@ -302,7 +306,7 @@ export default function UploadFilesModal(props: UploadFilesModalProps) {
                     </Button>
                     <Button
                         colorScheme='blue'
-                        disabled={selectedFiles.length === 0 || numErrors > 0}
+                        isDisabled={selectedFiles.length === 0 || numErrors > 0}
                         isLoading={isUploading}
                         loadingText="Uploading"
                         onClick={handleUploadClicked}
@@ -326,7 +330,11 @@ interface FileEntryProps {
 }
 
 function FileEntry(props: FileEntryProps) {
-    const [fileName, setFileName] = useState(props.file.name.endsWith('.pdf') ? props.file.name.slice(0, -4) : props.file.name)
+
+    const {file, index, selectedFiles, setSelectedFiles} = props;
+    const {fileMap, parentFolderID, setNumErrors} = props;
+
+    const [fileName, setFileName] = useState(file.name.endsWith('.pdf') ? file.name.slice(0, -4) : file.name)
     const [fileNameError, setFileNameError] = useState('')
 
     // CHECK FOR ERRORS IN FILE NAME
@@ -334,7 +342,7 @@ function FileEntry(props: FileEntryProps) {
         if (fileName.trim().length === 0) {
             setFileNameError((val) => {
                 if (val.length === 0)
-                    props.setNumErrors((el) => (el + 1))
+                    setNumErrors((el) => (el + 1))
 
                 return 'File name cannot be empty'
             })
@@ -344,12 +352,12 @@ function FileEntry(props: FileEntryProps) {
 
         const completeFilename = `${fileName}.pdf`
         if (
-            (props.selectedFiles.find((el, index) => (index !== props.index && el.name === completeFilename)) != null) ||
-            (Object.values(props.fileMap).find((el: any) => (el.parentId === props.parentFolderID && el.name === completeFilename)) != null)
+            (selectedFiles.find((el, index) => (props.index !== index && el.name === completeFilename)) != null) ||
+            (Object.values(fileMap).find((el: any) => (el.parentId === parentFolderID && el.name === completeFilename)) != null)
         ) {
             setFileNameError((val) => {
                 if (val.length === 0)
-                    props.setNumErrors((el) => (el + 1))
+                    setNumErrors((el) => (el + 1))
 
                 return 'A file with the same name already exists'
             })
@@ -359,19 +367,18 @@ function FileEntry(props: FileEntryProps) {
 
         setFileNameError((val) => {
             if (val.length > 0)
-                props.setNumErrors((el) => (el - 1))
+                setNumErrors((el) => (el - 1))
 
             return ''
         })
-    }, [fileName, props])
+    }, [fileMap, fileName, parentFolderID, props, selectedFiles, setNumErrors])
 
     // HANDLE FILE NAME CHANGED
     function handleFileNameChanged(newFileName: string) {
         setFileName(newFileName)
 
-        props.setSelectedFiles((val) => {
-            const newFile = new File([val[props.index]], `${newFileName}.pdf`, {type: val[props.index].type})
-            val[props.index] = newFile
+        setSelectedFiles((val) => {
+            val[index] = new File([val[index]], `${newFileName}.pdf`, {type: val[index].type})
 
             return val
         })
@@ -379,7 +386,7 @@ function FileEntry(props: FileEntryProps) {
 
     // REMOVE FILE FROM UPLOAD LIST
     function handleRemoveSelectedFile() {
-        props.setSelectedFiles((val) => val.filter((file, index) => (index !== props.index)))
+        setSelectedFiles((val) => val.filter((file, index) => (index !== props.index)))
     }
 
     return (
@@ -416,7 +423,7 @@ function FileEntry(props: FileEntryProps) {
                         color="gray.500"
                         whiteSpace="nowrap"
                     >
-                        {Math.max(props.file.size / 1024, 1).toFixed(1)} KB
+                        {Math.max(file.size / 1024, 1).toFixed(1)} KB
                     </Text>
                 </HStack>
                 <HStack

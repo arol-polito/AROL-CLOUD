@@ -426,6 +426,7 @@ function aggregateSingleValue(sensorData: SensorData[], sensorFilters: SensorDat
         let numSamplesToSlice
         if (sensorFilters.dataRange.unit === constants.DATARANGE_SAMPLE)
             numSamplesToSlice = sensorFilters.dataRange.amount + sensorData.slice(-sensorFilters.dataRange.amount).filter((el) => (el.machineryOff)).length
+
         else
             numSamplesToSlice = sensorData.filter((el) => (el.time >= displayMinTime)).length
 

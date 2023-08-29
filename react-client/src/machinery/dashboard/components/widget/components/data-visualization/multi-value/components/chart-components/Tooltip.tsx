@@ -1,10 +1,10 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react'
-import type SensorData from '../../../models/SensorData'
+import type SensorData from '../../../../../../../models/SensorData'
 import {Box, CloseButton, Divider, Heading, HStack, Text, VStack} from '@chakra-ui/react'
-import type SensorMonitoring from '../../../interfaces/SensorMonitoring'
-import type Aggregation from '../../../interfaces/Aggregation'
+import type SensorMonitoring from '../../../../../../../interfaces/SensorMonitoring'
+import type Aggregation from '../../../../../../../interfaces/Aggregation'
 import dayjs from 'dayjs'
-import type TooltipData from '../../../interfaces/TooltipData'
+import type TooltipData from '../../../../../../../interfaces/TooltipData'
 import {FiArrowDown, FiArrowUp} from 'react-icons/fi'
 
 interface ChartTooltipProps {
@@ -13,6 +13,9 @@ interface ChartTooltipProps {
 }
 
 export default function ChartTooltip(props: ChartTooltipProps) {
+
+    const {chartTooltipData, setChartTooltipData} = props;
+
     const [tooltipPosition, setTooltipPosition] = useState<number[]>([])
 
     const tooltipRef = useRef<HTMLDivElement>(null)
@@ -30,11 +33,11 @@ export default function ChartTooltip(props: ChartTooltipProps) {
 
         if (tooltipWidth === 0 || tooltipHeight === 0) return
 
-        const chartX = props.chartTooltipData.chartCoordinate[0]
-        const chartY = props.chartTooltipData.chartCoordinate[1]
+        const chartX = chartTooltipData.chartCoordinate[0]
+        const chartY = chartTooltipData.chartCoordinate[1]
 
-        const tooltipX = props.chartTooltipData.clickCoordinate[0]
-        const tooltipY = props.chartTooltipData.clickCoordinate[1]
+        const tooltipX = chartTooltipData.clickCoordinate[0]
+        const tooltipY = chartTooltipData.clickCoordinate[1]
 
         const windowWidth = window.innerWidth + window.scrollX
         const windowHeight = window.innerHeight + window.scrollY
@@ -54,7 +57,7 @@ export default function ChartTooltip(props: ChartTooltipProps) {
         // finalTooltipY += window.scrollY
 
         setTooltipPosition([~~finalTooltipX, ~~finalTooltipY])
-    }, [props.chartTooltipData, setTooltipPosition])
+    }, [chartTooltipData, setTooltipPosition])
 
     // WINDOW RESIZE LISTENER - to KEEP TOOLTIP POSITION UPDATED
     useEffect(() => {
@@ -75,25 +78,25 @@ export default function ChartTooltip(props: ChartTooltipProps) {
     // TRIGGER TOOLTIP REPOSITIONING
     useEffect(() => {
         updateTooltipPosition()
-    }, [props.chartTooltipData.chartCoordinate, props.chartTooltipData.clickCoordinate, updateTooltipPosition])
+    }, [chartTooltipData.chartCoordinate, chartTooltipData.clickCoordinate, updateTooltipPosition])
 
 
     // CALCULATE WHAT TO SHOW IN TOOLTIP
     const sensorsToDisplayValue = useMemo(() => {
-        const payload = props.chartTooltipData.sensorData[0].payload as SensorData
-        const sensorsMonitoringObject = props.chartTooltipData.sensorsMonitoringObject
+        const payload = chartTooltipData.sensorData[0].payload as SensorData
+        const sensorsMonitoringObject = chartTooltipData.sensorsMonitoringObject
 
         if (Object.keys(payload.aggregationData).length === 0)
             return Object.entries(payload.activeData).map(([sensorInternalName, sensorValue]) => {
                 let diff = ''
-                if (props.chartTooltipData.sensorDataIndex > 0 && sensorValue !== null) {
-                    const prevIndex = props.chartTooltipData.sensorDataIndex - 1
-                    if (props.chartTooltipData.displayData[prevIndex].allData.hasOwnProperty(sensorInternalName) &&
-                        props.chartTooltipData.displayData[prevIndex].allData[sensorInternalName] !== null
+                if (chartTooltipData.sensorDataIndex > 0 && sensorValue !== null) {
+                    const prevIndex = chartTooltipData.sensorDataIndex - 1
+                    if (chartTooltipData.displayData[prevIndex].allData.hasOwnProperty(sensorInternalName) &&
+                        chartTooltipData.displayData[prevIndex].allData[sensorInternalName] !== null
                     )
-                        diff = (sensorValue - (props.chartTooltipData.displayData[prevIndex].allData[sensorInternalName] || 0)).toFixed(2)
-                } else if (props.chartTooltipData.leftData.length > 0 && sensorValue !== null) {
-                    const prevSensorData = props.chartTooltipData.leftData.slice(-1)
+                        diff = (sensorValue - (chartTooltipData.displayData[prevIndex].allData[sensorInternalName] || 0)).toFixed(2)
+                } else if (chartTooltipData.leftData.length > 0 && sensorValue !== null) {
+                    const prevSensorData = chartTooltipData.leftData.slice(-1)
                     if (
                         prevSensorData.length > 0 &&
                         prevSensorData[0].allData.hasOwnProperty(sensorInternalName) &&
@@ -108,7 +111,7 @@ export default function ChartTooltip(props: ChartTooltipProps) {
                     return {
                         color: sensorMonitoringEntry.color,
                         name: sensorMonitoringEntry.name,
-                        value: sensorValue,
+                        value: sensorValue?.toFixed(2),
                         unit: sensorMonitoringEntry.unit,
                         diff
                     }
@@ -129,16 +132,16 @@ export default function ChartTooltip(props: ChartTooltipProps) {
             })
 
         return Object.entries(payload.aggregationData).map(([aggregationName, aggregationValue]) => {
-            const aggregationEntry = props.chartTooltipData.aggregationsArray.find((el: Aggregation) => (el.name === aggregationName))
-            const sensorEntry = props.chartTooltipData.sensorsMonitoringArray.find((el: SensorMonitoring) => (aggregationValue.note.endsWith(el.internalName)))
+            const aggregationEntry = chartTooltipData.aggregationsArray.find((el: Aggregation) => (el.name === aggregationName))
+            const sensorEntry = chartTooltipData.sensorsMonitoringArray.find((el: SensorMonitoring) => (aggregationValue.note.endsWith(el.internalName)))
 
             let diff = ''
-            if (props.chartTooltipData.sensorDataIndex > 0) {
-                const prevIndex = props.chartTooltipData.sensorDataIndex - 1
-                if (props.chartTooltipData.displayData[prevIndex].aggregationData.hasOwnProperty(aggregationName))
-                    diff = (aggregationValue.value - props.chartTooltipData.displayData[prevIndex].aggregationData[aggregationName].value).toFixed(2)
-            } else if (props.chartTooltipData.leftData.length > 0) {
-                const prevSensorData = props.chartTooltipData.leftData.slice(-1)
+            if (chartTooltipData.sensorDataIndex > 0) {
+                const prevIndex = chartTooltipData.sensorDataIndex - 1
+                if (chartTooltipData.displayData[prevIndex].aggregationData.hasOwnProperty(aggregationName))
+                    diff = (aggregationValue.value - chartTooltipData.displayData[prevIndex].aggregationData[aggregationName].value).toFixed(2)
+            } else if (chartTooltipData.leftData.length > 0) {
+                const prevSensorData = chartTooltipData.leftData.slice(-1)
                 if (
                     prevSensorData.length > 0 &&
                     prevSensorData[0].aggregationData.hasOwnProperty(aggregationName)
@@ -170,12 +173,12 @@ export default function ChartTooltip(props: ChartTooltipProps) {
 
             return Number(b.value) - Number(a.value)
         })
-    }, [props.chartTooltipData])
+    }, [chartTooltipData])
 
     // CALCULATE TIME THE MACHINERY WAS OFF - if it was off at this time
     function getHoursMachineryOff() {
-        const from = props.chartTooltipData.sensorData[0].payload.machineryOffFrom
-        const to = props.chartTooltipData.sensorData[0].payload.machineryOffTo
+        const from = chartTooltipData.sensorData[0].payload.machineryOffFrom
+        const to = chartTooltipData.sensorData[0].payload.machineryOffTo
         const diff = ~~((to - from) / 3600000)
 
         if (diff < 24)
@@ -204,7 +207,7 @@ export default function ChartTooltip(props: ChartTooltipProps) {
 
     // STOP SHOWING TOOLTIP
     function handleCloseTooltip() {
-        props.setChartTooltipData((val) => {
+        setChartTooltipData((val) => {
             val.active = false
 
             return {...val}
@@ -236,14 +239,14 @@ export default function ChartTooltip(props: ChartTooltipProps) {
                 alignItems="left"
             >
                 {
-                    !props.chartTooltipData.sensorData[0].payload.machineryOff &&
+                    !chartTooltipData.sensorData[0].payload.machineryOff &&
                     <>
                         <HStack
                             w="full"
                             justifyContent="space-between"
                         >
                             <Heading size="sm" whiteSpace="nowrap" w="full"
-                                     textAlign="center">{props.chartTooltipData.label}</Heading>
+                                     textAlign="center">{chartTooltipData.label}</Heading>
                             <CloseButton size="md" onClick={handleCloseTooltip}/>
                         </HStack>
                         <Divider orientation="horizontal"/>
@@ -292,7 +295,7 @@ export default function ChartTooltip(props: ChartTooltipProps) {
                     </>
                 }
                 {
-                    props.chartTooltipData.sensorData[0].payload.machineryOff &&
+                    chartTooltipData.sensorData[0].payload.machineryOff &&
                     <HStack
                         alignItems="flex-start"
                     >
@@ -301,9 +304,9 @@ export default function ChartTooltip(props: ChartTooltipProps) {
                         >
                             <Text fontSize="md" fontWeight={600}>Machinery OFF for {getHoursMachineryOff()}</Text>
                             <Text fontSize="sm" mt="0!important"
-                                  fontWeight={400}>From {dayjs(props.chartTooltipData.sensorData[0].payload.machineryOffFrom).format('D MMM YYYY HH:mm')}</Text>
+                                  fontWeight={400}>From {dayjs(chartTooltipData.sensorData[0].payload.machineryOffFrom).format('D MMM YYYY HH:mm')}</Text>
                             <Text fontSize="sm" mt="0!important"
-                                  fontWeight={400}>To {dayjs(props.chartTooltipData.sensorData[0].payload.machineryOffTo).format('D MMM YYYY HH:mm')}</Text>
+                                  fontWeight={400}>To {dayjs(chartTooltipData.sensorData[0].payload.machineryOffTo).format('D MMM YYYY HH:mm')}</Text>
                         </VStack>
                         <CloseButton size="md" onClick={handleCloseTooltip}/>
                     </HStack>

@@ -1,20 +1,23 @@
 import type MachineryWithDashboards from '../interfaces/MachineryWithDashboards'
-import { useNavigate } from 'react-router-dom'
-import { Button, Divider, Heading, HStack, Image, Text, VStack } from '@chakra-ui/react'
-import { FiFolder, FiSearch } from 'react-icons/fi'
-import React, { Fragment } from 'react'
+import {useNavigate} from 'react-router-dom'
+import {Button, Divider, Heading, HStack, Image, Text, VStack} from '@chakra-ui/react'
+import {FiFolder, FiSearch} from 'react-icons/fi'
+import React, {Fragment} from 'react'
 import dayjs from 'dayjs'
 import helperFunctions from '../../utils/HelperFunctions'
 
 interface MachineryWithDashboardsCardProps {
-  machineryWithDashboards: MachineryWithDashboards
-  highlightTerm: string
+    machineryWithDashboards: MachineryWithDashboards
+    highlightTerm: string
 }
 
-export default function MachineryWithDashboardsCard (props: MachineryWithDashboardsCardProps) {
-  const navigate = useNavigate()
+export default function MachineryWithDashboardsCard(props: MachineryWithDashboardsCardProps) {
 
-  return (
+    const {machineryWithDashboards, highlightTerm} = props;
+
+    const navigate = useNavigate()
+
+    return (
 
         <VStack
             p={6}
@@ -36,8 +39,8 @@ export default function MachineryWithDashboardsCard (props: MachineryWithDashboa
                     <Image
                         boxSize="200px"
                         objectFit="contain"
-                        // src={require("/src/assets/machineries/"+ props.machinery.modelID + ".png")}
-                        src={require(`./../../assets/machineries/${props.machineryWithDashboards.modelID}.png`)}
+                        // src={require("/src/assets/machineries/"+ machinery.modelID + ".png")}
+                        src={require(`./../../assets/machineries/${machineryWithDashboards.modelID}.png`)}
                     />
                 </HStack>
                 <Divider orientation="vertical" h="full"/>
@@ -52,7 +55,7 @@ export default function MachineryWithDashboardsCard (props: MachineryWithDashboa
                 >
                     <Heading fontSize="md" fontFamily="body" fontWeight={450} color="gray.400"
                              whiteSpace="nowrap">
-                        {helperFunctions.highlightText(props.machineryWithDashboards.uid, 450, props.highlightTerm)}
+                        {helperFunctions.highlightText(machineryWithDashboards.uid, 450, highlightTerm)}
                     </Heading>
                     <Heading
                         fontSize="2xl"
@@ -61,7 +64,7 @@ export default function MachineryWithDashboardsCard (props: MachineryWithDashboa
                         whiteSpace="nowrap"
                         mb="4!important"
                     >
-                        {helperFunctions.highlightText(props.machineryWithDashboards.modelName, 550, props.highlightTerm)}
+                        {helperFunctions.highlightText(machineryWithDashboards.modelName, 550, highlightTerm)}
                     </Heading>
                     <Text
                         fontWeight={300}
@@ -80,7 +83,7 @@ export default function MachineryWithDashboardsCard (props: MachineryWithDashboa
                         mt="0!important"
                         mb={4}
                     >
-                        {helperFunctions.highlightText(props.machineryWithDashboards.modelType, 400, props.highlightTerm)}
+                        {helperFunctions.highlightText(machineryWithDashboards.modelType, 400, highlightTerm)}
                     </Text>
                     <Text
                         fontWeight={300}
@@ -97,7 +100,7 @@ export default function MachineryWithDashboardsCard (props: MachineryWithDashboa
                         mt="0!important"
                         mb={4}
                     >
-                        {helperFunctions.highlightText(props.machineryWithDashboards.locationCluster, 400, props.highlightTerm)}
+                        {helperFunctions.highlightText(machineryWithDashboards.locationCluster, 400, highlightTerm)}
                     </Text>
                 </VStack>
                 <VStack
@@ -110,12 +113,12 @@ export default function MachineryWithDashboardsCard (props: MachineryWithDashboa
                         leftIcon={<FiFolder/>}
                         colorScheme="blue"
                         onClick={() => {
-                          navigate(`/machinery/${props.machineryWithDashboards.uid}/dashboard`, {
-                            state: {
-                              machinery: { ...props.machineryWithDashboards },
-                              dashboardName: null
-                            }
-                          })
+                            navigate(`/machinery/${machineryWithDashboards.uid}/dashboard`, {
+                                state: {
+                                    machinery: {...machineryWithDashboards},
+                                    dashboardName: null
+                                }
+                            })
                         }}
                     >
                         Open dashboard
@@ -124,8 +127,8 @@ export default function MachineryWithDashboardsCard (props: MachineryWithDashboa
             </HStack>
             <Divider/>
             {
-                props.machineryWithDashboards.dashboards.length > 0 &&
-                props.machineryWithDashboards.dashboards.map((savedDashboard, index) => (
+                machineryWithDashboards.dashboards.length > 0 &&
+                machineryWithDashboards.dashboards.map((savedDashboard, index) => (
                     <Fragment key={savedDashboard.name}>
                         <HStack
                             w="full"
@@ -146,7 +149,7 @@ export default function MachineryWithDashboardsCard (props: MachineryWithDashboa
                                 >
                                     <Text fontSize="md" fontWeight={500}
                                           mt={savedDashboard.isDefault ? '0!important' : ''}>
-                                        {helperFunctions.highlightText(savedDashboard.name, 500, props.highlightTerm)}
+                                        {helperFunctions.highlightText(savedDashboard.name, 500, highlightTerm)}
                                     </Text>
                                     <Text fontSize="xs" color="gray.500" fontWeight={500}>
                                         Saved on {dayjs(savedDashboard.timestamp).format('ddd, MMM D, YYYY H:mm')}
@@ -170,12 +173,12 @@ export default function MachineryWithDashboardsCard (props: MachineryWithDashboa
                                     colorScheme='teal'
                                     variant='solid'
                                     onClick={() => {
-                                      navigate(`/machinery/${props.machineryWithDashboards.uid}/dashboard`, {
-                                        state: {
-                                          machinery: { ...props.machineryWithDashboards },
-                                          dashboardName: savedDashboard.name
-                                        }
-                                      })
+                                        navigate(`/machinery/${machineryWithDashboards.uid}/dashboard`, {
+                                            state: {
+                                                machinery: {...machineryWithDashboards},
+                                                dashboardName: savedDashboard.name
+                                            }
+                                        })
                                     }}
                                 >
                                     Load dashboard
@@ -183,14 +186,14 @@ export default function MachineryWithDashboardsCard (props: MachineryWithDashboa
                             </VStack>
                         </HStack>
                         {
-                            index < props.machineryWithDashboards.dashboards.length - 1 &&
+                            index < machineryWithDashboards.dashboards.length - 1 &&
                             <Divider/>
                         }
                     </Fragment>
                 ))
             }
             {
-                props.machineryWithDashboards.dashboards.length === 0 &&
+                machineryWithDashboards.dashboards.length === 0 &&
                 <HStack
                     w="full"
                     justifyContent="center"
@@ -199,5 +202,5 @@ export default function MachineryWithDashboardsCard (props: MachineryWithDashboa
                 </HStack>
             }
         </VStack>
-  )
+    )
 }

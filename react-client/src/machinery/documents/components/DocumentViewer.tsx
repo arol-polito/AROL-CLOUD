@@ -371,7 +371,7 @@ export default function DocumentViewer() {
                     >
                         <Button
                             variant="unstyled"
-                            disabled={pageNumber <= 1}
+                            isDisabled={pageNumber <= 1}
                             onClick={previousPage}
                         >
                             Previous page
@@ -384,7 +384,7 @@ export default function DocumentViewer() {
                         </Text>
                         <Button
                             variant="unstyled"
-                            disabled={pageNumber >= (numPages || 0)}
+                            isDisabled={pageNumber >= (numPages || 0)}
                             onClick={nextPage}
                         >
                             Next page

@@ -19,14 +19,14 @@ import {
     VStack
 } from '@chakra-ui/react'
 import React, {Fragment, useContext, useEffect, useState} from 'react'
-import dashboardService from '../../../../services/DashboardService'
+import dashboardService from '../../../../../../services/DashboardService'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
-import type Dashboard from '../../models/Dashboard'
-import type SavedDashboard from '../../interfaces/SavedDashboard'
-import type LoadDashboardAction from '../../../machinery/interfaces/LoadDashboardAction'
-import ToastContext from '../../../../utils/contexts/ToastContext'
-import axiosExceptionHandler from '../../../../utils/AxiosExceptionHandler'
+import type Dashboard from '../../../../models/Dashboard'
+import type SavedDashboard from '../../../../interfaces/SavedDashboard'
+import type LoadDashboardAction from '../../../../../machinery/interfaces/LoadDashboardAction'
+import ToastContext from '../../../../../../utils/contexts/ToastContext'
+import axiosExceptionHandler from '../../../../../../utils/AxiosExceptionHandler'
 
 dayjs.extend(utc)
 
@@ -36,11 +36,35 @@ interface LoadDashboardModalProps {
     setDashboard: React.Dispatch<React.SetStateAction<Dashboard>>
     loadDashboardModalOpen: boolean
     setLoadDashboardModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-    setLoadDashboard: React.Dispatch<React.SetStateAction<LoadDashboardAction>>
+    loadDashboard: (machineryUID, loadDashboard?: LoadDashboardAction) => Promise<void>
     dashboardPermissions: { read: boolean, modify: boolean, write: boolean }
 }
 
+interface DashboardTemplateEntryProps {
+    dashboard: Dashboard
+    setDashboard: React.Dispatch<React.SetStateAction<Dashboard>>
+    savedDashboard: SavedDashboard
+    setSavedDashboards: React.Dispatch<React.SetStateAction<SavedDashboard[]>>
+    machineryUID: string
+    setLoadDashboardModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    loadDashboard: (machineryUID, loadDashboard?: LoadDashboardAction) => Promise<void>
+}
+
+interface SavedDashboardEntryProps {
+    dashboard: Dashboard
+    setDashboard: React.Dispatch<React.SetStateAction<Dashboard>>
+    savedDashboard: SavedDashboard
+    setSavedDashboards: React.Dispatch<React.SetStateAction<SavedDashboard[]>>
+    machineryUID: string
+    setLoadDashboardModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    loadDashboard: (machineryUID, loadDashboard?: LoadDashboardAction) => Promise<void>
+}
+
 export default function LoadDashboardModal(props: LoadDashboardModalProps) {
+
+    const {dashboard, setDashboard, loadDashboard, dashboardPermissions} = props;
+    const {machineryUID, setLoadDashboardModalOpen, loadDashboardModalOpen} = props;
+
     const toast = useContext(ToastContext)
 
     const [tabIndex, setTabIndex] = useState(0)
@@ -57,7 +81,7 @@ export default function LoadDashboardModal(props: LoadDashboardModalProps) {
             setLoading(true)
 
             try {
-                const result = await dashboardService.getSavedDashboards(props.machineryUID)
+                const result = await dashboardService.getSavedDashboards(machineryUID)
                 setSavedDashboards(result)
             } catch (e) {
                 console.error(e)
@@ -72,7 +96,7 @@ export default function LoadDashboardModal(props: LoadDashboardModalProps) {
         }
 
         getData()
-    }, [tabIndex, props.machineryUID, toast])
+    }, [tabIndex, machineryUID, toast])
 
     // FETCH TEMPLATE DASHBOARDS for machineries of this model
     useEffect(() => {
@@ -82,7 +106,7 @@ export default function LoadDashboardModal(props: LoadDashboardModalProps) {
             setLoading(true)
 
             try {
-                const result = await dashboardService.getDashboardTemplates(props.machineryUID)
+                const result = await dashboardService.getDashboardTemplates(machineryUID)
                 setTemplateDashboards(result)
             } catch (e) {
                 console.error(e)
@@ -97,16 +121,16 @@ export default function LoadDashboardModal(props: LoadDashboardModalProps) {
         }
 
         getData()
-    }, [tabIndex, props.machineryUID, toast])
+    }, [tabIndex, machineryUID, toast])
 
     function closeModal() {
-        props.setLoadDashboardModalOpen(false)
+        setLoadDashboardModalOpen(false)
     }
 
     return (
         <Modal
             size="lg"
-            isOpen={props.loadDashboardModalOpen}
+            isOpen={loadDashboardModalOpen}
             onClose={closeModal}
             scrollBehavior="inside"
         >
@@ -137,8 +161,8 @@ export default function LoadDashboardModal(props: LoadDashboardModalProps) {
                         <TabList>
                             <Tab>Dashboards</Tab>
                             <Tab
-                                isDisabled={!props.dashboardPermissions.write}
-                                title={!props.dashboardPermissions.write ? 'Operation not permitted' : ''}
+                                isDisabled={!dashboardPermissions.write}
+                                title={!dashboardPermissions.write ? 'Operation not permitted' : ''}
                             >
                                 Templates
                             </Tab>
@@ -160,13 +184,13 @@ export default function LoadDashboardModal(props: LoadDashboardModalProps) {
                                         <Fragment key={savedDashboard.name}>
                                             <Divider/>
                                             <SavedDashboardEntry
-                                                dashboard={props.dashboard}
-                                                setDashboard={props.setDashboard}
+                                                dashboard={dashboard}
+                                                setDashboard={setDashboard}
                                                 savedDashboard={savedDashboard}
                                                 setSavedDashboards={setSavedDashboards}
-                                                machineryUID={props.machineryUID}
-                                                setLoadDashboardModalOpen={props.setLoadDashboardModalOpen}
-                                                setLoadDashboard={props.setLoadDashboard}
+                                                machineryUID={machineryUID}
+                                                setLoadDashboardModalOpen={setLoadDashboardModalOpen}
+                                                loadDashboard={loadDashboard}
                                             />
                                         </Fragment>
                                     ))
@@ -210,13 +234,13 @@ export default function LoadDashboardModal(props: LoadDashboardModalProps) {
                                         <Fragment key={`${templateDashboard.machineryUID}-${templateDashboard.name}`}>
                                             <Divider/>
                                             <DashboardTemplateEntry
-                                                dashboard={props.dashboard}
-                                                setDashboard={props.setDashboard}
+                                                dashboard={dashboard}
+                                                setDashboard={setDashboard}
                                                 savedDashboard={templateDashboard}
                                                 setSavedDashboards={setSavedDashboards}
-                                                machineryUID={props.machineryUID}
-                                                setLoadDashboardModalOpen={props.setLoadDashboardModalOpen}
-                                                setLoadDashboard={props.setLoadDashboard}
+                                                machineryUID={machineryUID}
+                                                setLoadDashboardModalOpen={setLoadDashboardModalOpen}
+                                                loadDashboard={loadDashboard}
                                             />
                                         </Fragment>
                                     ))
@@ -251,62 +275,52 @@ export default function LoadDashboardModal(props: LoadDashboardModalProps) {
     )
 }
 
-interface SavedDashboardEntryProps {
-    dashboard: Dashboard
-    setDashboard: React.Dispatch<React.SetStateAction<Dashboard>>
-    savedDashboard: SavedDashboard
-    setSavedDashboards: React.Dispatch<React.SetStateAction<SavedDashboard[]>>
-    machineryUID: string
-    setLoadDashboardModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-    setLoadDashboard: React.Dispatch<React.SetStateAction<LoadDashboardAction>>
-}
-
 function SavedDashboardEntry(props: SavedDashboardEntryProps) {
-    const [dashboardToDelete, setDashboardToDelete] = useState('')
+
+    const {dashboard, setDashboard, setSavedDashboards} = props;
+    const {machineryUID, loadDashboard, setLoadDashboardModalOpen, savedDashboard} = props;
+
+    const [dashboardDeleting, setDashboardDeleting] = useState(false);
 
     // LOAD DASHBOARD
     function handleLoadDashboardButton() {
-        props.setLoadDashboard({
-            doLoad: true,
+        loadDashboard(machineryUID, {
             isTemplate: false,
-            machineryUID: '',
-            name: props.savedDashboard.name
-        })
-        props.setLoadDashboardModalOpen(false)
+            machineryUID: machineryUID,
+            name: savedDashboard.name
+        });
+        setLoadDashboardModalOpen(false)
     }
 
     // DELETE DASHBOARD
-    useEffect(() => {
-        if (dashboardToDelete === '') return
+    const deleteDashboard = async (dashboardToDelete) => {
+        setDashboardDeleting(true);
 
-        async function deleteDash() {
-            try {
-                if (props.dashboard.name === dashboardToDelete)
-                    props.setDashboard((val) => {
-                        val.numUnsavedChanges++
-                        val.lastSave = 0
+        try {
 
-                        return {...val}
-                    })
+            if (dashboard.name === dashboardToDelete)
+                setDashboard((val) => {
+                    val.numUnsavedChanges++
+                    val.lastSave = 0
 
-                const result = await dashboardService.deleteDashboard(props.machineryUID, props.savedDashboard.name)
+                    return {...val}
+                })
 
-                if (!result) {
-                    console.error('Dashboard not deleted')
+            const result = await dashboardService.deleteDashboard(machineryUID, savedDashboard.name)
 
-                    return
-                }
+            if (!result) {
+                console.error('Dashboard not deleted')
 
-                setDashboardToDelete('')
-
-                props.setSavedDashboards((val) => val.filter((el) => (el.name !== dashboardToDelete)))
-            } catch (e) {
-                console.error(e)
+                return
             }
+
+            setSavedDashboards((val) => val.filter((el) => (el.name !== dashboardToDelete)))
+        } catch (e) {
+            console.error(e)
         }
 
-        deleteDash()
-    }, [dashboardToDelete, props])
+        setDashboardDeleting(false);
+    }
 
     return (
         <VStack
@@ -323,22 +337,22 @@ function SavedDashboardEntry(props: SavedDashboardEntryProps) {
                     alignItems="left"
                 >
                     {
-                        props.savedDashboard.isDefault &&
+                        savedDashboard.isDefault &&
                         <Text fontSize="xs" fontWeight={600} color="green">
                             Default dashboard
                         </Text>
                     }
-                    <Text fontSize="md" mt={props.savedDashboard.isDefault ? '0!important' : ''}>
-                        {props.savedDashboard.name}
+                    <Text fontSize="md" mt={savedDashboard.isDefault ? '0!important' : ''}>
+                        {savedDashboard.name}
                     </Text>
                     <Text fontSize="xs" color="gray.500" fontWeight={500} mt="0!important">
-                        Saved on {dayjs(props.savedDashboard.timestamp).format('ddd, MMM D, YYYY H:mm')}
+                        Saved on {dayjs(savedDashboard.timestamp).format('ddd, MMM D, YYYY H:mm')}
                     </Text>
                     <Text fontSize="xs" color="gray.500" mt="0!important">
-                        {props.savedDashboard.numSensorsMonitored} sensors monitored
+                        {savedDashboard.numSensorsMonitored} sensors monitored
                     </Text>
                     <Text fontSize="xs" color="gray.500" mt="0!important">
-                        {props.savedDashboard.numWidgets} widgets
+                        {savedDashboard.numWidgets} widgets
                     </Text>
                 </VStack>
                 <VStack>
@@ -354,10 +368,10 @@ function SavedDashboardEntry(props: SavedDashboardEntryProps) {
                         w="full"
                         colorScheme='red'
                         variant='outline'
-                        isLoading={dashboardToDelete !== ''}
+                        isLoading={dashboardDeleting}
                         loadingText="Deleting"
                         onClick={() => {
-                            setDashboardToDelete(props.savedDashboard.name)
+                            deleteDashboard(savedDashboard.name)
                         }}
                     >
                         Delete
@@ -370,26 +384,18 @@ function SavedDashboardEntry(props: SavedDashboardEntryProps) {
     )
 }
 
-interface DashboardTemplateEntryProps {
-    dashboard: Dashboard
-    setDashboard: React.Dispatch<React.SetStateAction<Dashboard>>
-    savedDashboard: SavedDashboard
-    setSavedDashboards: React.Dispatch<React.SetStateAction<SavedDashboard[]>>
-    machineryUID: string
-    setLoadDashboardModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-    setLoadDashboard: React.Dispatch<React.SetStateAction<LoadDashboardAction>>
-}
-
 function DashboardTemplateEntry(props: DashboardTemplateEntryProps) {
+
+    const {savedDashboard, loadDashboard, setLoadDashboardModalOpen} = props;
+
     // LOAD DASHBOARD TEMPLATE
     function handleLoadDashboardButton() {
-        props.setLoadDashboard({
-            doLoad: true,
+        loadDashboard({
             isTemplate: true,
-            machineryUID: props.savedDashboard.machineryUID,
-            name: props.savedDashboard.name
+            machineryUID: savedDashboard.machineryUID,
+            name: savedDashboard.name
         })
-        props.setLoadDashboardModalOpen(false)
+        setLoadDashboardModalOpen(false)
     }
 
     return (
@@ -406,17 +412,17 @@ function DashboardTemplateEntry(props: DashboardTemplateEntryProps) {
                     w="full"
                     alignItems="left"
                 >
-                    <Text fontSize="md" mt={props.savedDashboard.isDefault ? '0!important' : ''}>
-                        {props.savedDashboard.name}
+                    <Text fontSize="md" mt={savedDashboard.isDefault ? '0!important' : ''}>
+                        {savedDashboard.name}
                     </Text>
-                    <Text fontSize="xs" mt={props.savedDashboard.isDefault ? '0!important' : ''}>
-                        Machinery {props.savedDashboard.machineryUID}
+                    <Text fontSize="xs" mt={savedDashboard.isDefault ? '0!important' : ''}>
+                        Machinery {savedDashboard.machineryUID}
                     </Text>
                     <Text fontSize="xs" color="gray.500" fontWeight={500} mt="0!important">
-                        Saved on {dayjs(props.savedDashboard.timestamp).format('ddd, MMM D, YYYY H:mm')}
+                        Saved on {dayjs(savedDashboard.timestamp).format('ddd, MMM D, YYYY H:mm')}
                     </Text>
                     <Text fontSize="xs" color="gray.500" mt="0!important">
-                        {props.savedDashboard.numWidgets} widgets
+                        {savedDashboard.numWidgets} widgets
                     </Text>
                 </VStack>
                 <VStack>

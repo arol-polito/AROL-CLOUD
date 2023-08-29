@@ -284,30 +284,23 @@ async function getMachinerySensorData(machineryUID: string, machineryModelID: st
                 aggregate
             )
 
+            const sensorDataFiltered: SensorDataSample[] = [];
+
             await queryResults.forEach((queryResultObject: Document) => {
 
                 if (queryResultObject.folder)
-                    // if (sensorFilters.dataRange.unit === "sample") {
-                    //     samplesArray.push(...queryResultObject.samples)
-                    // } else {
-                    filteredSensorData.push(...queryResultObject.samples)
-                // }
+                    sensorDataFiltered.push(...queryResultObject.samples.sort((a: any, b: any) => (b.time - a.time)))
                 else if (queryResultObject.variable)
-                    // if (sensorFilters.dataRange.unit === "sample") {
-                    //     samplesArray.push(...queryResultObject.samples.map((el: any) => ({
-                    //         name: queryResultObject.variable,
-                    //         value: el.value,
-                    //         time: el.time
-                    //     })))
-                    // } else {
-                    filteredSensorData.push(...queryResultObject.samples.map((el: any) => ({
-                        name: queryResultObject.variable,
-                        value: el.value,
-                        time: el.time
-                    })))
-                // }
-
+                    sensorDataFiltered.push(...queryResultObject.samples
+                        .sort((a: any, b: any) => (b.time - a.time))
+                        .map((el: any) => ({
+                            name: queryResultObject.variable,
+                            value: el.value,
+                            time: el.time
+                        })))
             })
+
+            filteredSensorData.push(...sensorDataFiltered);
 
             //If single value widget, query only sensor data of first sensor
             if (sensorFilters.widgetCategory === constants.WIDGETTYPE_SINGLE) {

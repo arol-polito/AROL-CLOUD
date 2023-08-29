@@ -1,178 +1,30 @@
-import type GridWidget from '../../interfaces/GridWidget'
-import type SensorMonitoring from '../../interfaces/SensorMonitoring'
-import type SlidingSensorData from '../../interfaces/SlidingSensorData'
-import React, { memo, useEffect, useState } from 'react'
-import { Divider, HStack, Text, VStack } from '@chakra-ui/react'
-import { FiArrowDown, FiArrowUp } from 'react-icons/fi'
+import type GridWidget from '../../../../../interfaces/GridWidget'
+import type SensorMonitoring from '../../../../../interfaces/SensorMonitoring'
+import type SlidingSensorData from '../../../../../interfaces/SlidingSensorData'
+import React, {memo} from 'react'
+import {Divider, HStack, Text, VStack} from '@chakra-ui/react'
+import {FiArrowDown, FiArrowUp} from 'react-icons/fi'
 import GaugeChart from 'react-gauge-chart'
 import Thermometer from 'react-thermometer-ecotropy'
+import {useSingleValueDataDisplayLogic} from "./useSingleValueDataDisplayLogic";
 
-interface SingleValueDataDisplayProps {
-  widget: GridWidget
-  sensorMonitoring: SensorMonitoring
-  sensorData: SlidingSensorData
-  dataDisplaySize: { height: number, width: number }
+export interface SingleValueDataDisplayProps {
+    widget: GridWidget
+    sensorMonitoring: SensorMonitoring
+    sensorData: SlidingSensorData
 }
 
-function SingleValueDataDisplay (props: SingleValueDataDisplayProps) {
-  const [sensorDataToDisplay, setSensorDataToDisplay] = useState<{
-    value: string
-    maxValue: number
-    valueDiff: string
-    aggregateNote: string
-    formattedTime: string
-  } | undefined>(undefined)
+function SingleValueDataDisplay(props: SingleValueDataDisplayProps) {
 
-  // HANDLE DATA TO DISPLAY
-  useEffect(() => {
-    const displayData = props.sensorData.displayData
-    const leftData = props.sensorData.leftData
+    const {widget, sensorMonitoring} = props;
+    const {sensorDataToDisplay, getSensorDataTimeOfSampling} = useSingleValueDataDisplayLogic(props);
 
-    const newSensorData = {
-      value: '',
-      maxValue: 0,
-      valueDiff: '',
-      aggregateNote: '',
-      formattedTime: ''
-    }
+    const {dataDisplaySize} = widget;
 
-    if (displayData.length > 0) {
-      const displayDataEntry = displayData[0]
-
-      // Display AGGREGATE
-      if (Object.entries(displayDataEntry.aggregationData).length > 0 &&
-                displayDataEntry.aggregationData.aggregation.value
-      ) {
-        // VALUE DIFF with previous aggregation
-        let valueDiff = ''
-        const filteredLeftData = leftData.filter((val) => {
-          if (Object.entries(val.aggregationData).length === 0 || !val.aggregationData.hasOwnProperty('aggregation')) return false
-
-          return val.aggregationData.aggregation.value
-        })
-        if (filteredLeftData.length > 0) {
-          const previousAggregation = leftData.slice(-1)[0]
-          if (previousAggregation.aggregationData.aggregation.value)
-            valueDiff = (displayDataEntry.aggregationData.aggregation.value - previousAggregation.aggregationData.aggregation.value).toFixed(2)
-        }
-
-        newSensorData.aggregateNote = displayDataEntry.aggregationData.aggregation.note
-        newSensorData.formattedTime = ''
-        newSensorData.value = displayDataEntry.aggregationData.aggregation.value.toFixed(2)
-        newSensorData.valueDiff = valueDiff
-        newSensorData.maxValue = displayDataEntry.aggregationData.aggregation.value * 1.5
-      }
-      // Display MOST RECENT SAMPLE
-      else {
-        const objectKeys = Object.keys(displayDataEntry.allData)
-        if (objectKeys.length > 0 && displayDataEntry.allData[objectKeys[0]] !== null) {
-
-          // VALUE DIFF with previous sample
-          let valueDiff = ''
-          const filteredLeftData = leftData.filter((val) => {
-            if (Object.entries(val.aggregationData).length > 0) return false
-            const sampleKeys = Object.keys(val.allData)
-            if (sampleKeys.length === 0) return false
-
-            return val.allData[sampleKeys[0]]
-          })
-          if (filteredLeftData.length > 0) {
-            const previousSample = leftData.slice(-1)[0]
-            const previousSampleObjectKeys = Object.keys(previousSample.allData)
-            if (previousSampleObjectKeys.length > 0 && previousSample.allData[previousSampleObjectKeys[0]])
-              valueDiff = ((displayDataEntry.allData[objectKeys[0]] || 0) - (previousSample.allData[previousSampleObjectKeys[0]] || 0)).toFixed(2)
-          }
-
-          newSensorData.aggregateNote = ''
-          newSensorData.formattedTime = props.sensorData.displayData[0].formattedTime
-          newSensorData.value = (displayDataEntry.allData[objectKeys[0]] || 0).toFixed(2)
-          newSensorData.valueDiff = valueDiff
-          newSensorData.maxValue = (displayDataEntry.allData[objectKeys[0]] || 0) * 1.5
-        } else {
-          newSensorData.aggregateNote = ''
-          newSensorData.formattedTime = displayDataEntry.formattedTime
-          newSensorData.value = 'N/A'
-          newSensorData.valueDiff = ''
-          newSensorData.maxValue = 100
-        }
-      }
-    }
-    // FALLBACK VALUES - if no entries in display data show last historical value
-    else if (props.sensorData.leftData.length > 0) {
-      const leftDataEntry = displayData.slice(-1)[0]
-
-      if (Object.entries(leftDataEntry.aggregationData).length > 0 &&
-                leftDataEntry.aggregationData.aggregation.value)
-        if (Object.entries(leftDataEntry.aggregationData).length > 0 &&
-                    leftDataEntry.aggregationData.aggregation.value) {
-          newSensorData.aggregateNote = leftDataEntry.aggregationData.aggregation.note
-          newSensorData.formattedTime = ''
-          newSensorData.value = leftDataEntry.aggregationData.aggregation.value.toFixed(2)
-          newSensorData.valueDiff = ''
-          newSensorData.maxValue = leftDataEntry.aggregationData.aggregation.value * 1.5
-        } else {
-          setSensorDataToDisplay(undefined)
-
-          return
-        }
-
-      // FALLBACK VALUE - if no value in display data show last history data
-      else {
-        const objectKeys = Object.keys(leftDataEntry.allData)
-
-        if (objectKeys.length > 0 && leftDataEntry.allData[objectKeys[0]] !== null) {
-          newSensorData.aggregateNote = ''
-          newSensorData.formattedTime = leftDataEntry.formattedTime
-          newSensorData.value = (leftDataEntry.allData[objectKeys[0]] || 0).toFixed(2)
-          newSensorData.valueDiff = ''
-          newSensorData.maxValue = (leftDataEntry.allData[objectKeys[0]] || 0)  * 1.5
-        } else {
-          newSensorData.aggregateNote = ''
-          newSensorData.formattedTime = leftDataEntry.formattedTime
-          newSensorData.value = 'N/A'
-          newSensorData.valueDiff = ''
-          newSensorData.maxValue = 100
-        }
-      }
-    } else {
-      setSensorDataToDisplay(undefined)
-
-      return
-    }
-
-    setSensorDataToDisplay((val) => {
-      if (val == null)
-        return newSensorData
-
-      val.aggregateNote = newSensorData.aggregateNote
-      val.formattedTime = newSensorData.formattedTime
-      val.value = newSensorData.value
-      val.valueDiff = newSensorData.valueDiff
-      if (val.maxValue < parseFloat(newSensorData.value))
-        val.maxValue = newSensorData.maxValue
-
-      return { ...val }
-    })
-  }, [props.sensorData])
-
-  // SENSOR DATA TIME OF SAMPLING
-  function getSensorDataTimeOfSampling () {
-    if (sensorDataToDisplay == null)
-      return 'Time of sampling: N/A'
-
-    if (!sensorDataToDisplay.aggregateNote)
-      if (sensorDataToDisplay.formattedTime)
-        return `Time of sampling: ${sensorDataToDisplay.formattedTime}`
-      else
-        return 'Time of sampling: N/A'
-
-    return sensorDataToDisplay.aggregateNote
-  }
-
-  return (
+    return (
         <VStack
-            h={props.dataDisplaySize.height /* Account for top margin */}
-            maxH={props.dataDisplaySize.height}
+            h={dataDisplaySize.height /* Account for top margin */}
+            maxH={dataDisplaySize.height}
             w="full"
             px={2}
             alignItems="center"
@@ -182,7 +34,7 @@ function SingleValueDataDisplay (props: SingleValueDataDisplayProps) {
                 (sensorDataToDisplay != null) &&
                 <>
                     {
-                        props.widget.type === 'current-value' &&
+                        widget.type === 'current-value' &&
                         <VStack>
                             <HStack
                                 w="full"
@@ -192,9 +44,9 @@ function SingleValueDataDisplay (props: SingleValueDataDisplayProps) {
                                 <VStack
                                     alignItems="left"
                                 >
-                                    <Text fontSize="sm">{props.sensorMonitoring.name}</Text>
+                                    <Text fontSize="sm">{sensorMonitoring.name}</Text>
                                     <Text fontSize="lg" fontWeight={500}
-                                          mt="0!important">{props.sensorMonitoring.unit}</Text>
+                                          mt="0!important">{sensorMonitoring.unit}</Text>
                                 </VStack>
                                 {
                                     sensorDataToDisplay.valueDiff &&
@@ -231,7 +83,7 @@ function SingleValueDataDisplay (props: SingleValueDataDisplayProps) {
                         </VStack>
                     }
                     {
-                        props.widget.type === 'thermostat' &&
+                        widget.type === 'thermostat' &&
                         <VStack
                             h="full"
                             w="full"
@@ -240,7 +92,7 @@ function SingleValueDataDisplay (props: SingleValueDataDisplayProps) {
                                 w="full"
                                 alignItems="center"
                                 onMouseDown={(e) => {
-                                  e.stopPropagation()
+                                    e.stopPropagation()
                                 }}
                             >
                                 <VStack
@@ -252,19 +104,19 @@ function SingleValueDataDisplay (props: SingleValueDataDisplayProps) {
                                         max={sensorDataToDisplay.maxValue}
                                         tooltipValue={false}
                                         size="large"
-                                        height={props.dataDisplaySize.height - 45}
+                                        height={dataDisplaySize.height - 45}
                                     />
                                 </VStack>
                                 <VStack
                                     alignItems="center"
                                     flexGrow={1}
                                 >
-                                    <Text fontSize="sm" textAlign="center">{props.sensorMonitoring.name}</Text>
+                                    <Text fontSize="sm" textAlign="center">{sensorMonitoring.name}</Text>
                                     <Divider orientation="horizontal"/>
                                     <Text
                                         fontSize={40}>{sensorDataToDisplay ? sensorDataToDisplay.value : 'N/A'}</Text>
                                     <Text fontSize="md" fontWeight={500}
-                                          mt="0!important">{props.sensorMonitoring.unit}</Text>
+                                          mt="0!important">{sensorMonitoring.unit}</Text>
                                     {
                                         sensorDataToDisplay.valueDiff &&
                                         <>
@@ -301,7 +153,7 @@ function SingleValueDataDisplay (props: SingleValueDataDisplayProps) {
                         </VStack>
                     }
                     {
-                        props.widget.type === 'tachometer' &&
+                        widget.type === 'tachometer' &&
                         <VStack>
                             <GaugeChart
                                 id="gauge-chart3"
@@ -321,9 +173,9 @@ function SingleValueDataDisplay (props: SingleValueDataDisplayProps) {
                                 <VStack
                                     alignItems="left"
                                 >
-                                    <Text fontSize="xs">{props.sensorMonitoring.name}</Text>
+                                    <Text fontSize="xs">{sensorMonitoring.name}</Text>
                                     <Text fontSize="md" fontWeight={500}
-                                          mt="0!important">{props.sensorMonitoring.unit}</Text>
+                                          mt="0!important">{sensorMonitoring.unit}</Text>
                                 </VStack>
                                 {
                                     sensorDataToDisplay.valueDiff &&
@@ -363,7 +215,7 @@ function SingleValueDataDisplay (props: SingleValueDataDisplayProps) {
             }
 
         </VStack>
-  )
+    )
 }
 
 export default memo(SingleValueDataDisplay)

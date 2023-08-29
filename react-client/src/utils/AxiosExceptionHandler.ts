@@ -7,9 +7,6 @@ function handleAxiosExceptionWithToast(exception: any, toast: any, toastMessage:
             const error = exception as AxiosError<any>
             if (error.response == null) return
 
-            // if (error.response.status === 401) {
-            //
-            // } else
             if (error.response.status === 403)
                 toast({
                     title: 'Operation not permitted',

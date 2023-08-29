@@ -18,6 +18,7 @@ const AxiosInterceptor = ({children}) => {
 
     useEffect(() => {
         const requestInterceptor = (request: AxiosRequestConfig) => {
+
             const authToken = localStorage.getItem('authToken')
 
             if (authToken && request.headers)
@@ -127,7 +128,8 @@ const AxiosInterceptor = ({children}) => {
             instance.interceptors.response.eject(axiosResponseInterceptor)
             instance.interceptors.request.eject(axiosRequestInterceptor)
         }
-    }, [dispatchPrincipal, navigate, toast])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     return children
 }

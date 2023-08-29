@@ -1,19 +1,20 @@
-import { Divider, Heading, HStack, Text, VStack } from '@chakra-ui/react'
+import {Divider, Heading, HStack, Text, VStack} from '@chakra-ui/react'
 import React from 'react'
 
 interface PieTooltipProps {
-  tooltipProps: any
+    tooltipProps: any
 }
 
-export default function PieTooltip (props: PieTooltipProps) {
-  // console.log(props.tooltipProps.payload[0])
+export default function PieTooltip(props: PieTooltipProps) {
 
-  return (
+    const {tooltipProps} = props;
+
+    return (
         <>
             {
-                props.tooltipProps.payload &&
-                props.tooltipProps.payload.length > 0 &&
-                props.tooltipProps.payload[0].payload &&
+                tooltipProps.payload &&
+                tooltipProps.payload.length > 0 &&
+                tooltipProps.payload[0].payload &&
                 <VStack
                     w="fit-content"
                     boxShadow="xl"
@@ -26,7 +27,7 @@ export default function PieTooltip (props: PieTooltipProps) {
                 >
                     <HStack>
                         <Heading size="sm" whiteSpace="nowrap" w="full" textAlign="center"
-                                 color={props.tooltipProps.payload[0].payload.fill}>{props.tooltipProps.payload[0].payload.sensorName}</Heading>
+                                 color={tooltipProps.payload[0].payload.fill}>{tooltipProps.payload[0].payload.sensorName}</Heading>
                     </HStack>
                     <Divider/>
                     <HStack justifyContent="left">
@@ -36,12 +37,12 @@ export default function PieTooltip (props: PieTooltipProps) {
                         </VStack>
                         <VStack alignItems="left">
                             <Text
-                                fontWeight={550}>From {props.tooltipProps.payload[0].payload.bucketStart} to {props.tooltipProps.payload[0].payload.bucketEnd} {props.tooltipProps.payload[0].payload.sensorUnit}</Text>
-                            <Text fontWeight={550}>{props.tooltipProps.payload[0].payload.occurrences}</Text>
+                                fontWeight={550}>From {tooltipProps.payload[0].payload.bucketStart} to {tooltipProps.payload[0].payload.bucketEnd} {tooltipProps.payload[0].payload.sensorUnit}</Text>
+                            <Text fontWeight={550}>{tooltipProps.payload[0].payload.occurrences}</Text>
                         </VStack>
                     </HStack>
                 </VStack>
             }
         </>
-  )
+    )
 }

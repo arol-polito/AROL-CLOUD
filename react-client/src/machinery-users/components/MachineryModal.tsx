@@ -26,15 +26,18 @@ interface MachineryModalProps {
 }
 
 export default function MachineryModal(props: MachineryModalProps) {
+
+    const {machineryModalMachinery, setMachineryModalMachinery} = props;
+
     function closeModal() {
-        props.setMachineryModalMachinery(undefined)
+        setMachineryModalMachinery(undefined)
     }
 
     return (
-        <Modal isOpen={props.machineryModalMachinery !== undefined} onClose={closeModal} size="xl">
+        <Modal isOpen={machineryModalMachinery !== undefined} onClose={closeModal} size="xl">
             <ModalOverlay/>
             <ModalContent>
-                <ModalHeader>Machinery {props.machineryModalMachinery?.uid}</ModalHeader>
+                <ModalHeader>Machinery {machineryModalMachinery?.uid}</ModalHeader>
                 <ModalCloseButton/>
                 <ModalBody>
                     <VStack
@@ -48,8 +51,8 @@ export default function MachineryModal(props: MachineryModalProps) {
                                     <Image
                                         objectFit="cover"
                                         boxSize="100%"
-                                        // src={require("/src/assets/machineries/"+ props.machinery.modelID + ".png")}
-                                        src={require(`./../../assets/machineries/${props.machineryModalMachinery?.modelID}.png`)}
+                                        // src={require("/src/assets/machineries/"+ machinery.modelID + ".png")}
+                                        src={require(`./../../assets/machineries/${machineryModalMachinery?.modelID}.png`)}
                                     />
                                 </Box>
                             </Flex>
@@ -70,7 +73,7 @@ export default function MachineryModal(props: MachineryModalProps) {
                                             color="gray.400"
                                             whiteSpace="nowrap"
                                         >
-                                            {props.machineryModalMachinery?.uid}
+                                            {machineryModalMachinery?.uid}
                                         </Heading>
                                         <Heading
                                             fontSize="2xl"
@@ -78,7 +81,7 @@ export default function MachineryModal(props: MachineryModalProps) {
                                             whiteSpace="nowrap"
                                             mb="0!important"
                                         >
-                                            {props.machineryModalMachinery?.modelName}
+                                            {machineryModalMachinery?.modelName}
                                         </Heading>
                                         <Text
                                             fontWeight={300}
@@ -96,7 +99,7 @@ export default function MachineryModal(props: MachineryModalProps) {
                                             mt="0!important"
                                             mb={4}
                                         >
-                                            {props.machineryModalMachinery?.modelType}
+                                            {machineryModalMachinery?.modelType}
                                         </Text>
                                         <Text
                                             fontWeight={300}
@@ -112,7 +115,7 @@ export default function MachineryModal(props: MachineryModalProps) {
                                             mt="0!important"
                                             mb={4}
                                         >
-                                            {props.machineryModalMachinery?.numHeads}
+                                            {machineryModalMachinery?.numHeads}
                                         </Text>
                                         <Text
                                             fontWeight={300}
@@ -127,7 +130,7 @@ export default function MachineryModal(props: MachineryModalProps) {
                                             whiteSpace="nowrap"
                                             my="0!important"
                                         >
-                                            {props.machineryModalMachinery?.locationCluster}
+                                            {machineryModalMachinery?.locationCluster}
                                         </Text>
                                     </Stack>
                                 </HStack>
@@ -146,9 +149,9 @@ export default function MachineryModal(props: MachineryModalProps) {
                                 scrollWheelZoom={false}
                             >
                                 {/* Must be done like this or useMap will not work */}
-                                {props.machineryModalMachinery &&
+                                {machineryModalMachinery &&
                                     <MapRenderer
-                                        machinery={props.machineryModalMachinery}
+                                        machinery={machineryModalMachinery}
                                     />
                                 }
                             </MapContainer>
@@ -165,15 +168,18 @@ interface MapRendererProps {
 }
 
 function MapRenderer(props: MapRendererProps) {
+
+    const {machinery} = props;
+
     const map = useMap()
 
     // Update markers when machineries get updated
     // FitBounds of marker
     useEffect(() => {
-        const bounds: LatLngTuple = [props.machinery.geoLocation.x, props.machinery.geoLocation.y]
+        const bounds: LatLngTuple = [machinery.geoLocation.x, machinery.geoLocation.y]
 
         map.flyToBounds([bounds], {padding: [100, 100], duration: 1.25})
-    }, [props.machinery, map])
+    }, [machinery, map])
 
     return (
         <>
@@ -182,11 +188,11 @@ function MapRenderer(props: MapRendererProps) {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
             <Marker
-                key={props.machinery.uid}
-                position={[props.machinery.geoLocation.x, props.machinery.geoLocation.y]}
+                key={machinery.uid}
+                position={[machinery.geoLocation.x, machinery.geoLocation.y]}
             >
                 <Tooltip permanent>
-                    {props.machinery.uid}
+                    {machinery.uid}
                 </Tooltip>
             </Marker>
             ))

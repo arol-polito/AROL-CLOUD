@@ -21,12 +21,16 @@ interface Navigator {
 }
 
 export default function NavigatorPanel(props: NavigatorPanelPros) {
+
+    const {machineriesLoading, machineries} = props;
+    const {navigator, setNavigator} = props;
+
     const navigate = useNavigate()
 
     const {principal} = useContext(PrincipalContext)
 
     function handleClusterLocationClicked(clusterLocation: string) {
-        props.setNavigator((val) => {
+        setNavigator((val) => {
             val.stage = 1
             val.clusterLocation = clusterLocation
 
@@ -35,7 +39,7 @@ export default function NavigatorPanel(props: NavigatorPanelPros) {
     }
 
     function handleMachineryClicked(machineryUID: string) {
-        props.setNavigator((val) => {
+        setNavigator((val) => {
             val.stage = 2
             val.machineryUID = machineryUID
 
@@ -44,37 +48,37 @@ export default function NavigatorPanel(props: NavigatorPanelPros) {
     }
 
     function handleDashboardButtonClicked() {
-        if (props.navigator.stage !== 2) return
+        if (navigator.stage !== 2) return
         navigate(
-            `/machinery/${props.navigator.machineryUID}/dashboard`,
+            `/machinery/${navigator.machineryUID}/dashboard`,
             {
                 state: {
-                    machinery: props.machineries.get(props.navigator.clusterLocation)
-                        ?.find((el) => (el.uid === props.navigator.machineryUID)),
+                    machinery: machineries.get(navigator.clusterLocation)
+                        ?.find((el) => (el.uid === navigator.machineryUID)),
                     dashboardName: null
                 }
             })
     }
 
     function handleDocumentsButtonClicked() {
-        if (props.navigator.stage !== 2) return
+        if (navigator.stage !== 2) return
         navigate(
-            `/machinery/${props.navigator.machineryUID}/documents`,
+            `/machinery/${navigator.machineryUID}/documents`,
             {
-                state: props.machineries.get(props.navigator.clusterLocation)
-                    ?.find((el) => (el.uid === props.navigator.machineryUID))
+                state: machineries.get(navigator.clusterLocation)
+                    ?.find((el) => (el.uid === navigator.machineryUID))
             })
     }
 
     function handleBackClicked(stage: number) {
         if (stage === 1)
-            props.setNavigator((val) => {
+            setNavigator((val) => {
                 val.stage = 0
 
                 return {...val}
             })
         else if (stage === 2)
-            props.setNavigator((val) => {
+            setNavigator((val) => {
                 val.stage = 1
 
                 return {...val}
@@ -90,12 +94,12 @@ export default function NavigatorPanel(props: NavigatorPanelPros) {
             overflowX="hidden"
             justifyContent="flex-start"
         >
-            {props.navigator.stage === 0 &&
+            {navigator.stage === 0 &&
                 <VStack py={2}>
                     <Heading size="sm">Locations</Heading>
                 </VStack>
             }
-            {props.navigator.stage === 1 &&
+            {navigator.stage === 1 &&
                 <HStack
                     minWidth="full"
                     alignContent="center"
@@ -110,10 +114,10 @@ export default function NavigatorPanel(props: NavigatorPanelPros) {
                 >
                     <FiChevronLeft/>
                     <Heading w="full" textAlign="center" mr="14px!important"
-                             size="sm">{props.navigator.clusterLocation}</Heading>
+                             size="sm">{navigator.clusterLocation}</Heading>
                 </HStack>
             }
-            {props.navigator.stage === 2 &&
+            {navigator.stage === 2 &&
                 <HStack
                     minWidth="full"
                     alignContent="center"
@@ -128,8 +132,8 @@ export default function NavigatorPanel(props: NavigatorPanelPros) {
                 >
                     <FiChevronLeft/>
                     <VStack w="full" textAlign="center" mr="14px!important">
-                        <Text fontSize="xs" color="gray.500">{props.navigator.clusterLocation}</Text>
-                        <Heading size="sm">{props.navigator.machineryUID}</Heading>
+                        <Text fontSize="xs" color="gray.500">{navigator.clusterLocation}</Text>
+                        <Heading size="sm">{navigator.machineryUID}</Heading>
                     </VStack>
                 </HStack>
             }
@@ -137,9 +141,9 @@ export default function NavigatorPanel(props: NavigatorPanelPros) {
             <Divider orientation="horizontal"/>
 
             {
-                !props.machineriesLoading &&
-                props.navigator.stage === 0 &&
-                props.machineries.size > 0 &&
+                !machineriesLoading &&
+                navigator.stage === 0 &&
+                machineries.size > 0 &&
                 <VStack
                     w="full"
                     h="full"
@@ -148,7 +152,7 @@ export default function NavigatorPanel(props: NavigatorPanelPros) {
                     <VStack
                         w="full">
                         {
-                            Array.from(props.machineries.entries()).map((entry) => (
+                            Array.from(machineries.entries()).map((entry) => (
                                 <Fragment key={entry[0]}>
                                     <VStack
                                         w="full"
@@ -193,18 +197,18 @@ export default function NavigatorPanel(props: NavigatorPanelPros) {
                 </VStack>
             }
             {
-                !props.machineriesLoading &&
-                props.navigator.stage === 0 &&
-                props.machineries.size === 0 &&
+                !machineriesLoading &&
+                navigator.stage === 0 &&
+                machineries.size === 0 &&
                 <Text fontSize="md" maxW="full" textAlign="center" my="8!important">
                     Your company has no machineries registered. <br/>
                     Please contact Arol Support to register your machineries.
                 </Text>
             }
             {
-                !props.machineriesLoading &&
-                props.navigator.stage === 1 &&
-                props.machineries.get(props.navigator.clusterLocation)?.map((entry) => (
+                !machineriesLoading &&
+                navigator.stage === 1 &&
+                machineries.get(navigator.clusterLocation)?.map((entry) => (
                     <Fragment key={entry.uid}>
                         <VStack
                             w="full"
@@ -237,11 +241,11 @@ export default function NavigatorPanel(props: NavigatorPanelPros) {
             }
 
             {
-                !props.machineriesLoading &&
-                props.navigator.stage === 2 &&
+                !machineriesLoading &&
+                navigator.stage === 2 &&
                 [
-                    props.machineries.get(props.navigator.clusterLocation)
-                        ?.find((el) => (el.uid === props.navigator.machineryUID))
+                    machineries.get(navigator.clusterLocation)
+                        ?.find((el) => (el.uid === navigator.machineryUID))
                 ]
                     .map((entry) => (
                         <Fragment key={entry?.uid}>
@@ -300,7 +304,7 @@ export default function NavigatorPanel(props: NavigatorPanelPros) {
                     ))
             }
             {
-                props.machineriesLoading &&
+                machineriesLoading &&
                 <VStack
                     w="full"
                     h="full"
