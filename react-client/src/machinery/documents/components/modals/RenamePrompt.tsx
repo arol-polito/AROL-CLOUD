@@ -32,7 +32,7 @@ export default function RenamePrompt(props: RenamePromptProps) {
     const {machinery, renamePromptOpen, setRenamePromptOpen} = props;
     const {fileMap, setFileMap, currentFolderId} = props;
 
-    const [newFileName, setNewFileName] = useState<string>(renamePromptOpen?.name.endsWith('.pdf') ? (renamePromptOpen?.name.slice(0, -4) || '') : (renamePromptOpen?.name || ''))
+    const [newFileName, setNewFileName] = useState<string>(!renamePromptOpen?.isDir && renamePromptOpen?.name.endsWith('.pdf') ? (renamePromptOpen?.name.slice(0, -4) || '') : (renamePromptOpen?.name || ''))
     const [doRename, setDoRename] = useState<boolean>(false)
     const [isRenaming, setIsRenaming] = useState<boolean>(false)
     const [fileExists, setFileExists] = useState<boolean>(false)
@@ -50,16 +50,17 @@ export default function RenamePrompt(props: RenamePromptProps) {
             setIsRenaming(true)
 
             try {
-                const documentUID = renamePromptOpen?.id.split('\\').pop()
+
+                const documentUID = renamePromptOpen?.documentUID;
 
                 if (!documentUID) return;
 
-                const renamedFilename = `${newFileName}.pdf`
+                const renamedFilename = renamePromptOpen?.isDir ? newFileName : `${newFileName}.pdf`
 
                 const result = await documentsService.renameMachineryFileOrFolder(
                     machinery.uid,
                     renamePromptOpen?.id || '',
-                    documentUID || 'none',
+                    documentUID,
                     renamedFilename,
                     renamePromptOpen?.isDir ? 'folder' : 'file'
                 )
@@ -190,9 +191,11 @@ export default function RenamePrompt(props: RenamePromptProps) {
                                     value={newFileName}
                                     onChange={updateNewFileName}
                                 />
-                                <InputRightAddon>
-                                    .pdf
-                                </InputRightAddon>
+                                {!renamePromptOpen?.isDir && (
+                                    <InputRightAddon>
+                                        .pdf
+                                    </InputRightAddon>
+                                )}
                             </InputGroup>
                             {
                                 newFileName.length === 0 &&
