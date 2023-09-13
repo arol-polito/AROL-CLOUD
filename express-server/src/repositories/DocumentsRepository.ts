@@ -81,64 +81,6 @@ async function getMachineryDocuments(machineryUID: string) {
 
 }
 
-// async function getFilesFromDirectoryRecursive(directoryPath: string, filesDB: Document[]): Promise<FileMapEntry[]> {
-//
-//     let filesInDirectory
-//     try{
-//         console.log(directoryPath)
-//         filesInDirectory = await fs.readdir(directoryPath);
-//         console.log(filesInDirectory)
-//     }
-//     catch (e) {
-//         return []
-//     }
-//
-//     let fileMap: FileMapEntry[] = []
-//
-//     for (const fileName of filesInDirectory) {
-//         const filePath = path.join(directoryPath, fileName);
-//
-//         const stats = await fs.stat(filePath);
-//
-//         if (stats.isDirectory()) {
-//             let children = (await getFilesFromDirectoryRecursive(filePath, filesDB)).filter((el) => (el !== null))
-//
-//             let currFolder = {
-//                 id: filePath.slice(rootPath.length),
-//                 name: fileName,
-//                 isDir: true,
-//                 childrenIds: children.map((el) => (el.id)),
-//                 childrenCount: children.length,
-//                 parentId: directoryPath.slice(rootPath.length),
-//                 modDate: stats.mtime,
-//                 //size: stats.size ----- NO SIZE FOR DIRS
-//             }
-//
-//             fileMap = [...fileMap, currFolder, ...children]
-//         } else {
-//
-//             let fileInDB = filesDB.find((el) => (el.documentUID === fileName))
-//
-//             if (fileInDB) {
-//                 fileMap.push({
-//                     id: filePath.slice(rootPath.length),
-//                     name: fileInDB.fileName,
-//                     isDir: false,
-//                     childrenIds: [],
-//                     childrenCount: 0,
-//                     parentId: directoryPath.slice(rootPath.length),
-//                     modDate: new Date(Number(fileInDB.modificationTimestamp)),
-//                     size: stats.size
-//                 })
-//             }
-//         }
-//     }
-//
-//     return fileMap
-//
-//
-// }
-
 async function deleteMachineryDocuments(machineryUID: string, documentsList: FileMapEntry[]): Promise<any[] | null> {
 
     const deletedDocuments = []
@@ -258,15 +200,23 @@ async function uploadMachineryDocuments(userID: number, machineryUID: string, pa
                 try {
                     const res = await fs.access('./../../documents');
                     if (!res)
-                        await fs.mkdir('./../../documents');
-                } catch (e) {
-                    console.error(e);
+                        await fs.mkdir('./../../documents', {recursive: true});
+                } catch (e: any) {
+
+                    try {
+                        await fs.mkdir('./../../documents', {recursive: true});
+                    } catch (err) {
+                        console.error(err);
+                        continue;
+                    }
+
                 }
 
                 try {
                     await fs.writeFile(`./../../documents/${file.filename}`, multerFile)
                 } catch (e) {
                     await deleteFileFromDatabase(machineryUID, file.filename, parentFolderPath);
+                    continue;
                 }
 
                 uploadedFiles.push(document)
@@ -441,36 +391,46 @@ async function renameFileInDatabase(documentUID: string, newFileName: string) {
     )
 
     if (!result || result.length === 0)
-        throw "File insertion in DB failed"
+        throw `File rename in DB failed for file with UID ${documentUID}`
 
 }
 
 async function renameFolderInDatabase(oldFolderID: string, newFolderID: string, machineryUID: string) {
 
-    const escapedFolderID = oldFolderID.split("\\").join("\\\\")
+    const oldFolderLocation = oldFolderID.split('\\').slice(0, -1).join('\\');
+    const oldFolderName = oldFolderID.split('\\').slice(-1)[0];
+    const newFolderLocation = newFolderID.split('\\').slice(0, -1).join('\\');
+    const newFolderName = newFolderID.split('\\').slice(-1)[0];
 
-    await pgClient.query(
+    const modifiedFolder = await pgClient.query(
         "UPDATE public.machinery_documents SET location=$1, name=$2 WHERE location=$3 AND name=$4 AND machinery_uid=$5 RETURNING *",
-        []
+        [newFolderLocation, newFolderName, oldFolderLocation, oldFolderName, machineryUID]
     )
+
+    if (!modifiedFolder.length)
+        throw `Failed update for folder ${oldFolderLocation}\\${oldFolderName}`
+
+
+    const escapedOldFolderLocation = oldFolderLocation.split("\\").join("\\\\");
 
     const entriesToModify = await pgClient.manyOrNone(
         "SELECT * FROM public.machinery_documents WHERE location LIKE $1 AND machinery_uid=$2",
-        [`${escapedFolderID}%`, machineryUID]
+        [`${escapedOldFolderLocation}\\\\${oldFolderName}%`, machineryUID]
     )
 
     for (const row of entriesToModify) {
-        const oldID: string = row.file_location
-        const newID: string = newFolderID + oldID.slice(oldFolderID.length)
+        const oldLocation: string = row.location;
+        const newLocation: string = newFolderID + oldLocation.slice(`${oldFolderLocation}\\${oldFolderName}`.length)
+
         const result = await pgClient.query(
-            "UPDATE public.machinery_documents SET location=$1 WHERE document_uid=$2 RETURNING *",
-            [newID, row.document_uid]
+            "UPDATE public.machinery_documents SET location=$1 WHERE location=$2 AND machinery_uid=$3 RETURNING *",
+            [newLocation, oldLocation, row.machinery_uid]
         )
         if (!result || result.length === 0)
             throw `Failed update for document ${row.document_uid}`
 
-    }
 
+    }
 }
 
 async function deleteFileFromDatabase(machineryUID: string, documentUID: string, fileLocation: string) {
